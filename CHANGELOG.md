@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Initial marketplace setup: `solve` plugin with 13 skills.
-
 ## solve 0.1.1
 
 - `ship`: `solve:ready` label persists after issue close instead of auto-clearing.
@@ -18,3 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `vocab`: correct ADR filename convention (kebab-case in the title, not the
   full filename).
 - `to-tickets`, `tdd`: wording fixes.
+
+## solve 0.1.0
+
+- Initial marketplace setup: `solve` plugin with 13 skills.
