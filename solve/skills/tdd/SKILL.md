@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Write code test-first in an agreed seam — the red→green loop, what makes a good test, and the anti-patterns to avoid. Optional and conditional: reach for it when the behavior is clear and a seam exists, not as a mandatory step. Also how you turn a reproduced bug into a regression test.
+description: Write code test-first in an agreed seam — the red→green loop, what makes a good test, and the anti-patterns to avoid. Optional and conditional — reach for it when the behavior is clear and a seam exists, not as a mandatory step. Also how you turn a reproduced bug into a regression test.
 ---
 
 # tdd — red → green, one behavior at a time

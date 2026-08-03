@@ -34,7 +34,7 @@ Wide refactors are the exception: sequence them expand-contract — add the new
 path, migrate callers onto it, then remove the old, so the build never breaks
 mid-refactor. Spikes and
 enabling chores are the other exception — a spike answers an open question, a
-chore unblocks later slices; neither demos on its own, and that's fine. Give it a
+chore unblocks later slices; neither demos on its own, and that's fine. Give each a
 verifiable done (findings recorded, the enablement in place) and keep them rare.
 
 ## Ticket format (fixed)

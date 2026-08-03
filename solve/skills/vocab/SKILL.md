@@ -14,8 +14,8 @@ language. Maintains two artifacts, nothing else.
 implementation details (a class name or endpoint means it's in the wrong place).
 The dictionary, not the documentation.
 
-**`docs/adr/NNNN-title-kebab.md`** — architecture decision records, one per
-decision, numbered.
+**`docs/adr/NNNN-title.md`** — architecture decision records, one per decision,
+numbered, the title in kebab-case.
 
 ## Working the glossary
 

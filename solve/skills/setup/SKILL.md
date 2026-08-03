@@ -38,7 +38,7 @@ Idempotent — re-run safe with `--force`:
 
 ```
 gh label create solve:epic   --color 8957e5 --description "PRD / feature epic" --force
-gh label create solve:ticket --color 0969da --description "A solve vertical slice" --force
+gh label create solve:ticket --color 0969da --description "A vertical slice of an epic" --force
 gh label create solve:ready  --color 1a7f37 --description "Ready to implement" --force
 ```
 

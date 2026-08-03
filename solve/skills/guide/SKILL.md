@@ -10,6 +10,8 @@ to the skill.
 
 ## Starting something new
 
+- First time in this repo, want a GitHub tracker → `setup` (skip it for the
+  default, local markdown)
 - Vague idea, needs sharpening → `sharpen`
 - Idea's been grilled, formalize it → `to-spec`
 - Have a spec, split the work → `to-tickets`
@@ -33,10 +35,13 @@ to the skill.
 ## Any time
 
 - Pin down a term or record a hard decision → `vocab`
+- Review a diff or a PR against standards + spec → `code-review`
+- Drive a change test-first at a seam → `tdd`
 
 ## The shape
 
 ```
+setup                         ← once per repo, only for a GitHub tracker (optional)
 sharpen → to-spec → to-tickets → ship   (reach for tdd / code-review)
 pre-check                     ← optional gate: recheck a spec/ticket still applies
 research · prototype          ← feed the thinking (into sharpen)

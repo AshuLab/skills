@@ -52,10 +52,12 @@ Read `.solve/config.yml`:
 
   The epic is where the feature's properties live — discover what the repo has and
   offer it, don't guess:
-  - **Milestone** — offer existing ones via one `AskUserQuestion`: **"None"** plus
-    the most relevant few by due date (the tool caps at 4; free-text **"Other"**
-    creates a new one, so no explicit "create new"). Long list → ask in prose. New
-    name → `gh api repos/{o}/{r}/milestones -f title=...`.
+  - **Milestone** — only if the repo already has some. Offer them via one
+    `AskUserQuestion`: **"None"** plus the most relevant few by due date — with
+    "None" that's ≥2 options (the tool caps at 4 and rejects a single-option
+    question; free-text **"Other"** creates a new one, so no explicit "create
+    new"). No milestones yet → skip the picker, leave it unset. Long list → ask in
+    prose. New name → `gh api repos/{o}/{r}/milestones -f title=...`.
   - **Labels** — `solve:epic` is always on. Offer other relevant ones the same way:
     show the picker only if ≥2 apply; if just one obvious label applies, add it
     silently.

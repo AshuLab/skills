@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Take a ready ticket — or a whole epic — and carry it to done: claim, build, close the loop with a PR. Hand it one slice and it runs that slice's lifecycle; hand it the epic and it drains every slice in dependency order, unattended. It does not dictate how you code — the model, or a skill you pass in, does that — ship owns the edges.
+description: Take a ready ticket — or a whole epic — and carry it to done — claim, build, close the loop with a PR. Hand it one slice and it runs that slice's lifecycle; hand it the epic and it drains every slice in dependency order, unattended. It does not dictate how you code — the model, or a skill you pass in, does that — ship owns the edges.
 ---
 
 # ship — take a ticket to done
@@ -38,8 +38,8 @@ Read `.solve/config.yml`:
 - **github** — self-assign so no one doubles up:
   `gh issue edit <n> --add-assignee @me`. Leave `solve:ready` where it is — it
   means "well-specified, grabbable", not "untaken": the `blocked-by` edges say
-  what's startable, the assignee says who has it. It clears itself when the issue
-  closes.
+  what's startable, the assignee says who has it. The label stays on after close —
+  a closed issue just drops out of the default `gh issue list`.
 - **local** — no board to move; just open the ticket file.
 
 Read the ticket + its linked spec section before touching code.

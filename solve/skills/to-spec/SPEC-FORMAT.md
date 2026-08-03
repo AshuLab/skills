@@ -53,6 +53,7 @@ Status: spec
 ## Scope
 ## Decisions
 ## Out of scope
+## Open questions   (only if genuinely still open — otherwise omit)
 ```
 
 The `# <feature>` H1 and the `Status:` header serve the standalone local file.
