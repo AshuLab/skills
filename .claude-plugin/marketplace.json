@@ -1,0 +1,19 @@
+{
+  "name": "ashulab",
+  "owner": {
+    "name": "Diego Ghersi",
+    "email": "ghersidl@gmail.com"
+  },
+  "metadata": {
+    "description": "ashulab — Diego Ghersi's Claude Code skill plugins."
+  },
+  "plugins": [
+    {
+      "name": "solve",
+      "source": "./solve",
+      "description": "Skills for the app development cycle — idea to shipped.",
+      "category": "engineering",
+      "keywords": ["engineering", "tdd", "code-review", "spec", "tickets"]
+    }
+  ]
+}

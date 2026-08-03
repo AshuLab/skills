@@ -1,0 +1,27 @@
+{
+  "name": "solve",
+  "displayName": "solve",
+  "description": "Skills for the app development cycle — take an idea from raw to shipped through phases with clear boundaries. sharpen → to-spec → to-tickets → ship, plus tdd/code-review, research/prototype, diagnose, pre-check.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Diego Ghersi",
+    "email": "ghersidl@gmail.com"
+  },
+  "repository": "https://github.com/AshuLab/skills",
+  "license": "MIT",
+  "skills": [
+    "./skills/guide",
+    "./skills/sharpen",
+    "./skills/vocab",
+    "./skills/to-spec",
+    "./skills/to-tickets",
+    "./skills/pre-check",
+    "./skills/ship",
+    "./skills/tdd",
+    "./skills/code-review",
+    "./skills/research",
+    "./skills/prototype",
+    "./skills/diagnose",
+    "./skills/setup"
+  ]
+}
