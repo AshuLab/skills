@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.2.0
+
+- **Breaking:** drop `.solve/config.yml` and `.solve/tickets/`. The tracker mode
+  (local or github) is now declared in `docs/agents/solve.md`'s **Tracker**
+  section, with a **Tracker operations** subsection each skill resolves its verbs
+  against. Local-mode tickets move to `docs/tickets/<feature>/`.
+- `setup`, `ship`, `to-spec`, `to-tickets`: updated to read/write the tracker mode
+  from `docs/agents/solve.md` instead of the old config file.
+- `setup/REFERENCE.md`: rewritten templates for both tracker modes, including the
+  `gh` queries for tracker operations (publish, claim, close, find next slice).
+
 ## solve 0.1.1
 
 - `ship`: `solve:ready` label persists after issue close instead of auto-clearing.
