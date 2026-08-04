@@ -15,7 +15,7 @@ to the skill.
 - Vague idea, needs sharpening -> `sharpen`
 - Idea's been grilled, formalize it -> `to-spec`
 - Have a spec, split the work -> `to-tickets`
-- Have a ready ticket, take it to done -> `ship` (with `tdd` / `code-review` when
+- Have a startable ticket, take it to done -> `ship` (with `tdd` / `code-review` when
   they earn it)
 
 ## While sharpening, if talk isn't enough

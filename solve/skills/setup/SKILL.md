@@ -29,17 +29,24 @@ Ask via `AskUserQuestion`: **local** (markdown under `docs/`) or **github**?
 
 - `gh auth status` - must be logged in, with **>= triage** permission on the repo
   (issue dependencies require it).
-- A recent `gh` - the `--parent` / `--blocked-by` flags are newer; if they fail,
-  check `gh --version` and treat old installs as unsupported.
+- **`gh` 2.94.0 or newer** - the release that added issue types, sub-issues and
+  relationships (`--parent`, `--blocked-by`). Check `gh --version`; treat an older
+  install as unsupported rather than working around it.
+- **On GitHub Enterprise Server, check the server version too** - sub-issues need
+  GHES 3.17+, but *relationships* (`--blocked-by`, which the whole dependency graph
+  rests on) need **GHES 3.19+**. Under 3.19 the failure is quiet and lopsided:
+  `--parent` works, `--blocked-by` doesn't, and you end up with slices that look
+  published but carry no blocking edges. On a GHES host below 3.19, say so and use
+  local mode instead of publishing a graph that isn't there.
 
 ## 4. Create the labels
 
 Idempotent - re-run safe with `--force`:
 
 ```
-gh label create solve:epic   --color 8957e5 --description "PRD / feature epic" --force
-gh label create solve:ticket --color 0969da --description "A vertical slice of an epic" --force
-gh label create solve:ready  --color 1a7f37 --description "Ready to implement" --force
+gh label create solve:epic    --color 8957e5 --description "PRD / feature epic" --force
+gh label create solve:ticket  --color 0969da --description "A vertical slice of an epic" --force
+gh label create solve:refined --color 1a7f37 --description "Slice fully defined, agent-ready" --force
 ```
 
 ## 5. Wire the reference

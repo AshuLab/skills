@@ -51,15 +51,16 @@ By the repo's tracker mode (declared in `docs/agents/solve.md`; absent -> local)
 
   The epic is where the feature's properties live - discover what the repo has and
   offer it, don't guess:
-  - **Milestone** - only if the repo already has some. Offer them via one
-    `AskUserQuestion`: **"None"** plus the most relevant few by due date - with
-    "None" that's >=2 options (the tool caps at 4 and rejects a single-option
-    question; free-text **"Other"** creates a new one, so no explicit "create
-    new"). No milestones yet -> skip the picker, leave it unset. Long list -> ask in
-    prose. New name -> `gh api repos/{o}/{r}/milestones -f title=...`.
-  - **Labels** - `solve:epic` is always on. Offer other relevant ones the same way:
-    show the picker only if >=2 apply; if just one obvious label applies, add it
-    silently.
+  - **Milestone** - discover the repo's open milestones first
+    (`gh api repos/{o}/{r}/milestones --jq '.[] | {title, due_on}'`). If any exist,
+    offer them via one `AskUserQuestion`: **"None"** plus the most relevant few by
+    due date - with "None" that's >=2 options (the tool caps at 4 and rejects a
+    single-option question; free-text **"Other"** creates a new one, so no explicit
+    "create new"). None exist -> skip the picker, leave it unset. Long list -> ask
+    in prose. New name -> `gh api repos/{o}/{r}/milestones -f title=...`.
+  - **Labels** - `solve:epic` is always on. List the repo's labels
+    (`gh label list`) and offer the relevant ones the same way: show the picker
+    only if >=2 apply; if just one obvious label applies, add it silently.
   Native basics only - no Projects v2, no custom fields. `to-tickets` inherits these
   onto every slice and hangs the slices off this epic. Keep the file too if you want
   the PRD versioned in git.

@@ -20,7 +20,7 @@ Setup (once per repo, optional)
 Main flow | idea -> shipped
   sharpen -> to-spec -> to-tickets -> ship
     | sharpen - reality-check it doesn't already exist, then grill till it holds
-    | to-spec - formalize into a PRD (file or epic issue)
+    | to-spec - formalize into a PRD, a product requirements document (file or epic issue)
     | to-tickets - vertical slices + blocking edges + a definition of done
     | ship - carry a ticket to done (claim, build, close the loop), or drain a whole epic
   -> build the middle freely, or hand it to a specialized skill; reach for
@@ -31,7 +31,7 @@ Main flow | idea -> shipped
     sets tags/milestone. Skip it when you just sharpened and are building now.
 
 Cross-cutting | invoke anytime
-  | vocab - domain glossary + ADRs (the shared vocabulary)
+  | vocab - domain glossary + architecture decision records (ADRs)
   | tdd - red -> green, seams first; optional, never mandatory
   | code-review - two axes: standards + spec
 
@@ -102,7 +102,7 @@ itself is declared in `docs/agents/solve.md` - there's no separate config file.
 **GitHub** - run `setup` to pick a repo. Then:
 - `to-spec` publishes the PRD as an epic issue (`solve:epic`).
 - `to-tickets` publishes each slice as a sub-issue of the epic (`solve:ticket` +
-  `solve:ready`), with real `blocked-by` dependencies - native GitHub Issues
+  `solve:refined`), with real `blocked-by` dependencies - native GitHub Issues
   features via `gh`, no Projects v2 needed.
 - `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
 

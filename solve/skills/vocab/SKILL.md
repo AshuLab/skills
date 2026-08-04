@@ -10,19 +10,24 @@ language. Maintains two artifacts, nothing else.
 
 ## The two artifacts
 
-**`docs/glossary.md`** - domain terms, one per entry, a line or two each. No
-implementation details (a class name or endpoint means it's in the wrong place).
-The dictionary, not the documentation.
+**`docs/glossary.md`** - domain terms, one per entry: `**Term** - what it means
+here, in a line or two`, then an `_Avoid_:` line naming the synonyms this term
+replaces, so the ambiguity stays settled. No implementation details (a class name
+or endpoint means it's in the wrong place). The dictionary, not the documentation.
 
 **`docs/adr/NNNN-title.md`** - architecture decision records, one per decision,
 numbered, the title in kebab-case.
 
 ## Working the glossary
 
+- **Grow it by friction, not upfront** - add a term the moment a real ambiguity
+  bites: a clash surfaced in the grilling, or the code naming something the domain
+  never did. Never a preemptive sweep - an empty glossary that grows on demand
+  beats a full one nobody trusts.
 - **Challenge vague terms** - pin down what "process" or "order" actually mean here;
   a vague entry is worse than none.
-- **Resolve overloaded words** - if "user" means three things, invent three terms
-  and banish "user".
+- **Resolve overloaded words** - if "user" means three things, invent three precise
+  terms, keep those, and list "user" under their `_Avoid_` so it can't creep back.
 - **Domain only, not code** - "idempotency" can go in; "UserRepository" can't.
 
 ## When to create an ADR

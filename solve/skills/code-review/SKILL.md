@@ -35,5 +35,8 @@ Spec, or the reverse - the reader needs to see both. Run each axis as a parallel
 
 ## What code-review does not do
 
-It doesn't hunt for bugs - that's `diagnose`. It doesn't refactor for you; it
-points, you decide.
+It isn't a bug hunt. Correctness is pinned down by the definition of done - typecheck,
+full suite, tests at the agreed seam - and a bug already observed goes to `diagnose`,
+which starts from a reproduction. A defect the diff makes obvious is still worth
+naming, under whichever axis it breaks. And it doesn't refactor for you; it points,
+you decide.

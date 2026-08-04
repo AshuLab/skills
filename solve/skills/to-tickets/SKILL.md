@@ -86,18 +86,23 @@ accepts.
 
 ## Publish the slices
 
-Publish each slice as a ticket, in **topological order** (blocker before blocked).
-The concrete operation is in `docs/agents/solve.md` -> **Tracker operations**
-(*publish a slice*); run it per slice for the repo's tracker. In local that's one
-file per slice at `docs/tickets/<feature>/NNN-slug.md` with a textual `Blocked by`
-line.
+In github, read the epic's inheritable props **before creating anything**
+(`gh issue view <epic> --json milestone,labels`): its milestone and its non-`solve:`
+labels. One read, carried onto every slice in the batch, so each one inherits the
+feature's properties.
 
-In github, first read the epic's inheritable props once
-(`gh issue view <epic> --json milestone,labels`) and carry them onto every slice -
-the epic's milestone and its non-`solve:` labels - so each slice inherits the
-feature's properties. Throttle the loop: creating issues too fast trips rate
+Then publish each slice as a ticket, in **topological order** (blocker before
+blocked). The concrete operation is in `docs/agents/solve.md` -> **Tracker
+operations** (*publish a slice*); run it per slice for the repo's tracker. In local
+that's one file per slice at `docs/tickets/<feature>/NNN-slug.md` with a textual
+`Blocked by` line. Throttle the github loop - creating issues too fast trips rate
 limiting.
+
+Every slice gets `solve:ticket` + `solve:refined` at publish - **blocked or not**.
+`refined` means the definition is complete, not that the slice is unblocked; blocking
+lives in the `blocked-by` edges, a separate signal. A blocked slice carries the same
+tags as any other.
 
 ## Next step
 
-`ship` - take each ready ticket to done: claim it, build it, close the loop.
+`ship` - take each startable ticket to done: claim it, build it, close the loop.

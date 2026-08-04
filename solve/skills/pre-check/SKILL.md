@@ -29,20 +29,25 @@ grilling. `pre-check` looks only at what `sharpen` couldn't:
 - (If it never went through `sharpen`, then check the fundamentals too - nobody
   else did.)
 
-**2. Operational prep.**
-- Set the right tags / labels.
-- Decide milestone membership, and set it.
-- Leave what the next step needs - context, links, the definition of done.
+**2. Operational prep.** What there is to prep depends on the repo's tracker mode
+(declared in `docs/agents/solve.md`; absent -> local):
+- **github** - set the right labels, and decide milestone membership. Discover what
+  the repo actually has before setting either (`gh label list`,
+  `gh api repos/{o}/{r}/milestones --jq '.[] | {title, due_on}'`) - never invent a
+  label or a milestone name.
+- **local** - there are no labels or milestones to set; the ticket file is the whole
+  surface.
+- Either mode - leave what the next step needs: context, links, the definition of done.
 
 If it no longer holds, kick it back with the reason - don't wave it through.
 
 ## Output
 
 Ready to advance:
-- a **spec** (the epic) -> on to `to-tickets`. No `solve:ready` - that label marks
-  a grabbable *slice*, and an epic isn't one (it'd pollute
-  `gh issue list --label solve:ready`); its `solve:epic` already says what it is.
-- a **ticket** (a slice) -> on to `ship`. In github mode make sure `solve:ready` is
+- a **spec** (the epic) -> on to `to-tickets`. No `solve:refined` - that label marks
+  a refined *slice*, and an epic isn't one (it'd pollute
+  `gh issue list --label solve:refined`); its `solve:epic` already says what it is.
+- a **ticket** (a slice) -> on to `ship`. In github mode make sure `solve:refined` is
   on it - `to-tickets` already sets it, so add it only for a handed-down ticket
   that arrived without it.
 
