@@ -25,14 +25,16 @@ brief's source when you write it up (see *Leave the brief*), which is what has
 **An artifact is raw material, not settled fact.** However it arrived - written down,
 filed by someone senior, sitting there for three months - it's an opening statement:
 usually a solution in disguise, often still vague. Grill it exactly as you'd grill a
-line the user typed a second ago; being written earns it no authority. That's also
-what separates this from `research`, which answers technical questions from primary
-sources - here you aren't verifying the artifact, you're interrogating it.
+line the user typed a second ago; being written earns it no authority. The better
+it's written, the sharper the trap: a filled-out issue hands you a to-do list - ACs,
+subtasks, its own open questions - and working that list feels like grilling while
+being the fullest surrender to its framing. Those questions are branches; ask whether
+the root holds before you close any of them.
 
 ## Reality check first
 
-Before grilling, a quick look: does this already exist? Check both places it
-could live -
+A 30-second gate, not an analysis: does this already exist? Two searches, one
+answer -
 - **the code** - a grep / search: is the feature already built, whole or in part?
 - **the docs** - specs, ADRs, notes (including this flow's own `docs/specs/` and
   `docs/adr/`): is the idea already written down, decided, or specced?
@@ -40,7 +42,9 @@ could live -
 Already there -> stop. Don't grill a solved problem; the real issue is
 discoverability, or a gap in the existing thing (grill *that*). Not there -> grill.
 
-A 30-second gate, not an analysis.
+Past those two searches you've left the gate. Reading the code to understand *how*
+something works is the grilling's business, not this one's - and if the reading
+already told you what to build, the grill never ran.
 
 ## Grill it, and keep the trail
 
@@ -79,3 +83,8 @@ sections you own: **Problem**, **Direction**, **Out of scope**, **Open questions
 record `Source: owner/repo#NNN` under the title so `to-spec` updates that issue
 instead of creating a new one. `to-spec` completes it into a PRD from there - no
 new interview.
+
+**Direction** is where the grilling shows or doesn't: it carries what the pruning
+left *and what it cut* - the alternatives that were on the table and why they lost.
+A Direction that restates the one the idea arrived with is the tell that nothing got
+grilled.

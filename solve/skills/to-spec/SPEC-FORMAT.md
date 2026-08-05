@@ -21,7 +21,8 @@ if it came from an existing issue - so `to-spec` updates that issue instead of
 creating a new epic.
 
 - **Problem** - who hurts and how we know.
-- **Direction** - the chosen shape of the solution, not the detail.
+- **Direction** - the chosen shape of the solution, not the detail; with the
+  alternatives that lost, and why.
 - **Out of scope** - what we are explicitly NOT doing.
 - **Open questions** - what's unresolved (candidates for `research` / prototype).
 

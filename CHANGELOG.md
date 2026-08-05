@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.4.1
+
+- `sharpen`: name the trap of a well-written source issue - its own ACs and
+  subtasks read like a to-do list that's easy to mistake for grilling; interrogate
+  the root before closing any of its branches. Also tightens the reality-check
+  gate's scope: once past the two searches, reading code to understand *how*
+  something works belongs to the grill, not the gate.
+- `sharpen`, `to-spec` (`SPEC-FORMAT.md`): the **Direction** section now records
+  the alternatives that lost and why, not just the chosen shape - a Direction that
+  just restates the idea as it arrived is the tell that nothing got grilled.
+
 ## solve 0.4.0
 
 - **New skill `pushback`** - the interrogation on its own, no artifact and no
