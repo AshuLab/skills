@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.4.0
+
+- **New skill `pushback`** - the interrogation on its own, no artifact and no
+  flow: relentless questioning that walks a tree of decisions outward from the
+  problem, one at a time, blocking `AskUserQuestion` so a matured answer never
+  gets crushed into a button.
+- `sharpen`: no longer owns the grilling mechanics - delegates them to
+  `pushback` and keeps the reality-check, the vocab trail and the written brief.
+- `ship`: reorganized around a "Draining an epic" section at the end (lifecycle
+  first, drain is the lifecycle on repeat); `code-review` called out as the
+  place to reach for it before closing the loop.
+- `research`, `prototype`, `tdd`, `vocab`, `diagnose`: updated to route through
+  `pushback` wherever they previously assumed `sharpen` was the only source of
+  questioning; `vocab` also now takes entries from `prototype` and `diagnose`.
+- `solve/README.md`: added a "Getting started" quick-start section.
+
 ## solve 0.3.0
 
 - **Breaking:** rename the `solve:ready` label to `solve:refined` - it marks a

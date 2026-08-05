@@ -17,6 +17,8 @@ to the skill.
 - Have a spec, split the work -> `to-tickets`
 - Have a startable ticket, take it to done -> `ship` (with `tdd` / `code-review` when
   they earn it)
+- Want the whole epic drained slice by slice, unattended -> `ship`, handed the epic
+  instead of a ticket
 
 ## While sharpening, if talk isn't enough
 
@@ -34,6 +36,8 @@ to the skill.
 
 ## Any time
 
+- Want the thinking stress-tested, nothing written -> `pushback` (that's `sharpen`'s
+  grill on its own, without the reality-check or the brief)
 - Pin down a term or record a hard decision -> `vocab`
 - Review a diff or a PR against standards + spec -> `code-review`
 - Drive a change test-first at a seam -> `tdd`
@@ -46,5 +50,6 @@ sharpen -> to-spec -> to-tickets -> ship   (reach for tdd / code-review)
 pre-check                     <- optional gate: recheck a spec/ticket still applies
 research | prototype          <- feed the thinking (into sharpen)
 diagnose                      <- on-ramp
+pushback                      <- the grill alone, no artifact (sharpen runs it)
 vocab                         <- shared vocabulary, invoked throughout
 ```

@@ -24,4 +24,6 @@ hard-wrapped to a fixed width.
 
 ## Where it goes
 
-Feeds `sharpen`: read the findings, then grill the idea against them.
+Feeds the questioning - `sharpen`, or `pushback` on its own: read the findings, then
+grill the idea against them. Either one can dispatch this mid-flight and keep asking
+whatever doesn't depend on the answer.

@@ -1,22 +1,33 @@
 ---
 name: sharpen
-description: Interrogate an idea, plan or design until it holds up - ruthlessly, one question at a time - leaving a paper trail (glossary and ADRs via vocab). First reality-checks that it doesn't already exist - in the code or the docs - then grills. The starting point can be a line of text, a conversation, or an existing artifact (a GitHub issue, a doc, a URL). It is the entry point of the idea->ship flow.
+disallowed-tools: AskUserQuestion
+description: Take a raw idea to a written brief - first reality-check that it isn't already built or already specced, then push back on it until the problem holds (the questioning itself is pushback), leaving the thinking behind as glossary entries, ADRs and a brief that to-spec consumes. The entry point of the idea->ship flow. Starts from a line of text, a conversation, or an existing artifact - a GitHub issue, a doc, a URL. For the grilling on its own, with nothing written afterwards, reach for pushback instead.
 ---
 
-# sharpen - grill the idea until it holds up
+# sharpen - take a raw idea to a written brief
 
-The first step of the flow. Beyond asking questions, its job is to leave a trail
-via `vocab` - glossary and ADRs - so the thinking outlives the session.
+The entry point of the flow, and the step whose output is a **brief**. The questioning
+itself belongs to `pushback`; what `sharpen` owns is everything around it - checking
+the idea isn't already built, holding the trail as the thinking moves, and leaving
+something on disk that `to-spec` can pick up.
 
 ## Starting point
 
-The idea can be a line of text, the conversation you're in, or an existing
-artifact - a GitHub issue (`gh issue view <n>`), a local file (`Read`), or a URL
-(`WebFetch`). If it's a GitHub issue, **claim it** so no one else starts the same one:
-`gh issue edit <n> --add-assignee @me`. Read it, then **grill it**: an artifact is
-raw material, usually a solution in disguise or still vague - never settled. (This isn't the `research` skill - that answers technical
-questions from primary sources. Here the artifact is just the opening statement,
-not settled fact.)
+**Where it comes from.** A line of text, the conversation you're already having, or
+an existing artifact - a GitHub issue (`gh issue view <n>`), a local file (`Read`), a
+URL (`WebFetch`). Read it in full before you ask anything.
+
+**A GitHub issue gets claimed first** - `gh issue edit <n> --add-assignee @me` - so
+nobody picks up the same one while you're still grilling it. Note that issue as the
+brief's source when you write it up (see *Leave the brief*), which is what has
+`to-spec` mature it into the epic instead of opening a second one.
+
+**An artifact is raw material, not settled fact.** However it arrived - written down,
+filed by someone senior, sitting there for three months - it's an opening statement:
+usually a solution in disguise, often still vague. Grill it exactly as you'd grill a
+line the user typed a second ago; being written earns it no authority. That's also
+what separates this from `research`, which answers technical questions from primary
+sources - here you aren't verifying the artifact, you're interrogating it.
 
 ## Reality check first
 
@@ -31,54 +42,33 @@ discoverability, or a gap in the existing thing (grill *that*). Not there -> gri
 
 A 30-second gate, not an analysis.
 
-## How to grill
+## Grill it, and keep the trail
 
-- **One question at a time**, each coming out of the last answer - a thread, not a
-  form. A good answer can bend the thread: it may reshape the next question or make
-  the ones you had queued irrelevant. Follow the new direction, don't run a script.
-- **Watch for contradictions.** As the grilling moves, a new answer can clash with
-  an earlier one - surface it ("earlier you said X, now Y - which holds?") and
-  reconcile it before it reaches the brief. The contradiction is signal: the
-  thinking shifted, or the problem was never clear.
-- **Chase the real problem, not the proposed solution.** People bring a solution in
-  disguise; separate them: what actually hurts? for whom? how do we know?
-- **Aim at the cheapest thing that solves it.** Once the real problem is clear, the
-  Direction points at the smallest change that resolves it - doing nothing, or reusing what
-  the repo already has, before anything new gets built.
-- **Look facts up, don't ask them.** If it lives in the filesystem or tools, go find
-  it; only *decisions* are the user's - put those to them and wait.
-- **Don't accept vague answers** - pin the fuzzy term down (-> glossary). When a
-  boundary is fuzzy, probe with a **concrete scenario**: invent an edge case that
-  forces precision about where the concept starts and ends.
-- **No `AskUserQuestion` in the grill** - a closed button can't hold "I'd change
-  the approach" or "I don't follow". Every question in prose. (It's for the
-  tactical, closed calls in `setup`/`to-spec`/`to-tickets`, not here.)
-- **Say where you lean, and why.** On a design call, offer your read as a
-  hypothesis to attack ("I'd derive 'liquidated' from `receipt_id` rather than a
-  separate `status` field - what breaks that?"), not a verdict to nod at - honest
-  and faster, as long as it opens the question rather than closing it. On
-  problem/domain questions you just ask and listen; the lean is for design calls.
+Invoke `pushback`. The mechanics are all there - the tree of decisions walked outward
+from the problem, the frontier, one question at a time, the facts looked up instead of
+asked. Two things are `sharpen`'s to enforce on top of it.
 
-Worth asking: what if we do nothing? the smallest case that still delivers value?
-what assumption, if false, sinks it? the obvious alternative, and why not? what's
-hardest to reverse (ADR candidate)?
+**The root is this feature's problem.** However the idea arrived - an issue, a doc, a
+line of text - the root of the tree is what actually hurts and for whom, never the
+solution it came dressed as. The Direction you end up writing is whatever the pruning
+left: the smallest change that resolves that problem.
 
-## Leave a trail with vocab
-
-During the grilling, not after: every clarified term -> the **glossary**; every
-decision that meets `vocab`'s three-part test (hard to reverse, surprising,
-a real trade-off) -> an **ADR**. Don't ADR every call - most aren't.
+**The trail is part of the job, not a bonus.** During the questioning, not after: every
+clarified term -> the **glossary**; every decision that meets `vocab`'s three-part test
+(hard to reverse, surprising, a real trade-off) -> an **ADR**. Don't ADR every call -
+most aren't. The brief is a summary; the glossary and the ADRs are the record, so
+letting this slide loses the part that outlives the session.
 
 ## When you stop
 
-When the problem is clear, the scope has an edge, risky assumptions are named and
-hard decisions recorded - not when "we've talked enough". If a design question
-can't be settled on paper, that's a `prototype`, not more talk.
+When the problem is clear, the scope has an edge, risky assumptions are named, hard
+decisions are recorded - **and it's on disk**. The questions running out isn't the same
+as `sharpen` being done; the brief is.
 
-The **Open questions** you leave should be only what couldn't be settled on
-paper - the few that genuinely need `research` or a `prototype`. If one more question would settle it, settle it
-now; a brief that ends in a pile of open questions means you stopped grilling
-early.
+The **Open questions** you leave are only what the conversation couldn't settle - the
+few that genuinely need `research` or a `prototype`. If one more question would settle
+it, settle it now; a brief ending in a pile of open questions means you stopped
+grilling early.
 
 ## Leave the brief
 

@@ -9,6 +9,29 @@ coding itself, because the model already does that well. It gives you structure
 to *think* (sharpen -> to-spec -> to-tickets) and optional discipline tools to
 *execute* (tdd, code-review).
 
+## Getting started
+
+```
+/plugin marketplace add AshuLab/skills
+/plugin install solve@ashulab
+```
+
+Restart the session so the skills load, then:
+
+1. **`/solve:setup`** - only if you want a GitHub tracker. Skip it and everything stays
+   as markdown under `docs/`, no config, nothing to maintain.
+2. **`/solve:sharpen <your idea>`** - it checks the thing isn't already built, then
+   grills you about it, and leaves a brief at `docs/specs/<feature>.md`.
+3. **`/solve:to-spec`** - turns that brief into a PRD, deciding where each story gets
+   tested. In GitHub mode this is what publishes the epic issue.
+4. **`/solve:to-tickets`** - cuts the PRD into vertical slices, each with a definition
+   of done and its blocking edges.
+5. **`/solve:ship <ticket>`** - claims it, builds it, closes the loop. Hand it the
+   **epic** instead and it drains every slice in dependency order, unattended.
+
+Not sure which step you're on? **`/solve:guide`**. Just want to be grilled about
+something, with nothing written down afterwards? **`/solve:pushback`**.
+
 ## The map
 
 ```
@@ -19,8 +42,10 @@ Setup (once per repo, optional)
 
 Main flow | idea -> shipped
   sharpen -> to-spec -> to-tickets -> ship
-    | sharpen - reality-check it doesn't already exist, then grill till it holds
-    | to-spec - formalize into a PRD, a product requirements document (file or epic issue)
+    | sharpen - reality-check it doesn't already exist, then grill (via `pushback`)
+      till it holds
+    | to-spec - formalize into a PRD, a product requirements document (file or epic
+      issue) - no new interview; its real call is where each story gets tested
     | to-tickets - vertical slices + blocking edges + a definition of done
     | ship - carry a ticket to done (claim, build, close the loop), or drain a whole epic
   -> build the middle freely, or hand it to a specialized skill; reach for
@@ -31,6 +56,7 @@ Main flow | idea -> shipped
     sets tags/milestone. Skip it when you just sharpened and are building now.
 
 Cross-cutting | invoke anytime
+  | pushback - the grill on its own, no artifact and no flow - `sharpen` runs it
   | vocab - domain glossary + architecture decision records (ADRs)
   | tdd - red -> green, seams first; optional, never mandatory
   | code-review - two axes: standards + spec
@@ -46,7 +72,8 @@ On-ramps | you don't always start from a new idea
 ## The main flow, in one line
 
 You grill the idea (`sharpen`) until it survives the critique -> you formalize it
-into a PRD (`to-spec`) -> you break it into vertical, agent-ready tickets
+into a PRD and pin down where each story gets tested (`to-spec`, which never
+re-interviews you) -> you break it into vertical, agent-ready tickets
 (`to-tickets`) -> you carry each ticket to done (`ship`): claim it, build the
 middle freely - the model codes well, or hand it to a specialized skill - and
 close the loop with a PR. Reach for `tdd` or `code-review` when they earn it.
@@ -54,12 +81,20 @@ close the loop with a PR. Reach for `tdd` or `code-review` when they earn it.
 Each boundary is a **guard**: it forces you to close the previous phase before
 moving on. That is what stops you from coding a half-baked idea.
 
+The `sharpen` / `to-spec` boundary is the one that earns its keep twice over.
+`to-spec` is forbidden from interviewing you - so if a question comes up while it
+writes, the hole is in the brief and it shows instead of getting patched over mid-draft.
+And it's the last stop before the work becomes **visible to other people**: `to-spec`
+is what publishes the epic issue, so the brief gets a human read before anything lands
+in your team's repo. One skill doing both would have created that issue on the way out
+of the grilling.
+
 ## Design principles (non-negotiable - otherwise it's a collection, not a system)
 
 - **One responsibility per skill.** If `to-spec` starts creating tickets, the guard breaks.
 - **The value is upstream.** The set structures *thinking*, not coding. There is no build orchestrator - a good ticket is the instruction, and the model takes it from there.
 - **Less, on purpose.** Reuse before building, delete before adding, three lines before an abstraction. Every phase biases toward *not* writing code - `sharpen` chases the smallest fix, `code-review` asks "could this be less?" - never toward not caring: safety and correctness aren't negotiable.
-- **Composition over monolith.** `sharpen` doesn't invent ADRs; it calls `vocab`. Skills compose instead of duplicating.
+- **Composition over monolith.** `sharpen` doesn't invent ADRs; it calls `vocab`. It doesn't own the grill either; it calls `pushback` and adds the frame - the reality-check, the trail, the brief. Skills compose instead of duplicating.
 - **Optional by design.** `pre-check`, `tdd` and `code-review` are invoked when they earn it, never forced as pipeline steps.
 - **State lives in artifacts, not in the conversation.** Glossary, ADRs, specs and tickets are files (or issues). That's why the flow survives across sessions.
 - **Primary sources.** Decisions rest on official docs, source code and specs - not on memory.
@@ -72,9 +107,12 @@ The set assumes Claude Code and uses its native tools - a deliberate coupling
 
 - **Questions, by type.** Closed, tactical choices (2-4 discrete options) use
   `AskUserQuestion`, so the person selects instead of typing "the B" - in `setup`,
-  `to-spec` and `to-tickets`. **`sharpen` is the exception: it grills in prose**, one question
-  at a time (and offers its own lean as a hypothesis to attack), so a matured
-  answer like "I'd change the approach" isn't crushed into a button.
+  `to-spec` and `to-tickets`. **The questioning is the exception - `pushback` asks in
+  prose**, usually one question at a time, in a numbered round when several are
+  genuinely independent, offering its own lean as a hypothesis to attack, so a matured
+  answer like "I'd change the approach" isn't crushed into a button. Both `pushback`
+  and `sharpen` block the tool in their frontmatter (`disallowed-tools`), so the rule
+  doesn't rest on prose alone.
 - **Subagents.** `research` runs as a background `Agent`; `code-review` runs its two
   axes as parallel `Agent`s so they don't contaminate each other.
 - **Primary sources.** `research` reads via `WebFetch` / `WebSearch`.
@@ -107,8 +145,10 @@ itself is declared in `docs/agents/solve.md` - there's no separate config file.
 - `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
 
 Either mode:
-- `code-review` and `diagnose` don't persist a file - their output is feedback, not an
-  artifact. A diagnosis that surfaces a design gap becomes an ADR or a ticket.
+- `pushback`, `code-review` and `diagnose` don't persist a file - their output is
+  thinking or feedback, not an artifact. A diagnosis that surfaces a design gap becomes
+  an ADR or a ticket; a `pushback` session that pinned a term or settled a hard call
+  hands that to `vocab`.
 - **Agent scratch** - repro scripts, intermediate output, HTML reports, throwaway
   drafts - goes to `$TMPDIR`, never the repo. A repro script worth keeping becomes
   a regression test, not a loose file.
@@ -120,6 +160,7 @@ Either mode:
 | setup       | infra         | you (once)              |
 | vocab       | cross-cutting | sharpen / to-spec / you |
 | sharpen     | main          | you                     |
+| pushback    | cross-cutting | you / sharpen           |
 | to-spec     | main          | you                     |
 | to-tickets  | main          | you                     |
 | ship        | main          | you                     |
@@ -131,8 +172,10 @@ Either mode:
 | diagnose    | on-ramp       | you                     |
 | guide       | router        | you                     |
 
-All 13 skills drafted. The thinking chain (sharpen -> to-spec -> to-tickets) has
-been dogfooded against real repos in both modes - a full local run, plus `setup`
-and sharpen -> to-spec against a GitHub repo - with refinements folded back in.
-Still unproven: the execution skills (ship, tdd, code-review - they only exercise
-with real code), plus diagnose, prototype, pre-check and guide.
+All 14 skills drafted. The thinking chain (sharpen -> to-spec -> to-tickets) was
+dogfooded against real repos in both modes - a full local run, plus `setup` and
+sharpen -> to-spec against a GitHub repo - with the refinements folded back in. One
+caveat on that: `sharpen` has been restructured since, with the grilling mechanics
+moved out into `pushback`, so that pair is newer than the run that validated it.
+Still unproven: the execution skills (ship, tdd, code-review - they only exercise with
+real code), plus pushback, diagnose, prototype, pre-check and guide.

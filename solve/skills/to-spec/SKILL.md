@@ -1,9 +1,9 @@
 ---
 name: to-spec
-description: Consume the brief that sharpen left into a final PRD - no new interview, just synthesis. Use it once an idea has been grilled with sharpen and you want to formalize it before breaking it into tickets. Produces a clean local spec, or publishes an epic issue when the tracker is GitHub.
+description: Turn the brief that sharpen left into a final PRD, and decide where each user story gets tested - the call that both to-tickets and tdd depend on. No new interview, just synthesis; if there's no brief yet, sharpen comes first. Produces a clean local spec, or publishes it as an epic issue when the tracker is GitHub.
 ---
 
-# to-spec - consume the brief into a final PRD
+# to-spec - the brief becomes a PRD, with the seams decided
 
 `sharpen` left a brief at `docs/specs/<feature>.md` (`Status: sharpening`) with
 Problem, Direction, Out of scope and Open questions. Your job is to **transform**
@@ -28,8 +28,9 @@ same interface its callers use - without modifying the module itself. Before
 writing, look at the repo and propose where tests go per user story: prefer
 existing seams, and pick the broadest one that still isolates the story - the
 interface covering the most behavior behind the smallest surface, so the fewest
-tests still pin it down. "This story ships without tests" is a valid, explicit choice, not a gap.
-Record the call: `to-tickets` and `tdd` rely on it.
+tests still pin it down. "This story ships without tests" is a valid, explicit
+choice, not a gap. Record the call either way - `to-tickets` and `tdd` both rely on
+it.
 
 ## Where the spec lives
 

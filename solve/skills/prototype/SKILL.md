@@ -5,8 +5,9 @@ description: Build a throwaway thing to settle a design question that talk can't
 
 # prototype - a throwaway thing to settle a design question
 
-Reach for this when grilling (`sharpen`) hits a design question that talk can't
-settle. Build the smallest thing that answers it, then throw it away.
+Reach for this when the questioning - `sharpen`, or `pushback` on its own - hits a
+design question that talk can't settle. Build the smallest thing that answers it, then
+throw it away.
 
 ## Build whatever answers the question fastest
 
@@ -23,5 +24,5 @@ settle. Build the smallest thing that answers it, then throw it away.
 
 ## The output is a decision, not the thing
 
-When the question is answered, the answer goes back to `sharpen` - into the brief,
-or an ADR via `vocab` if it's hard-to-reverse.
+When the question is answered, the answer goes back to whoever asked - into
+`sharpen`'s brief, or an ADR via `vocab` if it's hard-to-reverse.

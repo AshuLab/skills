@@ -41,3 +41,7 @@ and stays green.
 Why didn't an existing test catch this? If the answer is "there was no seam to
 test it" - no place in the code to isolate and exercise the behavior - that's a
 design gap worth fixing, not just a bug to close.
+
+A gap doesn't survive as a note in a chat: give it a home. Hard-to-reverse and worth
+explaining later -> an ADR via `vocab`. Work someone has to do -> a ticket. Neither
+-> say so and drop it, rather than leaving it half-recorded.

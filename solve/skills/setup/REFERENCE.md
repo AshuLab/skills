@@ -58,11 +58,16 @@ for the mode this repo runs in. The template below is in **github** mode; for a
 > This repo runs in **local** mode - epics and tickets are markdown files, no board.
 >
 > ### Tracker operations
-> - publish a slice -> write `docs/tickets/<feature>/NNN-slug.md`; blockers as a textual `Blocked by: NNN` line
+> - publish a slice -> write `docs/tickets/<feature>/NNN-slug.md`; blockers as a
+>   textual `Blocked by: NNN` line
 > - claim -> just open the ticket file
-> - close the loop -> tick every box in the ticket's **Definition of done** to `- [x]`, then commit referencing the ticket
-> - a slice is done -> every box in its Definition of done is `[x]`. There is no board, so those boxes are the only completion signal - an unticked ticket reads as not done, however finished the code is
-> - find the next startable slice -> the lowest-numbered ticket that isn't done and whose `Blocked by` slices all are
+> - close the loop -> tick every box in the ticket's **Definition of done** to
+>   `- [x]`, then commit referencing the ticket
+> - a slice is done -> every box in its Definition of done is `[x]`. There is no
+>   board, so those boxes are the only completion signal - an unticked ticket reads
+>   as not done, however finished the code is
+> - find the next startable slice -> the lowest-numbered ticket that isn't done and
+>   whose `Blocked by` slices all are
 
 ```markdown
 # solve skills - how this repo uses them
@@ -71,10 +76,14 @@ This repo uses the **solve** skill set to take an idea from raw to shipped. Each
 step is a skill; invoke it as `/solve:<name>`.
 
 ## The flow
+New work enters at `/solve:sharpen` - even when it arrives already written, as an issue
+or a doc. Each step consumes what the previous one left, so they run in order.
+
 - `/solve:sharpen` - grill a raw idea, doc or issue until the problem holds; leaves a brief
-- `/solve:to-spec` - turn the brief into a PRD
+- `/solve:to-spec` - turn the brief into a PRD, deciding where each story gets tested
 - `/solve:to-tickets` - break the PRD into vertical, agent-ready slices
-- `/solve:ship` - take a startable ticket to done: claim, build, close the loop (a PR)
+- `/solve:ship` - take a startable ticket to done: claim, build, close the loop (a PR).
+  Handed the epic instead, it drains every slice in dependency order
 
 Reach for `/solve:tdd` and `/solve:code-review` when they earn it, and
 `/solve:guide` if you're unsure which skill fits.
@@ -83,6 +92,7 @@ Reach for `/solve:tdd` and `/solve:code-review` when they earn it, and
 - `/solve:diagnose` - a bug or performance regression you don't understand
 - `/solve:research`, `/solve:prototype` - gather evidence to feed `sharpen`
 - `/solve:pre-check` - revalidate a spec or ticket that sat a while
+- `/solve:pushback` - just the grilling, on anything, with nothing written afterwards
 - `/solve:vocab` - the glossary and ADRs (shared vocabulary)
 
 ## Where things live

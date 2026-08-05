@@ -20,8 +20,9 @@ Policing the refactor isn't this loop's job - that belongs to `code-review`.
 ## Seams first
 
 Don't write a test until you've agreed *where* it goes. The seam comes from
-`to-spec`; if it didn't, agree it with the user before the first test. Test at the
-highest seam that still isolates the behavior.
+`to-spec`; if it didn't, agree it with the user before the first test. Same rule
+either way - the **broadest** seam that still isolates the behavior, the interface
+covering the most behavior behind the smallest surface.
 
 ## What a good test is
 
