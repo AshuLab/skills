@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## follow 0.1.0
+
+- **New plugin.** Skills that work on the conversation itself rather than the
+  work: `plain` re-says the assistant's last message in plainer words, `zoom-out`
+  shows the shape of the whole conversation for the person who's been deep in it,
+  `recap` packages the conversation for the next agent to pick up cold (chat
+  output plus a copy in the OS temp dir, secrets stripped).
+- Added to the root marketplace and `README.md` alongside `solve`.
+
 ## solve 0.4.1
 
 - `sharpen`: name the trap of a well-written source issue - its own ACs and

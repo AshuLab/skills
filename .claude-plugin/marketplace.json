@@ -14,6 +14,13 @@
       "description": "Skills for the app development cycle — idea to shipped.",
       "category": "engineering",
       "keywords": ["engineering", "tdd", "code-review", "spec", "tickets"]
+    },
+    {
+      "name": "follow",
+      "source": "./follow",
+      "description": "Skills that work on the conversation itself, so someone can follow it.",
+      "category": "communication",
+      "keywords": ["conversation", "recap", "summary", "handoff", "communication"]
     }
   ]
 }
