@@ -1,8 +1,8 @@
 {
   "name": "follow",
   "displayName": "follow",
-  "description": "Skills that work on the conversation itself, so someone can follow it - recap hands it to another agent cold, plain re-says the last message lower, zoom-out shows the shape of the whole thing.",
-  "version": "0.1.0",
+  "description": "Skills that work on text you're already looking at, so someone can follow it - recap hands the conversation to another agent cold, plain re-says the last message lower, zoom-out shows the shape of the whole thing, brief distills a long external doc or issue down to the ask.",
+  "version": "0.2.0",
   "author": {
     "name": "Diego Ghersi",
     "email": "ghersidl@gmail.com"
@@ -12,6 +12,7 @@
   "skills": [
     "./skills/recap",
     "./skills/plain",
-    "./skills/zoom-out"
+    "./skills/zoom-out",
+    "./skills/brief"
   ]
 }

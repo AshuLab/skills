@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## follow 0.2.0
+
+- **New skill `brief`** - reads a long external doc, GitHub issue, URL or pasted
+  wall of text in full, then hands back the ask underneath it: what's wanted, why,
+  and how, with the padding cut and the vague parts left vague rather than
+  invented. Same instinct as `plain`, pointed outward at text you're pointed at
+  instead of the assistant's own last message.
+- Widened the plugin's framing from "the conversation itself" to "text you're
+  already looking at" to fit `brief`'s external-document scope; updated
+  `plugin.json` description, `follow/README.md` (intro, skill table, principles)
+  and the root `README.md` accordingly.
+
 ## follow 0.1.0
 
 - **New plugin.** Skills that work on the conversation itself rather than the
