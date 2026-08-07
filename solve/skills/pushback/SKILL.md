@@ -1,7 +1,7 @@
 ---
 name: pushback
 disallowed-tools: AskUserQuestion
-description: Push back on an idea, plan or decision until it holds up - relentlessly, one question at a time, walking the tree of decisions outward from the problem. Leaves no artifact and starts no flow - reach for it when you just want the thinking stress-tested. To carry an idea all the way to a spec, use sharpen, which runs this and then writes the brief.
+description: Push back on an idea, plan or decision until it holds up - relentlessly, one round at a time, walking the tree of decisions outward from the problem. Leaves no artifact and starts no flow - reach for it when you just want the thinking stress-tested. To carry an idea all the way to a spec, use sharpen, which runs this and then writes the brief.
 ---
 
 # pushback - resist the idea until it holds up
@@ -27,11 +27,13 @@ the method falls out of that:
 - **Prune before expanding.** With the problem clear, the next question is never "how
   do we build it?" but "does this need building at all?" - doing nothing, or reusing
   what already exists, cuts whole branches before you cost them out.
-- **The frontier is usually one node wide**, which is why you ask one question at a
-  time - each answer is what opens the next. When it genuinely widens, several open
-  decisions that don't touch each other, ask them in one numbered round so the reply
-  comes back as "1 yes, 2 the second one". Strict test - if one answer could reshape
-  another, they were never independent.
+- **Ask the frontier in rounds.** The frontier is every decision whose prerequisites
+  are already settled - what you can ask now without guessing at answers you haven't
+  heard. Ask that whole frontier in one round, then wait before recomputing it. Early
+  on it's usually one node wide - each answer opens the next, so it comes out one
+  question at a time; when it genuinely widens, several decisions that don't touch, they
+  go in one numbered round. Strict test - if one answer could reshape another they were
+  never independent, and it belongs to a later round, not this one.
 - **An unsettled prerequisite blocks its subtree, not the walk.** A fact you're still
   fetching, or a term too vague to reason about, holds up only what hangs off it - keep
   working the rest of the frontier meanwhile.
@@ -51,8 +53,19 @@ the method falls out of that:
   derive 'liquidated' from `receipt_id` rather than a separate `status` field - what
   breaks that?"), not a verdict to nod at. Problem and domain nodes work the other
   way: the answer lives with the user, so there you ask and listen.
-- **No `AskUserQuestion`** - a closed button can't hold "I'd change the approach".
-  Every question in prose. The frontmatter blocks it; the rule holds regardless.
+- **Format so an answer is cheap.** Number each question and lead with the answer you'd
+  give, so the reply comes back as "1 yes, 2 the second one":
+  > **[Q1] <title>**: <the question, choices and all>
+  > → <the answer you lean toward>
+
+  The `→` is a hypothesis to attack, not a default to nod at - and only where you
+  actually lean. On problem and domain nodes the answer lives with the user: there you
+  ask and listen, no `→`.
+- **No `AskUserQuestion`** - a closed button can't hold "I'd change the approach". The
+  `[Q]/→` round is the replacement: same structure, same easy default to accept, but
+  open prose the user can push back on. The `disallowed-tools` frontmatter only covers
+  the first turn - it clears on the next message - so the rule rests on the format, not
+  on it.
 
 ## When you stop
 

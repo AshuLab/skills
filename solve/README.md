@@ -110,9 +110,10 @@ The set assumes Claude Code and uses its native tools - a deliberate coupling
   `to-spec` and `to-tickets`. **The questioning is the exception - `pushback` asks in
   prose**, usually one question at a time, in a numbered round when several are
   genuinely independent, offering its own lean as a hypothesis to attack, so a matured
-  answer like "I'd change the approach" isn't crushed into a button. Both `pushback`
-  and `sharpen` block the tool in their frontmatter (`disallowed-tools`), so the rule
-  doesn't rest on prose alone.
+  answer like "I'd change the approach" isn't crushed into a button. It carries a
+  button's structure in prose with a numbered `[Q]/→` round - each question with the
+  lean it'd take. The `disallowed-tools` frontmatter only covers the first turn (it
+  clears on the next message), so the format is what holds the rule, not the flag.
 - **Subagents.** `research` runs as a background `Agent`; `code-review` runs its two
   axes as parallel `Agent`s so they don't contaminate each other.
 - **Primary sources.** `research` reads via `WebFetch` / `WebSearch`.

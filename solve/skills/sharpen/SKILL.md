@@ -49,7 +49,7 @@ already told you what to build, the grill never ran.
 ## Grill it, and keep the trail
 
 Invoke `pushback`. The mechanics are all there - the tree of decisions walked outward
-from the problem, the frontier, one question at a time, the facts looked up instead of
+from the problem, the frontier asked in rounds, the facts looked up instead of
 asked. Two things are `sharpen`'s to enforce on top of it.
 
 **The root is this feature's problem.** However the idea arrived - an issue, a doc, a

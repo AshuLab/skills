@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.4.2
+
+- `pushback`: replaced "one question at a time" with an explicit **rounds** model -
+  ask the whole frontier (every decision whose prerequisites are settled) in one
+  round, then wait before recomputing it; early on that's usually one question,
+  widening into a numbered round only when several are genuinely independent.
+- `pushback`: questions now use a fixed `[Q1] <title>: ...` / `→ <lean>` format -
+  same easy-to-answer structure as `AskUserQuestion`, in open prose the user can
+  push back on. Also corrects a real gap: `disallowed-tools` only blocks the tool
+  on the first turn and clears on the next message, so the no-`AskUserQuestion`
+  rule now rests on the format itself, not on the frontmatter holding forever.
+- `sharpen`, `solve/README.md`: updated to match the rounds model and the
+  corrected `disallowed-tools` scope.
+
 ## follow 0.2.1
 
 - Reframed the plugin from "text you're already looking at" to "make something
