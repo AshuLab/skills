@@ -1,8 +1,8 @@
 {
   "name": "follow",
   "displayName": "follow",
-  "description": "Skills that work on text you're already looking at, so someone can follow it - recap hands the conversation to another agent cold, plain re-says the last message lower, zoom-out shows the shape of the whole thing, brief distills a long external doc or issue down to the ask.",
-  "version": "0.2.0",
+  "description": "Skills that make something legible rather than build it - plain re-says the last message lower, brief cuts a long text down to what it wants, zoom-out shows the shape of the whole conversation, recap hands it to another agent cold.",
+  "version": "0.2.1",
   "author": {
     "name": "Diego Ghersi",
     "email": "ghersidl@gmail.com"

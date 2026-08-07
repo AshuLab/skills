@@ -1,9 +1,8 @@
 # follow
 
-Skills that work on **text you're already looking at** - the conversation itself, or
-something long you've been pointed at - rather than on the work. They differ by reach
-and by reader - one message, the whole conversation, or an external document; you or
-the agent that comes after you. Nothing here touches your repo.
+Skills that **make something legible** rather than build it - the last message, the
+whole conversation, or a long text someone handed you. They differ by what they work
+on and who reads the result. Nothing here touches your repo.
 
 ## Install
 
@@ -14,12 +13,12 @@ the agent that comes after you. Nothing here touches your repo.
 
 ## The skills
 
-| Skill | Reach | Reader | Reach for it when |
+| Skill | Works on | Reader | Reach for it when |
 |---|---|---|---|
 | **`/follow:plain`** | The last message | You | An answer came out too technical or too dense and didn't land. |
+| **`/follow:brief`** | A long text you're handed | You | A doc, issue or URL is long or LLM-bloated and you need what it actually wants. |
 | **`/follow:zoom-out`** | The whole conversation | You | You've been deep in the detail and need the shape of it to decide how to go on. |
 | **`/follow:recap`** | The whole conversation | The next agent | You're stopping and something else continues - a new session, another machine, a different tool. |
-| **`/follow:brief`** | An external doc, issue, URL or pasted text | You | You're pointed at something long and need what it actually wants, not a tour of it. |
 
 ## Why they aren't the built-ins
 
@@ -32,15 +31,12 @@ decisions and the paths already ruled out, not a narration of what happened firs
 thing with more words. It forces the opposite: shorter than the original, and a
 different altitude rather than a bigger version of the same one.
 
-`brief` is the same instinct pointed outward: a long doc or issue gets read in full,
-then handed back as the ask underneath it - not a shorter tour of every section.
-
 ## Principles
 
 - **The user is the reader, or another agent is.** Never both at once - the two
   audiences want opposite things, and a text aimed at both serves neither.
-- **Shorter or it failed.** Every skill here is judged against the length of what it
-  replaces.
+- **Shorter or it failed.** `plain`, `brief` and `zoom-out` come out shorter than
+  what they replace, or they didn't work.
 - **No artifacts by default.** `recap` writes a file only if you hand it a path.
 - **No closed questions.** Someone who is lost can't pick from a list of things they
   don't understand.

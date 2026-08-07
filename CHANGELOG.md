@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## follow 0.2.1
+
+- Reframed the plugin from "text you're already looking at" to "make something
+  legible rather than build it" - tighter, and it's what the four skills actually
+  have in common. Updated `plugin.json` description, `follow/README.md` (intro,
+  skill table, "Why they aren't the built-ins") and the root `README.md`.
+- `follow/README.md`: **"Shorter or it failed"** now names `plain`, `brief` and
+  `zoom-out` specifically - `recap` is judged on completeness for a cold reader,
+  not brevity, so it doesn't belong under that principle.
+
 ## follow 0.2.0
 
 - **New skill `brief`** - reads a long external doc, GitHub issue, URL or pasted
