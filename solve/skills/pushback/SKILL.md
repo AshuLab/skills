@@ -49,18 +49,16 @@ the method falls out of that:
   sources) and keep asking what doesn't depend on it.
 - **Pin vague terms down.** When a boundary won't hold still, probe with a **concrete
   scenario** - an edge case that forces the concept's edges into the open.
-- **Say where you lean on design nodes** - your read as a hypothesis to attack ("I'd
-  derive 'liquidated' from `receipt_id` rather than a separate `status` field - what
-  breaks that?"), not a verdict to nod at. Problem and domain nodes work the other
-  way: the answer lives with the user, so there you ask and listen.
-- **Format so an answer is cheap.** Number each question and lead with the answer you'd
-  give, so the reply comes back as "1 yes, 2 the second one":
+- **Say where you lean, and make the answer cheap.** On design nodes give your read as
+  a hypothesis to attack ("I'd derive 'liquidated' from `receipt_id` rather than a
+  separate `status` field - what breaks that?"), not a verdict to nod at. On problem and
+  domain nodes the answer lives with the user: there you ask and listen, no lean. When a
+  round carries several questions, number them and lead each with the lean you'd take, so
+  the reply comes back as "1 yes, 2 the second one":
   > **[Q1] <title>**: <the question, choices and all>
-  > → <the answer you lean toward>
+  > → <the lean you'd take>
 
-  The `→` is a hypothesis to attack, not a default to nod at - and only where you
-  actually lean. On problem and domain nodes the answer lives with the user: there you
-  ask and listen, no `→`.
+  A single question needs none of that scaffolding - ask it in prose with your lean inline.
 - **No `AskUserQuestion`** - a closed button can't hold "I'd change the approach". The
   `[Q]/→` round is the replacement: same structure, same easy default to accept, but
   open prose the user can push back on. The `disallowed-tools` frontmatter only covers

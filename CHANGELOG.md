@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.4.3
+
+- `pushback`: the `[Q1] <title>` / `→ <lean>` numbered format now applies only
+  when a round carries several questions; a single question is asked in plain
+  prose with the lean inline, no scaffolding.
+
 ## solve 0.4.2
 
 - `pushback`: replaced "one question at a time" with an explicit **rounds** model -
