@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.5.1
+
+- `solve/README.md`: caught up with two undocumented changes - `pushback`'s
+  rounds model (single question in prose vs. a numbered `[Q1]/→` round) and
+  `ship`'s branching model (epic branch, stacking, merge-only, one integration
+  PR at the end).
+
 ## solve 0.5.0
 
 - **`ship` now owns a fixed branching model**, in both tracker modes. One

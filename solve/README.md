@@ -108,12 +108,12 @@ The set assumes Claude Code and uses its native tools - a deliberate coupling
 - **Questions, by type.** Closed, tactical choices (2-4 discrete options) use
   `AskUserQuestion`, so the person selects instead of typing "the B" - in `setup`,
   `to-spec` and `to-tickets`. **The questioning is the exception - `pushback` asks in
-  prose**, usually one question at a time, in a numbered round when several are
-  genuinely independent, offering its own lean as a hypothesis to attack, so a matured
-  answer like "I'd change the approach" isn't crushed into a button. It carries a
-  button's structure in prose with a numbered `[Q]/→` round - each question with the
-  lean it'd take. The `disallowed-tools` frontmatter only covers the first turn (it
-  clears on the next message), so the format is what holds the rule, not the flag.
+  prose**: one question at a time while the frontier is narrow, or a numbered `[Q1]/→`
+  round when several decisions are genuinely independent - each leading with the lean
+  it'd take, a hypothesis to attack. That way a matured answer like "I'd change the
+  approach" isn't crushed into a button. The `disallowed-tools` frontmatter only covers
+  the first turn (it clears on the next message), so the format is what holds the rule,
+  not the flag.
 - **Subagents.** `research` runs as a background `Agent`; `code-review` runs its two
   axes as parallel `Agent`s so they don't contaminate each other.
 - **Primary sources.** `research` reads via `WebFetch` / `WebSearch`.
@@ -143,6 +143,10 @@ itself is declared in `docs/agents/solve.md` - there's no separate config file.
 - `to-tickets` publishes each slice as a sub-issue of the epic (`solve:ticket` +
   `solve:refined`), with real `blocked-by` dependencies - native GitHub Issues
   features via `gh`, no Projects v2 needed.
+- `ship` integrates each slice into the feature's **epic branch** - off that branch, or
+  off its blocker when it has one (a stack) - **merge-only** (never squash or rebase),
+  then opens one integration PR to the destination at the end. Bases and names follow
+  the repo's convention, captured by `setup`.
 - `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
 
 Either mode:
