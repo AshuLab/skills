@@ -62,8 +62,9 @@ By the repo's tracker mode (declared in `docs/agents/solve.md`; absent -> local)
   - **Labels** - `solve:epic` is always on. List the repo's labels
     (`gh label list`) and offer the relevant ones the same way: show the picker
     only if >=2 apply; if just one obvious label applies, add it silently.
-  Native basics only - no Projects v2, no custom fields. `to-tickets` inherits these
-  onto every slice and hangs the slices off this epic. Keep the file too if you want
+  Native basics only - no Projects v2, no custom fields. `to-tickets` carries the
+  milestone onto every slice (labels stay on the epic) and hangs the slices off this
+  epic. Keep the file too if you want
   the PRD versioned in git.
 
 ## Next step

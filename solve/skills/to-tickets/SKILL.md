@@ -86,17 +86,21 @@ accepts.
 
 ## Publish the slices
 
-In github, read the epic's inheritable props **before creating anything**
-(`gh issue view <epic> --json milestone,labels`): its milestone and its non-`solve:`
-labels. One read, carried onto every slice in the batch, so each one inherits the
-feature's properties.
+In github, read the epic's milestone **before creating anything**
+(`gh issue view <epic> --json milestone`), if it has one, and carry it onto every
+slice in the batch. Labels don't inherit - each slice gets only its own `solve:` tags
+(below). No milestone on the epic -> nothing to carry, nothing to ask.
 
 Then publish each slice as a ticket, in **topological order** (blocker before
-blocked). The concrete operation is in `docs/agents/solve.md` -> **Tracker
-operations** (*publish a slice*); run it per slice for the repo's tracker. In local
-that's one file per slice at `docs/tickets/<feature>/NNN-slug.md` with a textual
-`Blocked by` line. Throttle the github loop - creating issues too fast trips rate
-limiting.
+blocked) - which is what makes the cross-references resolvable: a slice's blockers
+already exist by the time it's created, so before creating it, swap each draft index
+(`001`) in the body for the blocker's real handle. In github that's `#<real issue
+number>`, which GitHub auto-links, alongside the native `--blocked-by` edge; in local,
+a relative link to the blocker's file (`[001](./001-slug.md)`). The concrete operation
+is in `docs/agents/solve.md` -> **Tracker operations** (*publish a slice*); run it per
+slice for the repo's tracker. In local that's one file per slice at
+`docs/tickets/<feature>/NNN-slug.md` with that `Blocked by` line. Throttle the github
+loop - creating issues too fast trips rate limiting.
 
 Every slice gets `solve:ticket` + `solve:refined` at publish - **blocked or not**.
 `refined` means the definition is complete, not that the slice is unblocked; blocking

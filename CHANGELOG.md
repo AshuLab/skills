@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.4.4
+
+- `to-spec`, `to-tickets`: labels no longer inherit from the epic onto its
+  slices - each slice only gets its own `solve:` tags, the epic keeps its
+  labels. The milestone still carries onto every slice, and `to-tickets` now
+  skips asking when the epic has none.
+- `to-tickets`: explains how a slice's `Blocked by` draft index (`001`) gets
+  resolved at publish time, now that slices publish in topological order - a
+  real issue number (`#N`, github) or a relative file link (local), swapped in
+  right before that slice is created.
+
 ## solve 0.4.3
 
 - `pushback`: the `[Q1] <title>` / `→ <lean>` numbered format now applies only

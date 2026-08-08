@@ -106,7 +106,7 @@ This repo runs in **github** mode - epics and tickets are GitHub Issues in
 | `solve:refined` (fully defined, agent-ready). List them: `gh issue list --label solve:refined`.
 
 ### Tracker operations
-- publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's>`
+- publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's, if any>`
   - `--parent` is the sub-issue link, `--blocked-by` the real dependency
 - claim -> `gh issue edit <n> --add-assignee @me` (leave `solve:refined` as is)
 - close the loop -> `gh pr create` with `Closes #<n>` in the body
