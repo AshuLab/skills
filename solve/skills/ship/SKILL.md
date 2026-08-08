@@ -38,34 +38,49 @@ Read the ticket + its linked spec section before touching code.
 
 ## Build it
 
-**Where the work lands is the repo's convention** (`CLAUDE.md`/`AGENTS.md`), never
-`ship`'s call - its own branch or straight onto the current one, and equally how the
-finished slices come together: one PR, several, an integration branch. One mechanical
-exception: a github PR needs its own head branch, so in github mode the work always
-lands on a branch.
+**Branching is `ship`'s call now** - the integration model is fixed even where the
+names aren't. Every feature gets one **epic branch**, cut from the repo's base branch
+the first time a slice of that epic ships and reused after - lazy: not there yet,
+create it; otherwise switch to it. The slice's own branch comes off one of two places,
+and the `blocked-by` graph decides:
+- **no open blocker, or several** -> off the **epic branch** (the hub).
+- **exactly one open blocker** -> off **that blocker's branch** (the stack), so you
+  build on its code instead of waiting for it to land; its PR targets the blocker for
+  now, and retargets when the blocker closes (*Close the loop*).
 
-By default you just build it. If there's a specialized skill for this kind of work -
-one you pass in, one the repo standardizes, or `tdd` at an agreed seam - invoke it
-here. Either way the ticket's **definition of done** is the contract: every box green
-before you close, and don't gold-plate - reuse before building, write the least code
-that meets the done, nothing speculative.
+Bases and names all resolve from `docs/agents/solve.md` -> **Branching**, never
+hard-coded here. What ship still doesn't own is the middle - *how* you code: by default
+you just build it, and if there's a specialized skill for this work - one you pass in,
+one the repo standardizes, or `tdd` at an agreed seam - invoke it here. Either way the
+ticket's **definition of done** is the contract: every box green before you close, and
+don't gold-plate - reuse before building, write the least code that meets the done,
+nothing speculative.
 
 ## Close the loop
 
 Verify the definition of done first (typecheck, full suite, tests at the agreed seam).
 This is also where `code-review` earns its place, on a diff worth a second pass before
-it goes out. Then close the loop - the operation (open the PR, or commit) is in
-`docs/agents/solve.md` -> **Tracker operations**.
+it goes out. Then close the loop - the operations live in `docs/agents/solve.md`:
+opening the PR (or the local commit) under **Tracker operations**, merging and closing
+under **Branching**.
 
 In github, the PR body is short and in flowing prose (no hard-wrap), referencing the
 ticket rather than restating it - three parts:
-- `Closes #<n>` - links the ticket; GitHub auto-closes it when the PR merges to the
-  **base branch** (a merge into an intermediate branch won't close it yet).
+- `Closes #<n>` - links the ticket, but it **won't auto-close on merge**: the slice
+  merges into the epic branch, not the repo's default branch, and GitHub only auto-closes
+  on the default. So **close the issue explicitly** after merging (`gh issue close <n>`).
 - **what shipped** - the actual change in a line or two, not a copy of the goal.
 - **verified** - definition of done met: typecheck + suite green, tests at the agreed
   seam (or "no tests - per spec").
 
-The slice's `blocked-by` edges release the next tickets automatically on close.
+Then **merge the slice into the epic branch** - a **merge commit, never squash or
+rebase**, so every slice's commits and PR survive in history - and close the issue. The
+epic branch is staging; human review lives at the end, on the integration PR into the
+destination, not per slice (drop `code-review` in here if a diff wants a second pass
+first). That explicit close releases the next tickets and fires the **retarget**: any
+slice stacked on this one moves its PR base to the epic branch (`gh pr edit <n> --base
+<epic-branch>`), so it stops targeting a branch that just merged. The operations are in
+`docs/agents/solve.md` -> **Branching**.
 
 In local there's no issue to close, so the ticket file has to carry the signal itself:
 **tick every box in its Definition of done to `[x]`**, then commit referencing the
@@ -86,8 +101,13 @@ Two ways it ends, and neither of them is "keep going anyway":
   or already claimed by someone else. **Stop**, and report which slices remain and what
   holds each. Never take a blocked or someone else's slice to keep the drain moving -
   unattended mode makes that mistake expensive.
-- **Every slice closed.** The drain is done, and **don't close the epic.** A slice has a
-  mechanically verifiable definition of done; an epic doesn't - it's the PRD. "Every
+- **Every slice closed.** The drain is done. In github, open the **integration PR** -
+  the epic branch into its destination (`docs/agents/solve.md` -> **Branching**), as a
+  **draft** with `Closes #<epic>` for a human to review; ship never merges it. When the
+  human merges that PR, GitHub closes the epic - but only if the destination is the repo's
+  default branch; into a non-default like `develop` it stays open until that reaches
+  default, the human's call anyway. So **ship never closes the epic** itself. A slice has
+  a mechanically verifiable definition of done; an epic doesn't - it's the PRD. "Every
   slice is closed" is a fact you can check, "the feature is delivered" is a judgement
   call, and the slices you drained may not even be all of them (one added later, one
   that never came from `to-tickets`). Report the state and leave the epic open - closing

@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.5.0
+
+- **`ship` now owns a fixed branching model**, in both tracker modes. One
+  **epic branch** per feature, cut lazily from the base branch on the first
+  slice shipped. Each slice branches off the epic branch (**hub**, when it has
+  no blocker or several) or off its one open blocker's branch (**stack**), so
+  work can start before the blocker lands. Slices merge into the epic branch
+  (merge commit only, never squash/rebase) and close explicitly - GitHub
+  doesn't auto-close on a merge into a non-default branch - which also fires a
+  **retarget**: any slice stacked on the one that just merged moves its PR base
+  to the epic branch.
+- When every slice is done, `ship` opens a **draft integration PR** from the
+  epic branch into its destination for a human to review and merge; `ship`
+  never merges it and never closes the epic itself.
+- `setup`: writes the repo's real branch names/bases into `docs/agents/solve.md`
+  -> **Branching** (detects the default branch and existing naming convention
+  instead of assuming). `REFERENCE.md` carries the concrete `git`/`gh` commands
+  for both tracker modes.
+
 ## solve 0.4.4
 
 - `to-spec`, `to-tickets`: labels no longer inherit from the epic onto its

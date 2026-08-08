@@ -68,6 +68,13 @@ for the mode this repo runs in. The template below is in **github** mode; for a
 >   as not done, however finished the code is
 > - find the next startable slice -> the lowest-numbered ticket that isn't done and
 >   whose `Blocked by` slices all are
+>
+> ### Branching
+> Same epic-branch / slice model as github, in plain git (no PRs). Merge-only, **no
+> fast-forward** (`git merge --no-ff`), never squash or rebase - history keeps every
+> slice. Epic branch off the base branch (lazy, first slice); each slice off the epic
+> branch, or off its one open blocker's branch (stack); merge the slice into the epic
+> branch on done; when all slices are done, merge the epic branch into the destination.
 
 ```markdown
 # solve skills - how this repo uses them
@@ -109,10 +116,26 @@ This repo runs in **github** mode - epics and tickets are GitHub Issues in
 - publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's, if any>`
   - `--parent` is the sub-issue link, `--blocked-by` the real dependency
 - claim -> `gh issue edit <n> --add-assignee @me` (leave `solve:refined` as is)
-- close the loop -> `gh pr create` with `Closes #<n>` in the body
+- close the loop -> `gh pr create` with `Closes #<n>`; merging the slice + closing the issue is under **Branching** (the merge into the epic branch won't auto-close it)
 - find the next startable slice -> open, `solve:refined`, unassigned, no open blocker,
   lowest number:
   `gh issue list --label solve:refined --state open --json number,assignees,blockedBy --jq '[.[] | select((.assignees|length)==0) | select(([.blockedBy.nodes[]|select(.state=="OPEN")]|length)==0)] | sort_by(.number) | .[0].number'`
   (`blockedBy` is a `{nodes, totalCount}` connection; a slice is unblocked when it
   has no `OPEN` node - closed blockers don't count)
+
+## Branching
+Merge-only - **never squash or rebase**; every slice's commits and PR stay in history.
+- **base branch** -> `develop` - the epic branch is cut from here
+- **epic branch** -> `solve/<feature>` - one per feature; every slice integrates here
+- **slice branch** -> `solve/<feature>/<NNN-slug>`
+- **destination** -> `develop` - where the epic branch merges once the feature is done
+
+### Branching operations
+- start the epic branch (lazy, first slice of the epic only) -> `git fetch && git switch -c solve/<feature> origin/develop && git push -u origin solve/<feature>`
+- branch a slice, **hub** (no open blocker, or several) -> `git switch solve/<feature> && git switch -c solve/<feature>/<NNN-slug>`
+- branch a slice, **stack** (exactly one open blocker) -> `git switch <blocker-branch> && git switch -c solve/<feature>/<NNN-slug>` - its PR targets `<blocker-branch>`
+- open a slice PR -> `gh pr create --base <epic-branch | blocker-branch> --head <slice-branch>` with `Closes #<n>`
+- merge a slice -> `gh pr merge <n> --merge` (merge commit; never `--squash` / `--rebase`), then `gh issue close <n>` - the merge is into the epic branch, not default, so it won't auto-close
+- retarget on a blocker's close -> for each slice stacked on it: `gh pr edit <n> --base solve/<feature>`
+- integration PR (all slices closed) -> `gh pr create --base develop --head solve/<feature> --draft` with `Closes #<epic>` in the body - for a human; ship never merges it (the human's merge closes the epic only if `develop` is the default branch)
 ```

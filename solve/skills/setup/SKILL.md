@@ -70,6 +70,13 @@ where Claude auto-loads it: the repo's context file.
   **Tracker** section declares the mode (github or local) - what the skills read
   instead of a config file - and its **Tracker operations** subsection is what they
   resolve their verbs against.
+- Fill its **Branching** section with the repo's real values, not the template's
+  defaults: the **base branch** (detect the remote's default - `git symbolic-ref
+  refs/remotes/origin/HEAD`, or `gh repo view --json defaultBranchRef`), the **branch
+  name pattern** (glance at existing branches - `git branch -a` - and match the repo's
+  convention, e.g. `feature/*` under gitflow; only ask when it's ambiguous), and the
+  **destination** (default: the base branch). This applies in both modes - the code
+  lives in git either way.
 
 Both follow the templates in `REFERENCE.md` (next to this file).
 
