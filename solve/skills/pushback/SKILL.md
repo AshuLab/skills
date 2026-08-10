@@ -56,11 +56,11 @@ the method falls out of that:
   round carries several questions, number them and lead each with the lean you'd take, so
   the reply comes back as "1 yes, 2 the second one":
   > **[Q1] <title>**: <the question, choices and all>
-  > → <the lean you'd take>
+  > -> <the lean you'd take>
 
   A single question needs none of that scaffolding - ask it in prose with your lean inline.
 - **No `AskUserQuestion`** - a closed button can't hold "I'd change the approach". The
-  `[Q]/→` round is the replacement: same structure, same easy default to accept, but
+  `[Q]/->` round is the replacement: same structure, same easy default to accept, but
   open prose the user can push back on. The `disallowed-tools` frontmatter only covers
   the first turn - it clears on the next message - so the rule rests on the format, not
   on it.

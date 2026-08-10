@@ -108,7 +108,7 @@ The set assumes Claude Code and uses its native tools - a deliberate coupling
 - **Questions, by type.** Closed, tactical choices (2-4 discrete options) use
   `AskUserQuestion`, so the person selects instead of typing "the B" - in `setup`,
   `to-spec` and `to-tickets`. **The questioning is the exception - `pushback` asks in
-  prose**: one question at a time while the frontier is narrow, or a numbered `[Q1]/→`
+  prose**: one question at a time while the frontier is narrow, or a numbered `[Q1]/->`
   round when several decisions are genuinely independent - each leading with the lean
   it'd take, a hypothesis to attack. That way a matured answer like "I'd change the
   approach" isn't crushed into a button. The `disallowed-tools` frontmatter only covers

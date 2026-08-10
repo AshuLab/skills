@@ -58,8 +58,9 @@ for the mode this repo runs in. The template below is in **github** mode; for a
 > This repo runs in **local** mode - epics and tickets are markdown files, no board.
 >
 > ### Tracker operations
-> - publish a slice -> write `docs/tickets/<feature>/NNN-slug.md`; blockers as a
->   textual `Blocked by: NNN` line
+> - publish a slice -> write `docs/tickets/<feature>/NNN-slug.md` in the Ticket format
+>   (see to-tickets); its `## Blocked by` line links each blocker's file relatively
+>   (`[001](./001-slug.md)`)
 > - claim -> just open the ticket file
 > - close the loop -> tick every box in the ticket's **Definition of done** to
 >   `- [x]`, then commit referencing the ticket
@@ -117,25 +118,29 @@ This repo runs in **github** mode - epics and tickets are GitHub Issues in
   - `--parent` is the sub-issue link, `--blocked-by` the real dependency
 - claim -> `gh issue edit <n> --add-assignee @me` (leave `solve:refined` as is)
 - close the loop -> `gh pr create` with `Closes #<n>`; merging the slice + closing the issue is under **Branching** (the merge into the epic branch won't auto-close it)
-- find the next startable slice -> open, `solve:refined`, unassigned, no open blocker,
-  lowest number:
-  `gh issue list --label solve:refined --state open --json number,assignees,blockedBy --jq '[.[] | select((.assignees|length)==0) | select(([.blockedBy.nodes[]|select(.state=="OPEN")]|length)==0)] | sort_by(.number) | .[0].number'`
-  (`blockedBy` is a `{nodes, totalCount}` connection; a slice is unblocked when it
-  has no `OPEN` node - closed blockers don't count)
+- find the next startable slice -> run `${CLAUDE_PLUGIN_ROOT}/bin/solve-next-startable`
+  (bundled with the plugin) - prints the lowest open `solve:refined` slice that's
+  unassigned with no OPEN blocker, or nothing
 
 ## Branching
-Merge-only - **never squash or rebase**; every slice's commits and PR stay in history.
-- **base branch** -> `develop` - the epic branch is cut from here
-- **epic branch** -> `solve/<feature>` - one per feature; every slice integrates here
-- **slice branch** -> `solve/<feature>/<NNN-slug>`
-- **destination** -> `develop` - where the epic branch merges once the feature is done
+Merge-only - never squash or rebase; every slice's commits and PR stay in history.
+First learn how THIS repo names branches - `git branch -a`, and any convention in
+CONTRIBUTING / CLAUDE.md / AGENTS.md. Take the repo's branch **type** (`feat`, `fix`,
+`chore`, ...; none at all -> `feature`, git's common default) and give each feature its
+own **namespace** under it: the epic and its slices are siblings inside `<type>/<feature>/`,
+so no branch is one the others nest under (git forbids a branch `x` and one under `x/`).
+The tokens below are placeholders `setup` resolves, never literals to emit.
+- **base branch** (`<base>`) - the epic branch is cut from here; the repo default
+- **epic branch** (`<epic-branch>`) - one per feature: `<type>/<feature>/epic`; every slice integrates here
+- **slice branch** (`<slice-branch>`) - `<type>/<feature>/<NNN-slug>`, a sibling of the epic in the same namespace
+- **destination** (`<destination>`) - where the epic branch merges when done (default: `<base>`)
 
-### Branching operations
-- start the epic branch (lazy, first slice of the epic only) -> `git fetch && git switch -c solve/<feature> origin/develop && git push -u origin solve/<feature>`
-- branch a slice, **hub** (no open blocker, or several) -> `git switch solve/<feature> && git switch -c solve/<feature>/<NNN-slug>`
-- branch a slice, **stack** (exactly one open blocker) -> `git switch <blocker-branch> && git switch -c solve/<feature>/<NNN-slug>` - its PR targets `<blocker-branch>`
+### Branching operations (substitute the names above - don't emit them literally)
+- start the epic branch (lazy, first slice of the epic only) -> `git fetch && git switch -c <epic-branch> origin/<base> && git push -u origin <epic-branch>`
+- branch a slice, **hub** (no open blocker, or several) -> `git switch <epic-branch> && git switch -c <slice-branch>`
+- branch a slice, **stack** (exactly one open blocker) -> `git switch <blocker-branch> && git switch -c <slice-branch>` - its PR targets `<blocker-branch>`
 - open a slice PR -> `gh pr create --base <epic-branch | blocker-branch> --head <slice-branch>` with `Closes #<n>`
-- merge a slice -> `gh pr merge <n> --merge` (merge commit; never `--squash` / `--rebase`), then `gh issue close <n>` - the merge is into the epic branch, not default, so it won't auto-close
-- retarget on a blocker's close -> for each slice stacked on it: `gh pr edit <n> --base solve/<feature>`
-- integration PR (all slices closed) -> `gh pr create --base develop --head solve/<feature> --draft` with `Closes #<epic>` in the body - for a human; ship never merges it (the human's merge closes the epic only if `develop` is the default branch)
+- merge a slice -> `gh pr merge <pr> --merge` (merge commit; never `--squash` / `--rebase`), then `gh issue close <issue>` - the merge is into the epic branch, not default, so it won't auto-close
+- retarget on a blocker's close -> for each slice stacked on it: `gh pr edit <pr> --base <epic-branch>`
+- integration PR (all slices closed) -> `gh pr create --base <destination> --head <epic-branch> --draft` with `Closes #<epic>` in the body - for a human; ship never merges it (the human's merge closes the epic only if `<destination>` is the default branch)
 ```

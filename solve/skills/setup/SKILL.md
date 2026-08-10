@@ -73,10 +73,13 @@ where Claude auto-loads it: the repo's context file.
 - Fill its **Branching** section with the repo's real values, not the template's
   defaults: the **base branch** (detect the remote's default - `git symbolic-ref
   refs/remotes/origin/HEAD`, or `gh repo view --json defaultBranchRef`), the **branch
-  name pattern** (glance at existing branches - `git branch -a` - and match the repo's
-  convention, e.g. `feature/*` under gitflow; only ask when it's ambiguous), and the
-  **destination** (default: the base branch). This applies in both modes - the code
-  lives in git either way.
+  name pattern** (take the repo's branch type from `git branch -a` / CONTRIBUTING /
+  CLAUDE.md / AGENTS.md - `feat`, `chore`, ...; none -> `feature` - and namespace each
+  feature: epic `<type>/<feature>/epic`, slices `<type>/<feature>/<NNN-slug>`, siblings so
+  neither nests under the other), and the **destination** (default: the base branch). This applies in both modes - the code
+  lives in git either way. One git constraint on the pattern: the slice branch must be a
+  **sibling** of the epic branch, never nested under it - git won't allow both a branch
+  `x` and a branch `x/y`.
 
 Both follow the templates in `REFERENCE.md` (next to this file).
 

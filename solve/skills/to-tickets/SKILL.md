@@ -58,6 +58,10 @@ Links to the spec section + relevant ADRs / glossary terms - reference, don't re
 NNN, NNN  (or: nothing)
 ```
 
+The `NNN` in **Blocked by** are draft indexes; at publish they resolve to each
+blocker's real handle - `#<issue>` in github (auto-linked), a relative file link in
+local (see *Publish the slices*).
+
 The definition of done is where the execution discipline lives - keep it
 observable, not a to-do list.
 

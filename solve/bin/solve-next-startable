@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# solve-next-startable - print the next startable slice's number, or nothing.
+# Startable = open, solve:refined, unassigned, no OPEN blocker, lowest number.
+# Runs against the repo gh infers from the cwd.
+# Note: --json blockedBy is a {nodes, totalCount} connection, not a flat array;
+# a slice is unblocked when it has no OPEN node (closed blockers don't count).
+set -euo pipefail
+
+gh issue list --label solve:refined --state open \
+  --json number,assignees,blockedBy \
+  --jq '[.[]
+    | select((.assignees | length) == 0)
+    | select(([.blockedBy.nodes[] | select(.state == "OPEN")] | length) == 0)]
+    | sort_by(.number) | .[0].number // empty'

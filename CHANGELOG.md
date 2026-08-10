@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.6.0
+
+- **New `solve/bin/solve-next-startable`** - extracts the "find the next startable
+  slice" `gh`/`jq` query (github mode) into a bundled, executable script instead of
+  inline `gh` in `REFERENCE.md`. Referenced as
+  `${CLAUDE_PLUGIN_ROOT}/bin/solve-next-startable`, the documented Claude Code
+  convention for a plugin's own paths (an earlier draft claimed the plugin's `bin/`
+  is on `PATH`, which isn't a real Claude Code mechanism - caught before commit).
+- `setup`, `REFERENCE.md` (**Branching**): branch names generalize from a
+  hardcoded `develop` / `solve/<feature>` example to placeholders `setup` resolves
+  from the repo's own convention (`<type>/<feature>/epic`, `<type>/<feature>/<NNN-slug>`)
+  - siblings under a shared namespace, since git disallows a branch `x` and a
+  branch `x/y` at once.
+- `to-tickets`: notes that a ticket's `Blocked by` `NNN` values are draft indexes,
+  resolved to real handles only at publish time.
+- Cosmetic: `->`/`[Q1]` arrows in `pushback` and `solve/README.md` switched from
+  unicode `→` back to ASCII, matching the rest of the repo.
+
 ## solve 0.5.1
 
 - `solve/README.md`: caught up with two undocumented changes - `pushback`'s
