@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.6.1
+
+- `REFERENCE.md`: local-mode **Branching** now generalizes branch names the same
+  way github-mode already does - the repo's own `<type>` and a per-feature
+  namespace (`<type>/<feature>/epic`, `<type>/<feature>/<NNN-slug>`) - instead of
+  a bare "same model as github" that never said what to actually name things.
+
 ## solve 0.6.0
 
 - **New `solve/bin/solve-next-startable`** - extracts the "find the next startable

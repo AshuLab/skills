@@ -71,11 +71,14 @@ for the mode this repo runs in. The template below is in **github** mode; for a
 >   whose `Blocked by` slices all are
 >
 > ### Branching
-> Same epic-branch / slice model as github, in plain git (no PRs). Merge-only, **no
-> fast-forward** (`git merge --no-ff`), never squash or rebase - history keeps every
-> slice. Epic branch off the base branch (lazy, first slice); each slice off the epic
-> branch, or off its one open blocker's branch (stack); merge the slice into the epic
-> branch on done; when all slices are done, merge the epic branch into the destination.
+> Same epic-branch / slice model as github, but plain git (no PRs). Names follow the
+> repo's convention (`git branch -a` / CONTRIBUTING / CLAUDE.md - its `<type>`; none ->
+> `feature`), each feature namespaced: epic `<type>/<feature>/epic`, slices
+> `<type>/<feature>/<NNN-slug>`, siblings. Merge-only, **no fast-forward** (`git merge
+> --no-ff`), never squash or rebase - history keeps every slice. Epic branch off the base
+> branch (lazy, first slice); each slice off the epic branch, or off its one open
+> blocker's branch (stack); merge the slice into the epic branch on done; when all slices
+> are done, merge the epic branch into the destination.
 
 ```markdown
 # solve skills - how this repo uses them
