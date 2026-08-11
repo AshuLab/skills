@@ -19,7 +19,12 @@ Check what you were handed:
   epic** at the end - the lifecycle comes first, because the drain is just that on
   repeat.
 
-## Before you start (optional)
+## Before you start
+
+**Working tree must be clean.** Before touching any branch - `git status`. If there's
+uncommitted work: commit it if it belongs to a slice, stash it (`git stash -u`) if it
+doesn't. Never switch branches with a dirty tree - the switch either fails or silently
+carries the changes into the wrong branch.
 
 If there's distance - time passed, or the ticket isn't fresh from your own
 `to-tickets` - run `pre-check` first: it rechecks the slice still applies and its
@@ -49,7 +54,10 @@ and the `blocked-by` graph decides:
   now, and retargets when the blocker closes (*Close the loop*).
 
 Bases and names all resolve from `docs/agents/solve.md` -> **Branching**, never
-hard-coded here. What ship still doesn't own is the middle - *how* you code: by default
+hard-coded here. Branch names must be git-safe: lowercase, hyphens, no spaces or special
+characters (slugify any title before using it as `<feature>` or `<NNN-slug>`).
+
+What ship still doesn't own is the middle - *how* you code: by default
 you just build it, and if there's a specialized skill for this work - one you pass in,
 one the repo standardizes, or `tdd` at an agreed seam - invoke it here. Either way the
 ticket's **definition of done** is the contract: every box green before you close, and
@@ -59,29 +67,35 @@ nothing speculative.
 ## Close the loop
 
 Verify the definition of done first (typecheck, full suite, tests at the agreed seam).
-This is also where `code-review` earns its place, on a diff worth a second pass before
-it goes out. Then close the loop - the operations live in `docs/agents/solve.md`:
-opening the PR (or the local commit) under **Tracker operations**, merging and closing
-under **Branching**.
+This is also where `code-review` earns its place on a diff worth a second pass. Then,
+in order:
 
-In github, the PR body is short and in flowing prose (no hard-wrap), referencing the
-ticket rather than restating it - three parts:
-- `Closes #<n>` - links the ticket, but it **won't auto-close on merge**: the slice
-  merges into the epic branch, not the repo's default branch, and GitHub only auto-closes
-  on the default. So **close the issue explicitly** after merging (`gh issue close <n>`).
+**1. Commit.** Match the repo's style - infer it from recent `git log` (plus
+`commitlint.config` / `CONTRIBUTING` if present; `type(scope): subject` when it's
+Conventional Commits) - so a pre-commit hook doesn't reject it.
+
+**2. Push the slice branch.** `git push -u origin <slice-branch>` - GitHub needs the
+branch on the remote before a PR can be opened.
+
+**3. Open the PR.** Every slice gets its own PR - that's what keeps the history and
+links each ticket. If the repo has a PR template
+(`.github/PULL_REQUEST_TEMPLATE.md`), fill it; otherwise short prose (no hard-wrap),
+three parts:
+- `Closes #<n>` - links the ticket. It **won't auto-close on merge** (the slice merges
+  into the epic branch, not the default branch), so **close the issue explicitly** after
+  merging (`gh issue close <n>`).
 - **what shipped** - the actual change in a line or two, not a copy of the goal.
 - **verified** - definition of done met: typecheck + suite green, tests at the agreed
   seam (or "no tests - per spec").
 
-If the repo tracks changes per-commit (`.changeset/` or similar), add this slice's entry
-before merging. Then **merge the slice into the epic branch** - a **merge commit, never squash or
-rebase**, so every slice's commits and PR survive in history - and close the issue. The
-epic branch is staging; human review lives at the end, on the integration PR into the
-destination, not per slice (drop `code-review` in here if a diff wants a second pass
-first). That explicit close releases the next tickets and fires the **retarget**: any
-slice stacked on this one moves its PR base to the epic branch (`gh pr edit <n> --base
-<epic-branch>`), so it stops targeting a branch that just merged. The operations are in
-`docs/agents/solve.md` -> **Branching**.
+**4. Merge into the epic branch** - merge commit, never squash or rebase, so every
+slice's commits and PR survive in history. If the repo tracks changes per-commit
+(`.changeset/` or similar), add this slice's entry before merging.
+
+**5. Close the issue** (`gh issue close <n>`). That explicit close releases the next
+tickets and fires the **retarget**: any slice stacked on this one moves its PR base to
+the epic branch (`gh pr edit <pr> --base <epic-branch>`), so it stops targeting a branch
+that just merged. Operations in `docs/agents/solve.md` -> **Branching**.
 
 In local there's no issue to close, so the ticket file has to carry the signal itself:
 **tick every box in its Definition of done to `[x]`**, then commit referencing the
@@ -102,6 +116,13 @@ Two ways it ends, and neither of them is "keep going anyway":
   or already claimed by someone else. **Stop**, and report which slices remain and what
   holds each. Never take a blocked or someone else's slice to keep the drain moving -
   unattended mode makes that mistake expensive.
+- **A slice can't be completed.** Definition of done won't pass (test failure,
+  typecheck error, design gap) or a merge conflict blocks the integration. **Stop** -
+  don't mark it done and don't skip it. Report the slice, the blocker, and what's
+  needed to unblock (a fix, a decision, a rebase). The drain resumes when it's resolved.
+- **A merge conflict on integration.** `git status` to identify the conflicts, then
+  **stop and report** - don't auto-resolve. Conflicts need a human call; resolving them
+  wrong silently corrupts the epic branch.
 - **Every slice closed.** The drain is done. If the repo keeps a changelog or release
   notes (`CHANGELOG.md`, `.changeset/`, or whatever `CONTRIBUTING` names), add the
   **feature's** entry in that format - one per feature, not one per slice. Then in

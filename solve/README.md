@@ -144,9 +144,10 @@ itself is declared in `docs/agents/solve.md` - there's no separate config file.
   `solve:refined`), with real `blocked-by` dependencies - native GitHub Issues
   features via `gh`, no Projects v2 needed.
 - `ship` integrates each slice into the feature's **epic branch** - off that branch, or
-  off its blocker when it has one (a stack) - **merge-only** (never squash or rebase),
-  then opens one integration PR to the destination at the end. Bases and names follow
-  the repo's convention, captured by `setup`.
+  off its blocker when it has one (a stack) - **merge-only** (never squash or rebase).
+  Each slice gets its own PR with `Closes #<n>`; once every slice is done, one
+  integration PR (epic -> destination) with `Closes #<epic>` for a human to review.
+  Bases and names follow the repo's convention, captured by `setup`.
 - `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
 
 Either mode:

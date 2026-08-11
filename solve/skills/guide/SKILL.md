@@ -28,7 +28,8 @@ to the skill.
 ## Before advancing a spec or ticket (optional)
 
 - It sat a while, or it didn't come from `sharpen` -> recheck it still applies and
-  get it ready -> `pre-check`. Skip it when you just sharpened and are building now.
+  get it ready -> `pre-check`, then `ship`. Skip pre-check when you just sharpened and
+  are building now.
 
 ## Not starting from an idea
 

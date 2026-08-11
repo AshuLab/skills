@@ -140,8 +140,8 @@ The tokens below are placeholders `setup` resolves, never literals to emit.
 
 ### Branching operations (substitute the names above - don't emit them literally)
 - start the epic branch (lazy, first slice of the epic only) -> `git fetch && git switch -c <epic-branch> origin/<base> && git push -u origin <epic-branch>`
-- branch a slice, **hub** (no open blocker, or several) -> `git switch <epic-branch> && git switch -c <slice-branch>`
-- branch a slice, **stack** (exactly one open blocker) -> `git switch <blocker-branch> && git switch -c <slice-branch>` - its PR targets `<blocker-branch>`
+- branch a slice, **hub** (no open blocker, or several) -> `git switch <epic-branch> && git switch -c <slice-branch> && git push -u origin <slice-branch>`
+- branch a slice, **stack** (exactly one open blocker) -> `git switch <blocker-branch> && git switch -c <slice-branch> && git push -u origin <slice-branch>` - its PR targets `<blocker-branch>`
 - open a slice PR -> `gh pr create --base <epic-branch | blocker-branch> --head <slice-branch>` with `Closes #<n>`
 - merge a slice -> `gh pr merge <pr> --merge` (merge commit; never `--squash` / `--rebase`), then `gh issue close <issue>` - the merge is into the epic branch, not default, so it won't auto-close
 - retarget on a blocker's close -> for each slice stacked on it: `gh pr edit <pr> --base <epic-branch>`

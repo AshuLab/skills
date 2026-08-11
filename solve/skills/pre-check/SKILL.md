@@ -1,6 +1,6 @@
 ---
 name: pre-check
-description: Optional gate you run on a written spec or ticket before it advances - to confirm it still applies today and to do the operational prep (tags, milestone, and the handoff notes the next step needs). It does NOT re-grill the fundamentals (sharpen already did that); it checks freshness + redundancy against the current codebase. Run it when there's distance from when the idea was sharpened; skip it when you just sharpened and are building now.
+description: Optional gate you run on a written spec or ticket before it advances - to confirm it still applies today and to do the operational prep (tags, milestone, and the handoff notes the next step needs). Checks freshness + redundancy against the current codebase; grills fundamentals only if the artifact never went through sharpen. Run it when there's distance from when the idea was sharpened; skip it when you just sharpened and are building now.
 ---
 
 # pre-check - optional freshness + prep gate

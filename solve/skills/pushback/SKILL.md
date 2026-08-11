@@ -1,7 +1,7 @@
 ---
 name: pushback
 disallowed-tools: AskUserQuestion
-description: Push back on an idea, plan or decision until it holds up - relentlessly, one round at a time, walking the tree of decisions outward from the problem. Leaves no artifact and starts no flow - reach for it when you just want the thinking stress-tested. To carry an idea all the way to a spec, use sharpen, which runs this and then writes the brief.
+description: Push back on an idea, plan or decision until it holds up - walking the tree of decisions outward from the problem, one round at a time, each question in prose with a [Q]/-> lean so the reply stays open. Leaves no artifact and starts no flow - reach for it when you just want the thinking stress-tested. To carry an idea all the way to a spec, use sharpen, which runs this and then writes the brief.
 ---
 
 # pushback - resist the idea until it holds up

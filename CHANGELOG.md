@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.7.0
+
+- `ship`: **working tree must be clean before touching any branch** - commit or
+  stash before switching, since a dirty switch fails or silently carries changes
+  onto the wrong branch. Branch names get slugified (git-safe: lowercase,
+  hyphens, no spaces/specials).
+- `ship`: **"Close the loop" is now five explicit, ordered steps** - commit
+  (matching the repo's style), push the slice branch, open the PR (repo's PR
+  template if there is one), merge into the epic branch, close the issue
+  (fires the retarget). Every slice now gets its own PR, not just the ones that
+  earn `code-review`.
+- `ship`: two new stop conditions during a drain - a slice whose definition of
+  done won't pass (stop and report, don't skip or fake it), and a merge conflict
+  on integration (stop and report, never auto-resolve - a wrong resolution
+  silently corrupts the epic branch).
+- `REFERENCE.md`: branching a slice now pushes it (`git push -u origin
+  <slice-branch>`) right after creation, so it exists on the remote before a PR
+  is opened against it.
+- `sharpen`: "run `pushback`" now says explicitly not to summarize or shortcut
+  it - invoke the skill, don't paraphrase what it would ask.
+- `pre-check`, `guide`: description/pointer wording fixes (pre-check only grills
+  fundamentals for an artifact that never went through `sharpen`; guide points
+  from `pre-check` to `ship`).
+- Fixed again: `solve-next-startable` reference in `REFERENCE.md` reverted to
+  claiming it's on `PATH` - restored to `${CLAUDE_PLUGIN_ROOT}/bin/...`.
+
 ## solve 0.6.2
 
 - `pushback`, `sharpen`: a blocked or denied `AskUserQuestion` means ask the same
