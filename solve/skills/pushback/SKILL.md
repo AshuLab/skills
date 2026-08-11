@@ -62,8 +62,9 @@ the method falls out of that:
 - **No `AskUserQuestion`** - a closed button can't hold "I'd change the approach". The
   `[Q]/->` round is the replacement: same structure, same easy default to accept, but
   open prose the user can push back on. The `disallowed-tools` frontmatter only covers
-  the first turn - it clears on the next message - so the rule rests on the format, not
-  on it.
+  the first turn, so the rule rests on the format. And a **blocked or denied
+  `AskUserQuestion` means ask in prose and wait** - never that you're on your own to
+  decide; you're interactive here, a call that's the user's stays theirs.
 
 ## When you stop
 

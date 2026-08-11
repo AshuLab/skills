@@ -69,6 +69,11 @@ When the problem is clear, the scope has an edge, risky assumptions are named, h
 decisions are recorded - **and it's on disk**. The questions running out isn't the same
 as `sharpen` being done; the brief is.
 
+Never write the brief around a call that's the user's to make. If your read overturns
+the framing they arrived with, that's the grill's core - put it to them in prose and
+wait, don't settle it yourself and write on. A blocked `AskUserQuestion` is the cue to
+ask in prose, not a reason to decide alone.
+
 The **Open questions** you leave are only what the conversation couldn't settle - the
 few that genuinely need `research` or a `prototype`. If one more question would settle
 it, settle it now; a brief ending in a pile of open questions means you stopped

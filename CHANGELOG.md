@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.6.2
+
+- `pushback`, `sharpen`: a blocked or denied `AskUserQuestion` means ask the same
+  thing in prose and wait - never a cue to decide a user-owned call alone.
+  `sharpen` applies this specifically to the brief: never write around a call
+  that overturns the idea's framing without putting it to the user first.
+- `ship`: adds a changeset/changelog step - a per-slice entry (`.changeset/` or
+  similar) before merging, and a single feature-level `CHANGELOG.md` entry (not
+  one per slice) once the whole epic's drain finishes, in whatever format the
+  repo already uses.
+
 ## solve 0.6.1
 
 - `REFERENCE.md`: local-mode **Branching** now generalizes branch names the same

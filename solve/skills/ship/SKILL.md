@@ -73,7 +73,8 @@ ticket rather than restating it - three parts:
 - **verified** - definition of done met: typecheck + suite green, tests at the agreed
   seam (or "no tests - per spec").
 
-Then **merge the slice into the epic branch** - a **merge commit, never squash or
+If the repo tracks changes per-commit (`.changeset/` or similar), add this slice's entry
+before merging. Then **merge the slice into the epic branch** - a **merge commit, never squash or
 rebase**, so every slice's commits and PR survive in history - and close the issue. The
 epic branch is staging; human review lives at the end, on the integration PR into the
 destination, not per slice (drop `code-review` in here if a diff wants a second pass
@@ -101,9 +102,12 @@ Two ways it ends, and neither of them is "keep going anyway":
   or already claimed by someone else. **Stop**, and report which slices remain and what
   holds each. Never take a blocked or someone else's slice to keep the drain moving -
   unattended mode makes that mistake expensive.
-- **Every slice closed.** The drain is done. In github, open the **integration PR** -
-  the epic branch into its destination (`docs/agents/solve.md` -> **Branching**), as a
-  **draft** with `Closes #<epic>` for a human to review; ship never merges it. When the
+- **Every slice closed.** The drain is done. If the repo keeps a changelog or release
+  notes (`CHANGELOG.md`, `.changeset/`, or whatever `CONTRIBUTING` names), add the
+  **feature's** entry in that format - one per feature, not one per slice. Then in
+  github, open the **integration PR** - the epic branch into its destination
+  (`docs/agents/solve.md` -> **Branching**), as a **draft** with `Closes #<epic>` for a
+  human to review; ship never merges it. When the
   human merges that PR, GitHub closes the epic - but only if the destination is the repo's
   default branch; into a non-default like `develop` it stays open until that reaches
   default, the human's call anyway. So **ship never closes the epic** itself. A slice has
