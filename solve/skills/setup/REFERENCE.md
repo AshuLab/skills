@@ -1,19 +1,17 @@
 # Templates setup writes
 
-The agent-facing reference that `setup` writes, so an agent opening the user's
-repo knows it uses the solve skills. Two pieces:
+The agent-facing reference that `setup` writes, so an agent opening the user's repo knows it uses the solve skills.
+Two pieces:
 
-**Naming rule:** in prose, always write "the solve skill set" / "solve skills" -
-never a bare "solve", which reads as the verb "to solve". The technical namespace
-(`/solve:...`, `solve:epic`) stays as is.
+**Naming rule:** in prose, always write "the solve skill set" / "solve skills" - never a bare "solve", which reads as the verb "to solve".
+The technical namespace (`/solve:...`, `solve:epic`) stays as is.
 
 ## Block for the repo's CLAUDE.md / AGENTS.md
 
-Append to whichever exists (never create the other). Keep it **minimal** - this
-lands in a file the model auto-loads every session, so three short labelled lines:
-what it is, the tracker, and the pointer. The detail (paths, `gh` usage, tracker
-operations) lives in `solve.md`, not here. Use the variant that matches the
-tracker; write only that one.
+Append to whichever exists (never create the other).
+Keep it **minimal** - this lands in a file the model auto-loads every session, so three short labelled lines: what it is, the tracker, and the pointer.
+The detail (paths, `gh` usage, tracker operations) lives in `solve.md`, not here.
+Use the variant that matches the tracker; write only that one.
 
 **local** tracker:
 
@@ -48,11 +46,9 @@ they earn it.
 
 ## docs/agents/solve.md
 
-A summary (not a copy of the plugin README), filled with the repo's real values,
-in flowing prose (one line per paragraph, not hard-wrapped). There is no config
-file - the **Tracker** section here declares the repo's mode, so write the block
-for the mode this repo runs in. The template below is in **github** mode; for a
-**local** repo, the Tracker section instead reads:
+A summary (not a copy of the plugin README), filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
+There is no config file - the **Tracker** section here declares the repo's mode, so write the block for the mode this repo runs in.
+The template below is in **github** mode; for a **local** repo, the Tracker section instead reads:
 
 > ## Tracker
 > This repo runs in **local** mode - epics and tickets are markdown files, no board.
@@ -90,7 +86,7 @@ step is a skill; invoke it as `/solve:<name>`.
 New work enters at `/solve:sharpen` - even when it arrives already written, as an issue
 or a doc. Each step consumes what the previous one left, so they run in order.
 
-- `/solve:sharpen` - grill a raw idea, doc or issue until the problem holds; leaves a brief
+- `/solve:sharpen` - take a raw idea, doc or issue to a brief: reality-check + capture the thinking (grill it first with `/follow:pushback` if it's raw)
 - `/solve:to-spec` - turn the brief into a PRD, deciding where each story gets tested
 - `/solve:to-tickets` - break the PRD into vertical, agent-ready slices
 - `/solve:ship` - take a startable ticket to done: claim, build, close the loop (a PR).
@@ -103,7 +99,7 @@ Reach for `/solve:tdd` and `/solve:code-review` when they earn it, and
 - `/solve:diagnose` - a bug or performance regression you don't understand
 - `/solve:research`, `/solve:prototype` - gather evidence to feed `sharpen`
 - `/solve:pre-check` - revalidate a spec or ticket that sat a while
-- `/solve:pushback` - just the grilling, on anything, with nothing written afterwards
+- `/follow:pushback` - just the grilling, on anything, nothing written (sharpen recommends it for a raw idea; needs the follow skill set)
 - `/solve:vocab` - the glossary and ADRs (shared vocabulary)
 
 ## Where things live

@@ -5,52 +5,47 @@ description: The router for the solve skill set - say what you're trying to do a
 
 # guide - which skill, when
 
-You don't have to remember the set. Say what you're trying to do; this points you
-to the skill.
+Say what you're trying to do; this points you to the skill.
+You don't have to remember the set.
 
-## Starting something new
+## Where to enter
 
-- First time in this repo, want a GitHub tracker -> `setup` (skip it for the
-  default, local markdown)
-- Vague idea, needs sharpening -> `sharpen`
-- Idea's been grilled, formalize it -> `to-spec`
-- Have a spec, split the work -> `to-tickets`
-- Have a startable ticket, take it to done -> `ship` (with `tdd` / `code-review` when
-  they earn it)
-- Want the whole epic drained slice by slice, unattended -> `ship`, handed the epic
-  instead of a ticket
+The entry point is set by what you already know, not by whether it's a feature or a bug:
 
-## While sharpening, if talk isn't enough
+- **The problem isn't clear** - you can't yet name what hurts, for whom, or how you'd know it's fixed -> `sharpen`. It grills the raw idea into a brief; a fuzzy bug ("it feels slow", no definition yet) enters here too.
+- **The problem is clear, the cause isn't** - it misbehaves and you don't know why -> `diagnose`. It builds a reliable repro before theorizing.
+- **Both are clear** - it's no longer an idea or a mystery, just work to cut -> `to-tickets` to split it, or straight to `ship` if it's already one startable slice. Came from outside (someone else's issue, a handed-down ticket)? `pre-check` first.
+- **First time in this repo and you want a GitHub tracker** -> `setup`. Skip it for the default: local markdown, zero config.
 
-- Need external facts before deciding -> `research`
-- A design question only code can answer -> `prototype`
+## Moving it forward
 
-## Before advancing a spec or ticket (optional)
+Each step consumes what the last one left, so they run in order:
 
-- It sat a while, or it didn't come from `sharpen` -> recheck it still applies and
-  get it ready -> `pre-check`, then `ship`. Skip pre-check when you just sharpened and
-  are building now.
+- A brief, formalize it into a PRD -> `to-spec`. Decides where each story gets tested; in github mode it publishes the epic.
+- A spec, split the work -> `to-tickets`. Vertical, agent-ready slices with their blocking edges.
+- A startable ticket, take it to done -> `ship`. Claim, build, close the loop; reach for `tdd` / `code-review` when they earn it.
+- A whole epic, drained slice by slice, unattended -> `ship`, handed the epic instead of one ticket.
+- Something that sat a while, or didn't come from `sharpen` -> `pre-check` before advancing. Skip it when you just sharpened and are building now.
 
-## Not starting from an idea
+## Reach for these any time
 
-- A bug or a regression you don't understand -> `diagnose`
-
-## Any time
-
-- Want the thinking stress-tested, nothing written -> `pushback` (that's `sharpen`'s
-  grill on its own, without the reality-check or the brief)
-- Pin down a term or record a hard decision -> `vocab`
-- Review a diff or a PR against standards + spec -> `code-review`
-- Drive a change test-first at a seam -> `tdd`
+- Stress-test an idea, plan or decision, with nothing written -> `follow:pushback`. `sharpen` recommends it for a raw idea.
+- External facts before you can decide -> `research`. Primary sources, in the background.
+- A design question only code can answer -> `prototype`. Throwaway; the output is a decision, not the thing.
+- Pin down a term or record a hard decision -> `vocab`. The glossary and the ADRs.
+- Drive a change test-first at a seam -> `tdd`.
+- Review a diff or a PR against standards + the spec -> `code-review`.
 
 ## The shape
 
+The same set seen as roles instead of goals - what each skill is in the machine:
+
 ```
-setup                         <- once per repo, only for a GitHub tracker (optional)
-sharpen -> to-spec -> to-tickets -> ship   (reach for tdd / code-review)
-pre-check                     <- optional gate: recheck a spec/ticket still applies
-research | prototype          <- feed the thinking (into sharpen)
-diagnose                      <- on-ramp
-pushback                      <- the grill alone, no artifact (sharpen runs it)
-vocab                         <- shared vocabulary, invoked throughout
+spine     sharpen -> to-spec -> to-tickets -> ship
+feeds     research, prototype, follow:pushback  (into the thinking, upstream)
+support   tdd, code-review  (on the code, when they earn it)
+gate      pre-check  (revalidate a stale or handed-down artifact before ship)
+on-ramp   diagnose  (enter from a bug, not an idea)
+setup     once per repo, only for a GitHub tracker (optional)
+base      vocab  (glossary + ADRs, drawn on throughout)
 ```

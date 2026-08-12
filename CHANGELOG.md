@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## follow 0.3.0
+
+- **`pushback` moves here from `solve`** - it no longer hard-depends on
+  `solve`-only skills (`vocab`, `research`, `prototype`); it's now
+  context-agnostic, usable with or without the `solve` plugin installed.
+  `sharpen` (in `solve`) recommends it as an optional prior step instead of
+  invoking it as a subroutine, decoupling the two plugins.
+- `pushback`: **emitting a question round is now the stop itself** - don't
+  answer your own questions or walk on. Skipping the `[Q]/->` format and
+  self-answering are named as the same failure (treating a checkpoint as a
+  thought). A blocked/denied `AskUserQuestion` still means ask in prose and
+  wait, never decide alone.
+- `follow/README.md`, `plugin.json`: reframed from "make something legible"
+  to "work on the thinking" to fit `pushback`'s stress-testing, which isn't
+  about legibility.
+
+## solve 0.8.0
+
+- **Breaking: `pushback` moves out to the `follow` plugin** - `/solve:pushback`
+  is now `/follow:pushback` (see `follow` 0.3.0). `sharpen` recommends it as an
+  optional prior step for a raw idea rather than invoking it as a subroutine,
+  removing solve's hard dependency on a separate plugin.
+- `guide`: rewritten around **what you already know** instead of a flat
+  per-task list - problem unclear -> `sharpen`; problem clear, cause isn't ->
+  `diagnose`; both clear -> `to-tickets`/`ship`. The shape diagram now groups
+  skills by role (spine, feeds, support, gate, on-ramp, setup, base) instead
+  of a flat pipeline.
+- Formatting pass across nearly every skill: reflowed from one-sentence-per-line
+  to denser paragraphs (no rendered or semantic change - markdown doesn't
+  distinguish the two) plus small redundancy trims (e.g. `vocab` no longer
+  states the same "domain only, not code" rule twice).
+- Confirmed fixed (no regression this round): `solve-next-startable` still
+  correctly referenced as `${CLAUDE_PLUGIN_ROOT}/bin/...`, not "on `PATH`".
+
 ## solve 0.7.0
 
 - `ship`: **working tree must be clean before touching any branch** - commit or

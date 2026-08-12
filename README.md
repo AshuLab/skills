@@ -1,7 +1,6 @@
 # ashulab
 
-Ashu Lab's Claude Code plugin marketplace - opinionated skill sets for real
-engineering work, not vibe coding.
+Ashu Lab's Claude Code plugin marketplace - opinionated skill sets for real engineering work, not vibe coding.
 
 ## Install
 
