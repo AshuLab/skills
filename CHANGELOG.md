@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.9.0
+
+- `ship`: uncommitted work at the clean-tree gate now sorts into three cases,
+  not two - a slice's own work commits in its normal flow, stray/unrelated
+  work still gets stashed, and a new middle case, **epic-level design
+  artifacts** (the spec/ADR/glossary/ticket output of `sharpen`/`to-spec`/
+  `vocab`), goes to the **epic branch's first commit** instead of the base
+  branch - so it surfaces in the integration PR's diff instead of sitting
+  invisibly in every PR's base.
+- `ship`: the epic branch may now already exist before the first slice ships,
+  cut early by *Before you start* to carry those design artifacts - *Branching*
+  just switches to it in that case instead of creating it.
+
 ## follow 0.3.0
 
 - **`pushback` moves here from `solve`** - it no longer hard-depends on

@@ -18,7 +18,10 @@ Check what you were handed:
 
 **Working tree must be clean.**
 Before touching any branch - `git status`.
-If there's uncommitted work: commit it if it belongs to a slice, stash it (`git stash -u`) if it doesn't.
+Uncommitted work sorts into three cases, not two:
+- **belongs to a slice** -> commit it in that slice's normal flow.
+- **epic-level design artifacts** -> the output of `sharpen`/`to-spec`/`vocab` (a spec, an ADR, glossary edits, local ticket files) that belongs to the whole epic but no single slice. Do **not** commit these to the base branch - there they sit in the base of every PR, slice and integration alike, so no diff ever surfaces them and the feature reads as code with no design beside it. Instead create/switch to the **epic branch first** (*Build it*'s lazy logic) and commit them there as its first commit: every slice cut from the epic inherits them as the design context to build against, and they surface in the **integration PR**'s diff (`epic -> base`) so a reviewer sees design and code as one reviewable unit.
+- **neither** -> stray, unrelated work - stash it (`git stash -u`).
 Never switch branches with a dirty tree - the switch either fails or silently carries the changes into the wrong branch.
 
 If there's distance - time passed, or the ticket isn't fresh from your own `to-tickets` - run `pre-check` first: it rechecks the slice still applies and its tags/milestone are in order.
@@ -36,6 +39,7 @@ Read the ticket + its linked spec section before touching code.
 
 **Branching is `ship`'s call now** - the integration model is fixed even where the names aren't.
 Every feature gets one **epic branch**, cut from the repo's base branch the first time a slice of that epic ships and reused after - lazy: not there yet, create it; otherwise switch to it.
+It may already exist before the first slice - *Before you start* cuts it early when there are epic-level design artifacts to carry, and those are its first commit - so here you just switch to it.
 The slice's own branch comes off one of two places, and the `blocked-by` graph decides:
 - **no open blocker, or several** -> off the **epic branch** (the hub).
 - **exactly one open blocker** -> off **that blocker's branch** (the stack), so you build on its code instead of waiting for it to land; its PR targets the blocker for now, and retargets when the blocker closes (*Close the loop*).
