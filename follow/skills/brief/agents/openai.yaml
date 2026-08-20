@@ -1,0 +1,6 @@
+interface:
+  display_name: "Brief"
+  short_description: "Extract the intent from long or dense text"
+  default_prompt: "Use $brief to extract what this text wants, why, and how, without the padding."
+policy:
+  allow_implicit_invocation: false

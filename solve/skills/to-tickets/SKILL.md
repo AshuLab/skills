@@ -61,7 +61,7 @@ It's what a from-scratch, unattended agent leans on hardest - but if the spec al
 ## Before publishing
 
 Draft the slice list and show it - granularity and blocking edges laid out - then adjust from the reply; never publish off a first guess.
-Only reach for `AskUserQuestion` when you're genuinely torn between two concrete cuts (e.g. 3 slices vs 5), each a real option - a lone "looks good?" isn't a question the tool accepts.
+Only use a closed-choice UI when you're genuinely torn between two concrete cuts (e.g. 3 slices vs 5), each a real option. Otherwise show the draft in prose and wait for the reply; never publish off a first guess.
 
 ## Publish the slices
 

@@ -7,18 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## solve 0.9.0
+## follow 0.4.0
 
-- `ship`: uncommitted work at the clean-tree gate now sorts into three cases,
-  not two - a slice's own work commits in its normal flow, stray/unrelated
-  work still gets stashed, and a new middle case, **epic-level design
-  artifacts** (the spec/ADR/glossary/ticket output of `sharpen`/`to-spec`/
-  `vocab`), goes to the **epic branch's first commit** instead of the base
-  branch - so it surfaces in the integration PR's diff instead of sitting
-  invisibly in every PR's base.
-- `ship`: the epic branch may now already exist before the first slice ships,
-  cut early by *Before you start* to carry those design artifacts - *Branching*
-  just switches to it in that case instead of creating it.
+- **Runs on Codex too** - every skill gets an `agents/openai.yaml` (display name,
+  short description, default prompt) for Codex's plugin metadata. `follow` ships
+  as standalone Codex skills rather than a native Codex plugin: its `disallowed-tools:
+  AskUserQuestion` frontmatter (Claude-only) is rejected by Codex's native plugin
+  validator.
+- `pushback`: the no-`AskUserQuestion` rule is now framed as "ask in prose" instead
+  of naming the disallowed tool in body text - the frontmatter still blocks it on
+  Claude, but the rule itself no longer assumes a Claude-only mechanism exists on
+  every harness.
+- `README.md`: install instructions split by harness - Claude Code's `/plugin`
+  flow, and `npx skills@latest add` for Codex/others (invoked as `$<name>`).
+
+## solve 0.10.0
+
+- **Runs on Codex too** - new `solve/.codex-plugin/plugin.json` registers `solve`
+  as a native Codex plugin (`codex plugin marketplace add .` from a checkout),
+  and every skill gets an `agents/openai.yaml` for Codex's plugin metadata.
+- Skill bodies decoupled from Claude-specific tool names: `setup`, `sharpen`,
+  `to-spec`, `to-tickets` now say "the harness's choice UI when available,
+  prose otherwise" instead of hard-coding `AskUserQuestion`; `code-review` and
+  `research` say "background subagent" / "the harness's web access" instead of
+  `Agent` / `WebFetch` / `WebSearch`.
+- `ship`'s bundled next-startable script moves from `solve/bin/` to
+  `solve/skills/ship/scripts/` and drops the Claude-only `${CLAUDE_PLUGIN_ROOT}`
+  reference in `REFERENCE.md` in favor of "the skill's installed directory."
+- `REFERENCE.md`: invocation syntax now covers both harnesses - Claude Code's
+  `/solve:<name>` and the native Codex plugin's `$solve:<name>` - and the
+  written-to-disk `docs/agents/solve.md` template drops the `/solve:` prefix
+  from skill names so it reads correctly under either.
+- `README.md`, `solve/README.md`: install instructions split three ways -
+  Claude Code's `/plugin` flow, the native Codex plugin
+  (`codex plugin marketplace add .`), and `npx skills@latest add` for
+  skills-only installs on any other harness.
+
+- `ship`: **epic-level design artifacts ride the epic branch, not the base
+  branch** - the output of `sharpen`/`to-spec`/`vocab` (a spec, an ADR, glossary
+  edits, local ticket files) that belongs to the whole epic but no single slice
+  used to fall under "commit it if it belongs to a slice, stash it if it
+  doesn't". Committing it to the base branch left it in the base of every PR, so
+  no diff surfaced it - the feature read as code with no design beside it. It's
+  now a third case in *Before you start*: don't commit it to the base branch;
+  create/switch to the epic branch first and commit it there as the first
+  commit, so every slice inherits it as design context and it surfaces in the
+  integration PR's diff (`epic -> base`) where a reviewer sees design and code
+  as one reviewable unit.
+- `ship`: *Build it* now states the epic branch may already exist before the
+  first slice - cut early by *Before you start* to carry those artifacts - so
+  the ordering (epic branch exists before any slice branch) is explicit rather
+  than implied by the lazy-create rule.
 
 ## follow 0.3.0
 

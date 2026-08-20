@@ -1,12 +1,12 @@
 ---
 name: research
-description: Investigate a question against primary sources and save the findings as a markdown file in the repo. Runs as a background agent so you keep working. Primary sources only - official docs, source code, specs, first-party APIs. Feeds sharpen; it informs the thinking, it doesn't replace it.
+description: Investigate a question against primary sources and save the findings as a markdown file in the repo. Runs in a background subagent when the harness supports it so you keep working. Primary sources only - official docs, source code, specs, first-party APIs. Feeds sharpen; it informs the thinking, it doesn't replace it.
 ---
 
 # research - investigate against primary sources, in the background
 
-Delegate the reading to a background `Agent` while you keep working; it comes back with a markdown file, not a chat answer.
-The agent reads the official docs directly via `WebFetch` / `WebSearch`.
+Delegate the reading to a background subagent when the harness supports it while you keep working; it comes back with a markdown file, not a chat answer.
+Read official docs directly with the harness's available web access.
 
 ## Primary sources only
 

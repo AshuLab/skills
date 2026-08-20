@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pushback"
+  short_description: "Stress-test an idea by walking its decisions"
+  default_prompt: "Use $pushback to stress-test this idea until its open decisions are resolved."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Recap"
+  short_description: "Package this conversation for another agent"
+  default_prompt: "Use $recap to package this conversation so another agent can continue it cold."

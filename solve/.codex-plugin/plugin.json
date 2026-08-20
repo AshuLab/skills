@@ -1,0 +1,36 @@
+{
+  "name": "solve",
+  "version": "0.10.0",
+  "description": "Skills for taking application work from a raw idea to shipped code through explicit phase boundaries.",
+  "author": {
+    "name": "Diego Ghersi",
+    "email": "ghersidl@gmail.com"
+  },
+  "homepage": "https://github.com/AshuLab/skills/tree/main/solve",
+  "repository": "https://github.com/AshuLab/skills",
+  "license": "MIT",
+  "keywords": [
+    "engineering",
+    "specification",
+    "tickets",
+    "tdd",
+    "code-review"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Solve",
+    "shortDescription": "Take an idea from raw to shipped",
+    "longDescription": "Structure application work from sharpening and specification through vertical tickets, implementation, testing, and review.",
+    "developerName": "AshuLab",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Help me choose the right solve workflow.",
+      "Turn this idea into a buildable spec.",
+      "Take this ticket through to completion."
+    ]
+  }
+}

@@ -4,7 +4,7 @@ The agent-facing reference that `setup` writes, so an agent opening the user's r
 Two pieces:
 
 **Naming rule:** in prose, always write "the solve skill set" / "solve skills" - never a bare "solve", which reads as the verb "to solve".
-The technical namespace (`/solve:...`, `solve:epic`) stays as is.
+Claude Code invokes skills as `/solve:<name>` or `/follow:<name>`. The native Codex solve plugin uses `$solve:<name>`; follow's standalone Codex skills use `$<name>`. Tracker labels such as `solve:epic` stay as is.
 
 ## Block for the repo's CLAUDE.md / AGENTS.md
 
@@ -80,27 +80,26 @@ The template below is in **github** mode; for a **local** repo, the Tracker sect
 # solve skills - how this repo uses them
 
 This repo uses the **solve** skill set to take an idea from raw to shipped. Each
-step is a skill; invoke it as `/solve:<name>`.
+step is a skill: Claude Code uses `/solve:<name>`; the native Codex plugin uses `$solve:<name>`.
 
 ## The flow
-New work enters at `/solve:sharpen` - even when it arrives already written, as an issue
+New work enters at `sharpen` - even when it arrives already written, as an issue
 or a doc. Each step consumes what the previous one left, so they run in order.
 
-- `/solve:sharpen` - take a raw idea, doc or issue to a brief: reality-check + capture the thinking (grill it first with `/follow:pushback` if it's raw)
-- `/solve:to-spec` - turn the brief into a PRD, deciding where each story gets tested
-- `/solve:to-tickets` - break the PRD into vertical, agent-ready slices
-- `/solve:ship` - take a startable ticket to done: claim, build, close the loop (a PR).
+- `sharpen` - take a raw idea, doc or issue to a brief: reality-check + capture the thinking (grill it first with the follow skill `pushback` if it's raw)
+- `to-spec` - turn the brief into a PRD, deciding where each story gets tested
+- `to-tickets` - break the PRD into vertical, agent-ready slices
+- `ship` - take a startable ticket to done: claim, build, close the loop (a PR).
   Handed the epic instead, it drains every slice in dependency order
 
-Reach for `/solve:tdd` and `/solve:code-review` when they earn it, and
-`/solve:guide` if you're unsure which skill fits.
+Reach for `tdd` and `code-review` when they earn it, and `guide` if you're unsure which skill fits.
 
 ## Feeds and on-ramps
-- `/solve:diagnose` - a bug or performance regression you don't understand
-- `/solve:research`, `/solve:prototype` - gather evidence to feed `sharpen`
-- `/solve:pre-check` - revalidate a spec or ticket that sat a while
-- `/follow:pushback` - just the grilling, on anything, nothing written (sharpen recommends it for a raw idea; needs the follow skill set)
-- `/solve:vocab` - the glossary and ADRs (shared vocabulary)
+- `diagnose` - a bug or performance regression you don't understand
+- `research`, `prototype` - gather evidence to feed `sharpen`
+- `pre-check` - revalidate a spec or ticket that sat a while
+- the follow skill `pushback` - just the grilling, on anything, nothing written (sharpen recommends it for a raw idea)
+- `vocab` - the glossary and ADRs (shared vocabulary)
 
 ## Where things live
 - PRDs / specs -> `docs/specs/`
@@ -117,8 +116,8 @@ This repo runs in **github** mode - epics and tickets are GitHub Issues in
   - `--parent` is the sub-issue link, `--blocked-by` the real dependency
 - claim -> `gh issue edit <n> --add-assignee @me` (leave `solve:refined` as is)
 - close the loop -> `gh pr create` with `Closes #<n>`; merging the slice + closing the issue is under **Branching** (the merge into the epic branch won't auto-close it)
-- find the next startable slice -> run `${CLAUDE_PLUGIN_ROOT}/bin/solve-next-startable`
-  (bundled with the plugin) - prints the lowest open `solve:refined` slice that's
+- find the next startable slice -> run the `ship` skill's bundled
+  `scripts/solve-next-startable` from its installed directory - prints the lowest open `solve:refined` slice that's
   unassigned with no OPEN blocker, or nothing
 
 ## Branching

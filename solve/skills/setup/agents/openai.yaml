@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solve Setup"
+  short_description: "Configure local or GitHub tracking for solve"
+  default_prompt: "Use $setup to configure how the solve skills track work in this repository."

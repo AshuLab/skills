@@ -1,0 +1,6 @@
+interface:
+  display_name: "Zoom Out"
+  short_description: "Show the shape and open edges of the discussion"
+  default_prompt: "Use $zoom-out to show the shape of this conversation and the clearest next move."
+policy:
+  allow_implicit_invocation: false

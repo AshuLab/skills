@@ -34,7 +34,7 @@ A question whose answer depends on something still open belongs to a later pass;
   > -> <the lean you'd take>
 
   A single question needs none of that scaffolding - ask it in prose with your lean inline.
-- **No `AskUserQuestion`, and asking ends your turn.** A closed button can't hold "I'd change the approach"; the `[Q]/->` round - or a single inline question - is the open-prose replacement, and emitting it *is* the stop: wait for the reply, don't answer your own questions or walk on. Skipping the format and answering yourself are the same failure - both treat the round as a thought, not a checkpoint. A blocked or denied `AskUserQuestion` means ask in prose and wait, never that you decide alone; a call that's the user's stays theirs.
+- **Ask in prose, and asking ends your turn.** A closed button can't hold "I'd change the approach"; the `[Q]/->` round - or a single inline question - is the open-prose format, and emitting it *is* the stop: wait for the reply, don't answer your own questions or walk on. Skipping the format and answering yourself are the same failure - both treat the round as a thought, not a checkpoint. A call that's the user's stays theirs.
 
 ## When you stop
 

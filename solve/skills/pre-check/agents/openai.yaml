@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pre-check"
+  short_description: "Revalidate a spec or ticket before advancing"
+  default_prompt: "Use $pre-check to verify this artifact is still current and ready to advance."

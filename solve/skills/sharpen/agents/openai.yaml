@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sharpen"
+  short_description: "Turn a raw idea into a reality-checked brief"
+  default_prompt: "Use $sharpen to reality-check this idea and turn it into a written brief."

@@ -2,7 +2,7 @@
   "name": "follow",
   "displayName": "follow",
   "description": "Skills that work on the thinking rather than build it - plain re-says the last message lower, brief cuts a long text down to what it wants, zoom-out shows the shape of the whole conversation, recap hands it to another agent cold, pushback resists an idea until it holds.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "Diego Ghersi",
     "email": "ghersidl@gmail.com"

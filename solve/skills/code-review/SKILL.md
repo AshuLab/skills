@@ -29,7 +29,7 @@ So is a user story left unmet.
 
 Don't merge the two into one ranked list.
 A change can pass Standards and fail Spec, or the reverse - the reader needs to see both.
-Run each axis as a parallel `Agent` so one doesn't colour the other.
+Run each axis in an independent subagent so one doesn't colour the other. Run them in parallel when the harness supports it.
 
 ## What code-review does not do
 

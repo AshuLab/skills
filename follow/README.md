@@ -6,10 +6,20 @@ Nothing here touches your repo.
 
 ## Install
 
+Claude Code:
+
 ```
 /plugin marketplace add AshuLab/skills
 /plugin install follow@ashulab
 ```
+
+Codex and other agents:
+
+```
+npx skills@latest add AshuLab/skills
+```
+
+The table below uses Claude Code's `/follow:<name>` syntax. Codex installs these as standalone skills and invokes them as `$<name>`.
 
 ## The skills
 

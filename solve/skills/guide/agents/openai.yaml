@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solve Guide"
+  short_description: "Choose the right skill in the solve workflow"
+  default_prompt: "Use $guide to tell me which solve skill fits what I am trying to do."

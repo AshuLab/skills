@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prototype"
+  short_description: "Build a throwaway artifact to settle a decision"
+  default_prompt: "Use $prototype to build the smallest throwaway artifact that can settle this design question."

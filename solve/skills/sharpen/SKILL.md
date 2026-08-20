@@ -13,7 +13,7 @@ What `sharpen` owns is everything around it: checking the idea isn't already bui
 ## Starting point
 
 **Where it comes from.**
-A line of text, the conversation you're already having, or an existing artifact - a GitHub issue (`gh issue view <n>`), a local file (`Read`), a URL (`WebFetch`).
+A line of text, the conversation you're already having, or an existing artifact - a GitHub issue (`gh issue view <n>`), a local file, or a URL fetched with the harness's web access.
 Read it in full before you write anything.
 
 **A GitHub issue gets claimed first** - `gh issue edit <n> --add-assignee @me` - so nobody picks up the same one.
@@ -57,7 +57,7 @@ When the problem is clear, the scope has an edge, risky assumptions are named, h
 The questions running out isn't the same as `sharpen` being done; the brief is.
 
 Never settle a call that's the user's by writing the brief around it.
-If your read overturns the framing they arrived with, put it to them in prose and wait - a blocked `AskUserQuestion` is a cue to ask in prose, not a reason to decide alone.
+If your read overturns the framing they arrived with, put it to them in prose and wait. Never turn the lack of a choice UI into permission to decide alone.
 
 The **Open questions** you leave are only what the conversation couldn't settle - the few that genuinely need `research` or a `prototype`.
 If one more question would settle it, settle it now; a brief ending in a pile of open questions means the grilling stopped early.

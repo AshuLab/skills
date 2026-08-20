@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vocabulary"
+  short_description: "Define domain terms and record architecture decisions"
+  default_prompt: "Use $vocab to clarify these domain terms or record this architecture decision."

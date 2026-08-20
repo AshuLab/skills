@@ -1,0 +1,6 @@
+interface:
+  display_name: "Plain"
+  short_description: "Restate the previous answer in everyday words"
+  default_prompt: "Use $plain to restate your previous answer in fewer, everyday words."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,4 @@
+interface:
+  display_name: "To Spec"
+  short_description: "Turn a settled brief into a final specification"
+  default_prompt: "Use $to-spec to turn the existing brief into a final spec with testing seams."

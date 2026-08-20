@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ship"
+  short_description: "Carry a ticket or epic through to completion"
+  default_prompt: "Use $ship to carry this startable ticket through implementation and close the loop."

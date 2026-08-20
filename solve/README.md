@@ -9,10 +9,27 @@ It gives you structure to *think* (sharpen -> to-spec -> to-tickets) and optiona
 
 ## Getting started
 
+Claude Code:
+
 ```
 /plugin marketplace add AshuLab/skills
 /plugin install solve@ashulab
 ```
+
+Codex native plugin, from the repository root:
+
+```
+codex plugin marketplace add .
+codex plugin add solve@ashulab-local
+```
+
+Codex and other agents, skills-only:
+
+```
+npx skills@latest add AshuLab/skills
+```
+
+The examples below use Claude Code's `/solve:<name>` syntax. The native Codex plugin uses `$solve:<name>`; a skills-only Codex install uses `$<name>`.
 
 Restart the session so the skills load, then:
 
@@ -87,13 +104,13 @@ One skill doing both would have created that issue on the way out of sharpening.
 - **Primary sources.** Decisions rest on official docs, source code and specs - not on memory.
 - **Reality-check before sharpening.** A cheap look - at the code *and* the docs/specs - comes first; don't sharpen something already built or already written.
 
-## Running on Claude Code
+## Running on Claude Code and Codex
 
-The set assumes Claude Code and uses its native tools - a deliberate coupling (not portable to other harnesses as-is):
+The skills describe capabilities instead of provider tool names, so each harness uses its native equivalent:
 
-- **Questions, by type.** Closed, tactical choices (2-4 discrete options) use `AskUserQuestion`, so the person selects instead of typing "the B" - in `setup`, `to-spec` and `to-tickets`. `sharpen` is the exception: when its read overturns your framing it asks in prose, not a button, so a matured "I'd change the approach" isn't crushed into a closed list. (The open-ended grilling proper is `follow:pushback`.)
-- **Subagents.** `research` runs as a background `Agent`; `code-review` runs its two axes as parallel `Agent`s so they don't contaminate each other.
-- **Primary sources.** `research` reads via `WebFetch` / `WebSearch`.
+- **Questions, by type.** Closed, tactical choices use the harness's choice UI when available and prose otherwise. `sharpen` always asks in prose when its read overturns the framing.
+- **Subagents.** `research` delegates to a background subagent when supported; `code-review` runs its two axes as independent subagents, in parallel when supported.
+- **Primary sources.** `research` uses the harness's web access to read official docs and other first-party sources directly.
 
 ## Artifacts
 
