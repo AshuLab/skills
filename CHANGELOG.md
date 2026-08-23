@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.11.1 / follow 0.4.1
+
+- Dropped `disallowed-tools: AskUserQuestion` from `sharpen` and `pushback`'s
+  frontmatter - it's Claude-only and Codex's native plugin validator rejects it.
+  Both skills' bodies already state the "ask in prose, wait for the reply" rule
+  in harness-neutral terms, so the enforcement is now on the instruction, not
+  the tool gate; on Claude this trades a hard block for relying on the model to
+  follow the written rule.
+
 ## solve 0.11.0
 
 - `code-review` replaced with a stronger version: adversarial, three independent

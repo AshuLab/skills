@@ -1,6 +1,5 @@
 ---
 name: pushback
-disallowed-tools: AskUserQuestion
 description: Push back on an idea, plan or decision until it holds up - walking the tree of decisions outward from the problem, one round at a time, each question in prose with a [Q]/-> lean so the reply stays open. Context-agnostic and leaves no artifact - reach for it when you just want the thinking stress-tested. To carry what survives onward into a written spec, hand it to a flow like the solve skill set.
 ---
 

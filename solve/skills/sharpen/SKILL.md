@@ -1,6 +1,5 @@
 ---
 name: sharpen
-disallowed-tools: AskUserQuestion
 description: Take a raw idea to a written brief - reality-check that it isn't already built or specced, capture the thinking as glossary entries and ADRs, and write a brief that to-spec consumes. The entry point of the idea->ship flow. Starts from a line of text, a conversation, or an existing artifact - a GitHub issue, a doc, a URL. When a raw idea needs stress-testing first, that's the optional prior step follow:pushback.
 ---
 
