@@ -5,7 +5,7 @@ It is not a bag of loose commands: it is a system where each skill has a single 
 
 The value is upstream - in thinking well.
 The set does not try to orchestrate the coding itself, because the model already does that well.
-It gives you structure to *think* (sharpen -> to-spec -> to-tickets) and optional discipline tools to *execute* (tdd, code-review).
+It gives you structure to *think* (sharpen -> to-spec -> to-tickets) and optional discipline tools to *execute* (tdd, code-review, code-resolve).
 
 ## Getting started
 
@@ -61,7 +61,7 @@ Main flow | idea -> shipped
     | to-tickets - vertical slices + blocking edges + a definition of done
     | ship - carry a ticket to done (claim, build, close the loop), or drain a whole epic
   -> build the middle freely, or hand it to a specialized skill; reach for
-    tdd / code-review when they earn it
+    tdd / code-review / code-resolve when they earn it
 
   | pre-check - optional gate before advancing: run it when there's distance
     (time passed, or the task isn't from sharpen) - rechecks it still applies +
@@ -70,7 +70,8 @@ Main flow | idea -> shipped
 Cross-cutting | invoke anytime
   | vocab - domain glossary + architecture decision records (ADRs)
   | tdd - red -> green, seams first; optional, never mandatory
-  | code-review - two axes: standards + spec
+  | code-review - adversarial review on three axes: spec, standards, risk
+  | code-resolve - judge, fix, and reply to reviewer comments on your PR
 
 Feed the thinking | evidence for sharpen
   | research - primary sources, in the background
@@ -83,7 +84,7 @@ On-ramps | you don't always start from a new idea
 ## The main flow, in one line
 
 You take the idea to a brief that holds up (`sharpen` - grilling it first with `follow:pushback` if it's raw) -> you formalize it into a PRD and pin down where each story gets tested (`to-spec`, which never re-interviews you) -> you break it into vertical, agent-ready tickets (`to-tickets`) -> you carry each ticket to done (`ship`): claim it, build the middle freely - the model codes well, or hand it to a specialized skill - and close the loop with a PR.
-Reach for `tdd` or `code-review` when they earn it.
+Reach for `tdd`, `code-review`, or `code-resolve` when they earn it.
 
 Each boundary is a **guard**: it forces you to close the previous phase before moving on.
 That is what stops you from coding a half-baked idea.
@@ -99,7 +100,7 @@ One skill doing both would have created that issue on the way out of sharpening.
 - **The value is upstream.** The set structures *thinking*, not coding. There is no build orchestrator - a good ticket is the instruction, and the model takes it from there.
 - **Less, on purpose.** Reuse before building, delete before adding, three lines before an abstraction. Every phase biases toward *not* writing code - `sharpen` chases the smallest fix, `code-review` asks "could this be less?" - never toward not caring: safety and correctness aren't negotiable.
 - **Composition over monolith.** `sharpen` doesn't invent ADRs; it calls `vocab`. It doesn't own the grill either - that's `follow:pushback`, an optional prior step; `sharpen` frames whatever it settled with the reality-check, the trail and the brief. Skills compose instead of duplicating.
-- **Optional by design.** `pre-check`, `tdd` and `code-review` are invoked when they earn it, never forced as pipeline steps.
+- **Optional by design.** `pre-check`, `tdd`, `code-review`, and `code-resolve` are invoked when they earn it, never forced as pipeline steps.
 - **State lives in artifacts, not in the conversation.** Glossary, ADRs, specs and tickets are files (or issues). That's why the flow survives across sessions.
 - **Primary sources.** Decisions rest on official docs, source code and specs - not on memory.
 - **Reality-check before sharpening.** A cheap look - at the code *and* the docs/specs - comes first; don't sharpen something already built or already written.
@@ -109,7 +110,7 @@ One skill doing both would have created that issue on the way out of sharpening.
 The skills describe capabilities instead of provider tool names, so each harness uses its native equivalent:
 
 - **Questions, by type.** Closed, tactical choices use the harness's choice UI when available and prose otherwise. `sharpen` always asks in prose when its read overturns the framing.
-- **Subagents.** `research` delegates to a background subagent when supported; `code-review` runs its two axes as independent subagents, in parallel when supported.
+- **Subagents.** `research` delegates to a background subagent when supported; `code-review` runs its three axes as independent subagents, in parallel when supported.
 - **Primary sources.** `research` uses the harness's web access to read official docs and other first-party sources directly.
 
 ## Artifacts
@@ -141,7 +142,7 @@ Then:
 - `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
 
 Either mode:
-- `code-review` and `diagnose` don't persist a file - their output is thinking or feedback, not an artifact. A diagnosis that surfaces a design gap becomes an ADR or a ticket via `vocab`.
+- `code-review`, `code-resolve`, and `diagnose` don't persist a file - their output is thinking or feedback, not an artifact. A diagnosis that surfaces a design gap becomes an ADR or a ticket via `vocab`.
 - **Agent scratch** - repro scripts, intermediate output, HTML reports, throwaway drafts - goes to `$TMPDIR`, never the repo. A repro script worth keeping becomes a regression test, not a loose file.
 
 ## Skills
@@ -157,12 +158,13 @@ Either mode:
 | pre-check   | gate          | you                     |
 | tdd         | cross-cutting | you / diagnose / ship   |
 | code-review | cross-cutting | you                     |
+| code-resolve| cross-cutting | you                     |
 | research    | feed          | you / sharpen           |
 | prototype   | feed          | you / sharpen           |
 | diagnose    | on-ramp       | you                     |
 | guide       | router        | you                     |
 
-All 13 skills drafted (the grill, `pushback`, moved out to the `follow` set).
+All 14 skills drafted (the grill, `pushback`, moved out to the `follow` set).
 The thinking chain (sharpen -> to-spec -> to-tickets) was dogfooded against real repos in both modes - a full local run, plus `setup` and sharpen -> to-spec against a GitHub repo - with the refinements folded back in.
 One caveat on that: `sharpen` has been restructured since, with the grilling moved out to `follow:pushback`, so it's newer than the run that validated it.
-Still unproven: the execution skills (ship, tdd, code-review - they only exercise with real code), plus diagnose, prototype, pre-check and guide.
+Still unproven: the execution skills (ship, tdd, code-review, code-resolve - they only exercise with real code), plus diagnose, prototype, pre-check and guide.

@@ -1,4 +1,4 @@
 interface:
   display_name: "Code Review"
-  short_description: "Review a diff against standards and its spec"
-  default_prompt: "Use $code-review to review this diff against repo standards and the originating spec."
+  short_description: "Adversarial review of a PR, branch, or diff on three axes"
+  default_prompt: "Use $code-review to review this change against intent, standards, and risk."

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.11.0
+
+- `code-review` replaced with a stronger version: adversarial, three independent
+  axes (spec, standards, risk - up from spec/standards), a "necessity first" pass,
+  and evidence-backed findings with explicit severity (Blocker/Suggestion/Nitpick)
+  and certainty (verified/probable). Works on a PR, local branch, supplied diff,
+  file, or directory, not just a diff against a fixed point.
+- New skill **`code-resolve`**: works through every reviewer comment on a PR -
+  across all reviewers - judging technical merit, verifying against current code,
+  drafting a fix and a short reply, and presenting the full batch for approval
+  before anything touches GitHub. Closes the loop `code-review` opens.
+
 ## follow 0.4.0
 
 - **Runs on Codex too** - every skill gets an `agents/openai.yaml` (display name,

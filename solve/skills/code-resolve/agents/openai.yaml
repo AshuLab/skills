@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Resolve"
+  short_description: "Judge, fix, and reply to reviewer comments on your PR"
+  default_prompt: "Use $code-resolve to work through the review comments on this PR."
