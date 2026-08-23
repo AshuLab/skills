@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## follow 0.4.2
+
+- **Runs on Codex as a native plugin, not just standalone skills** - new
+  `follow/.codex-plugin/plugin.json`, now that no skill's frontmatter blocks
+  Codex's native plugin validator. `codex plugin add follow@ashulab-local`
+  exposes the skills under the `follow:` namespace, matching `solve`.
+  README install instructions updated to match.
+
 ## solve 0.11.1 / follow 0.4.1
 
 - Dropped `disallowed-tools: AskUserQuestion` from `sharpen` and `pushback`'s

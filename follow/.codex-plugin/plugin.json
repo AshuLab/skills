@@ -1,0 +1,35 @@
+{
+  "name": "follow",
+  "version": "0.4.2",
+  "description": "Skills that work on the conversation itself, so someone can follow it.",
+  "author": {
+    "name": "Diego Ghersi",
+    "email": "ghersidl@gmail.com"
+  },
+  "homepage": "https://github.com/AshuLab/skills/tree/main/follow",
+  "repository": "https://github.com/AshuLab/skills",
+  "license": "MIT",
+  "keywords": [
+    "conversation",
+    "recap",
+    "summary",
+    "handoff",
+    "communication"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Follow",
+    "shortDescription": "Work on the thinking, not the repo",
+    "longDescription": "Re-say a message plainer, cut a long text to what it wants, show the shape of a conversation, hand it to another agent cold, or push back on an idea until it holds.",
+    "developerName": "AshuLab",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive"
+    ],
+    "defaultPrompt": [
+      "Say that more plainly.",
+      "Push back on this idea until it holds up.",
+      "Recap this conversation for a new session."
+    ]
+  }
+}

@@ -12,14 +12,13 @@ Claude Code:
 /plugin install follow@ashulab
 ```
 
-Codex native `solve` plugin, from this checkout:
+Codex native plugins, from this checkout:
 
 ```
 codex plugin marketplace add .
 codex plugin add solve@ashulab-local
+codex plugin add follow@ashulab-local
 ```
-
-`follow` stays as standalone Codex skills because its explicit-only Claude frontmatter is rejected by Codex's native plugin validator.
 
 Codex and other agents, skills-only for either set:
 
@@ -27,7 +26,7 @@ Codex and other agents, skills-only for either set:
 npx skills@latest add AshuLab/skills
 ```
 
-Pick the skills you want when the installer prompts you. Claude Code invokes them as `/solve:<name>` or `/follow:<name>`; standalone Codex skills use `$<name>`. The native Codex plugin exposes solve skills under the `solve:` namespace.
+Pick the skills you want when the installer prompts you. Claude Code invokes them as `/solve:<name>` or `/follow:<name>`; standalone Codex skills use `$<name>`. The native Codex plugins expose skills under the `solve:` / `follow:` namespace.
 
 ## Plugins
 

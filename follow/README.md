@@ -13,13 +13,20 @@ Claude Code:
 /plugin install follow@ashulab
 ```
 
-Codex and other agents:
+Codex native plugin, from this checkout:
+
+```
+codex plugin marketplace add .
+codex plugin add follow@ashulab-local
+```
+
+Codex and other agents, skills-only:
 
 ```
 npx skills@latest add AshuLab/skills
 ```
 
-The table below uses Claude Code's `/follow:<name>` syntax. Codex installs these as standalone skills and invokes them as `$<name>`.
+The table below uses Claude Code's `/follow:<name>` syntax. The native Codex plugin uses `$follow:<name>`; a skills-only Codex install uses `$<name>`.
 
 ## The skills
 
