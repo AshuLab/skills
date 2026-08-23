@@ -147,22 +147,22 @@ Either mode:
 
 ## Skills
 
-| Skill       | Layer         | Invoked by              |
-|-------------|---------------|-------------------------|
-| setup       | infra         | you (once)              |
-| vocab       | cross-cutting | sharpen / to-spec / you |
-| sharpen     | main          | you                     |
-| to-spec     | main          | you                     |
-| to-tickets  | main          | you                     |
-| ship        | main          | you                     |
-| pre-check   | gate          | you                     |
-| tdd         | cross-cutting | you / diagnose / ship   |
-| code-review | cross-cutting | you                     |
-| code-resolve| cross-cutting | you                     |
-| research    | feed          | you / sharpen           |
-| prototype   | feed          | you / sharpen           |
-| diagnose    | on-ramp       | you                     |
-| guide       | router        | you                     |
+| Skill        | Layer         | Invoked by              |
+|--------------|---------------|-------------------------|
+| setup        | infra         | you (once)              |
+| vocab        | cross-cutting | sharpen / to-spec / you |
+| sharpen      | main          | you                     |
+| to-spec      | main          | you                     |
+| to-tickets   | main          | you                     |
+| ship         | main          | you                     |
+| pre-check    | gate          | you                     |
+| tdd          | cross-cutting | you / diagnose / ship   |
+| code-review  | cross-cutting | you                     |
+| code-resolve | cross-cutting | you                     |
+| research     | feed          | you / sharpen           |
+| prototype    | feed          | you / sharpen           |
+| diagnose     | on-ramp       | you                     |
+| guide        | router        | you                     |
 
 All 14 skills drafted (the grill, `pushback`, moved out to the `follow` set).
 The thinking chain (sharpen -> to-spec -> to-tickets) was dogfooded against real repos in both modes - a full local run, plus `setup` and sharpen -> to-spec against a GitHub repo - with the refinements folded back in.
