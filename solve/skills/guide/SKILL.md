@@ -35,6 +35,7 @@ Each step consumes what the last one left, so they run in order:
 - Pin down a term or record a hard decision -> `vocab`. The glossary and the ADRs.
 - Drive a change test-first at a seam -> `tdd`.
 - Review a diff or a PR against standards + the spec -> `code-review`.
+- Judge, fix, and reply to reviewer comments on your own PR -> `code-resolve`.
 
 ## The shape
 
@@ -43,7 +44,7 @@ The same set seen as roles instead of goals - what each skill is in the machine:
 ```
 spine     sharpen -> to-spec -> to-tickets -> ship
 feeds     research, prototype, follow:pushback  (into the thinking, upstream)
-support   tdd, code-review  (on the code, when they earn it)
+support   tdd, code-review, code-resolve  (on the code, when they earn it)
 gate      pre-check  (revalidate a stale or handed-down artifact before ship)
 on-ramp   diagnose  (enter from a bug, not an idea)
 setup     once per repo, only for a GitHub tracker (optional)

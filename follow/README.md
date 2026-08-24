@@ -50,7 +50,7 @@ It forces the opposite: shorter than the original, and a different altitude rath
 
 - **The user is the reader, or another agent is.** Never both at once - the two audiences want opposite things, and a text aimed at both serves neither.
 - **Shorter or it failed.** `plain`, `brief` and `zoom-out` come out shorter than what they replace, or they didn't work.
-- **No artifacts by default.** `recap` writes a file only if you hand it a path.
+- **Never into the workspace.** `recap` always leaves a copy in the OS temp directory so it survives the session - never in the repo. The others don't write a file at all.
 - **No closed questions.** Someone who is lost can't pick from a list of things they don't understand - and pushback can't offer a button that fits "I'd change the approach".
 
 ## License

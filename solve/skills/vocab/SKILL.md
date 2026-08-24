@@ -54,6 +54,4 @@ The trade-offs accepted, good and bad.
 
 Write ADRs as flowing prose - one line per paragraph, not hard-wrapped to a fixed width (glossary entries are just a line or two).
 
-Invoked by `sharpen` (terms + ADRs as the thinking settles), `prototype` (a design call that turned out hard to reverse) and `diagnose` (a design gap the post-mortem surfaced).
-`to-spec` doesn't invoke it - it reads what's here and links to it.
 Never duplicate an entry - reference it.

@@ -15,6 +15,7 @@ Consume the brief, don't stack sections next to it:
 - Keep **Problem** and **Out of scope** as they are.
 - **Fold Direction into Solution** - write the detailed Solution and delete the Direction section; Solution supersedes it.
 - Resolve **Open questions** - answer them into Decisions/Solution, or, if one is still genuinely open, keep only that. A final spec carries no stale scaffolding.
+- **A hole surfaces mid-draft, not one sharpen already listed** - if folding Direction into Solution exposes an assumption that was never actually settled, don't invent a Decision to cover it: add it as an Open question and stop for a prose answer, or send the brief back to `sharpen` if the gap changes the framing itself. The same rule that keeps `to-spec` from interviewing you from scratch is what keeps it from quietly answering for you mid-draft.
 - Add **Scope** (numbered user stories) and **Decisions** (testing seams).
 - Flip `Status` to `spec`.
 

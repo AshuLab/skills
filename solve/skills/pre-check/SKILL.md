@@ -31,7 +31,10 @@ Don't re-run that questioning.
 - **local** - there are no labels or milestones to set; the ticket file is the whole surface.
 - Either mode - leave what the next step needs: context, links, the definition of done.
 
-If it no longer holds, kick it back with the reason - don't wave it through.
+If it doesn't hold, report it and stop - don't wave it through:
+- **Already done, moot, or a duplicate** - say so; there's nothing to advance.
+- **Still needed, but the assumptions moved under it** - back to `to-spec` (a ticket) or `sharpen` (a spec) to re-derive it against the codebase as it is now.
+- **Fundamentals were never validated and don't hold** (skipped `sharpen` entirely) - back to `sharpen`, naming what's missing.
 
 ## Output
 

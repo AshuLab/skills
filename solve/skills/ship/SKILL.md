@@ -53,6 +53,7 @@ Either way the ticket's **definition of done** is the contract: every box green 
 ## Close the loop
 
 Verify the definition of done first (typecheck, full suite, tests at the agreed seam).
+If it doesn't pass - test failure, typecheck error, a design gap - **stop**: don't mark it done, don't skip it, don't force a fix that isn't real. Report the blocker and what would close it (a fix, a decision, a rebase). This holds whether you're carrying one ticket or draining an epic; draining just decides what happens to the rest of the queue (below).
 This is also where `code-review` earns its place on a diff worth a second pass.
 Then, in order:
 
@@ -84,10 +85,11 @@ Those boxes are what marks the slice done - *find the next startable slice* read
 One slice at a time, and the only thing you pick is which.
 **The next startable slice** is open, unblocked (every blocker done), unclaimed, lowest number - the exact query lives in `docs/agents/solve.md` -> **Tracker operations**.
 Run the lifecycle on it, then look again.
+The initial *Before you start* covers the whole drain - a slice picked up later in the run doesn't need pre-check again just because time passed waiting on its blockers.
 
 It ends one of these ways, and none is "keep going anyway":
 
 - **Nothing startable, slices still open.** Every one left is blocked by something open, or already claimed by someone else. **Stop**, and report which slices remain and what holds each. Never take a blocked or someone else's slice to keep the drain moving - unattended mode makes that mistake expensive.
-- **A slice can't be completed.** Definition of done won't pass (test failure, typecheck error, design gap). **Stop** - don't mark it done and don't skip it. Report the slice, the blocker, and what's needed to unblock (a fix, a decision, a rebase). The drain resumes when it's resolved.
+- **A slice can't be completed.** Same rule as *Close the loop* above. The drain halts too - don't cherry-pick another slice to keep the run moving; unattended mode makes that mistake expensive. Resume once it's resolved.
 - **A merge conflict on integration.** `git status` to identify the conflicts, then **stop and report** - don't auto-resolve. Conflicts need a human call; resolving them wrong silently corrupts the epic branch.
 - **Every slice closed.** The drain is done. If the repo keeps a changelog or release notes (`CHANGELOG.md`, `.changeset/`, or whatever `CONTRIBUTING` names), add the **feature's** entry in that format - one per feature, not one per slice. Then in github, open the **integration PR** - the epic branch into its destination (`docs/agents/solve.md` -> **Branching**), as a **draft** with `Closes #<epic>` for a human to review; ship never merges it. When the human merges that PR, GitHub closes the epic - but only if the destination is the repo's default branch; into a non-default like `develop` it stays open until that reaches default, the human's call anyway. So **ship never closes the epic** itself. A slice has a mechanically verifiable definition of done; an epic doesn't - it's the PRD. "Every slice is closed" is a fact you can check, "the feature is delivered" is a judgement call, and the slices you drained may not even be all of them (one added later, one that never came from `to-tickets`). Report the state and leave the epic open - closing it is a human's signal that they accept the feature. Same in local: leave the spec's `Status` for the person to flip.

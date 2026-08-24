@@ -15,9 +15,6 @@ What `sharpen` owns is everything around it: checking the idea isn't already bui
 A line of text, the conversation you're already having, or an existing artifact - a GitHub issue (`gh issue view <n>`), a local file, or a URL fetched with the harness's web access.
 Read it in full before you write anything.
 
-**A GitHub issue gets claimed first** - `gh issue edit <n> --add-assignee @me` - so nobody picks up the same one.
-Note that issue as the brief's source when you write it up (see *Leave the brief*), which is what has `to-spec` mature it into the epic instead of opening a second one.
-
 **An artifact is raw material, not settled fact.**
 However it arrived - written down, filed by someone senior, sitting there for three months - it's an opening statement: usually a solution in disguise, often still vague.
 The better it's written, the sharper the trap: a filled-out issue hands you a to-do list - ACs, subtasks, its own open questions - and working that list feels like progress while being the fullest surrender to its framing.
@@ -32,7 +29,7 @@ Two searches, one answer -
 
 Already there -> stop.
 Don't sharpen a solved problem; the real issue is discoverability, or a gap in the existing thing (sharpen *that*).
-Not there -> continue.
+Not there -> continue, and if it's a GitHub issue, **claim it now** - `gh issue edit <n> --add-assignee @me` - so nobody picks up the same one. Note that issue as the brief's source when you write it up (see *Leave the brief*), which is what has `to-spec` mature it into the epic instead of opening a second one.
 
 ## Grill it first if it's raw, then keep the trail
 
@@ -65,7 +62,10 @@ If one more question would settle it, settle it now; a brief ending in a pile of
 
 Write it - as flowing prose, one line per paragraph, not hard-wrapped to a fixed width - to `docs/specs/<feature>.md` with `Status: sharpening` and the four sections you own: **Problem**, **Direction**, **Out of scope**, **Open questions** (full structure in `to-spec`'s `SPEC-FORMAT.md`).
 If it came from a GitHub issue, record `Source: owner/repo#NNN` under the title so `to-spec` updates that issue instead of creating a new one.
-`to-spec` completes it into a PRD from there - no new interview.
 
 **Direction** is where the grilling shows or doesn't: it carries what the pruning left *and what it cut* - the alternatives that were on the table and why they lost.
 A Direction that restates the one the idea arrived with is the tell that nothing got grilled.
+
+## Next step
+
+`to-spec` - turn the brief into a PRD; no new interview, just synthesis.

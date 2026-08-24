@@ -150,7 +150,7 @@ Either mode:
 | Skill        | Layer         | Invoked by              |
 |--------------|---------------|-------------------------|
 | setup        | infra         | you (once)              |
-| vocab        | cross-cutting | sharpen / to-spec / you |
+| vocab        | cross-cutting | sharpen / prototype / diagnose / you |
 | sharpen      | main          | you                     |
 | to-spec      | main          | you                     |
 | to-tickets   | main          | you                     |
