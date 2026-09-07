@@ -1,14 +1,33 @@
 #!/usr/bin/env bash
-# solve-next-startable - print the next startable slice's number, or nothing.
+# solve-next-startable <epic> - print the next startable slice of THAT epic, or nothing.
 # Startable = open, solve:refined, unassigned, no OPEN blocker, lowest number.
 # Runs against the repo gh infers from the cwd.
-# Note: --json blockedBy is a {nodes, totalCount} connection, not a flat array;
-# a slice is unblocked when it has no OPEN node (closed blockers don't count).
+# The epic argument is required and not optional on purpose: without it the query
+# spans every epic in the repo, so a drain of one epic picks up another's slices,
+# merges them into the wrong epic branch, and never reaches "every slice closed".
+# Notes on the shape of the data:
+#   --json blockedBy is a {nodes, totalCount} connection, not a flat array; a slice
+#   is unblocked when it has no OPEN node (closed blockers don't count).
+#   --json parent is null for an issue that isn't a sub-issue, hence the `?` guard.
 set -euo pipefail
 
-gh issue list --label solve:refined --state open \
-  --json number,assignees,blockedBy \
-  --jq '[.[]
+# The epic is interpolated into the jq filter below, so it has to be digits and nothing
+# else - "#7" would turn the rest of the filter into a jq comment, and a feature name
+# would parse as an undefined jq function.
+if [ $# -ne 1 ] || ! printf '%s' "$1" | grep -Eq '^[0-9]+$'; then
+  echo "usage: solve-next-startable <epic-issue-number>   (digits only, no '#')" >&2
+  exit 2
+fi
+epic="$1"
+
+# --limit matters: the label/state query is server-side and defaults to 30, while the
+# epic filter below runs client-side in jq. Unraised, a repo with more than 30 open
+# refined slices can have this epic's entirely outside the window - and the script then
+# prints nothing, exit 0, which is indistinguishable from "the epic is done".
+gh issue list --label solve:refined --state open --limit 500 \
+  --json number,assignees,blockedBy,parent \
+  --jq "[.[]
+    | select(.parent?.number == $epic)
     | select((.assignees | length) == 0)
-    | select(([.blockedBy.nodes[] | select(.state == "OPEN")] | length) == 0)]
-    | sort_by(.number) | .[0].number // empty'
+    | select(([(.blockedBy.nodes // [])[] | select(.state == \"OPEN\")] | length) == 0)]
+    | sort_by(.number) | .[0].number // empty"

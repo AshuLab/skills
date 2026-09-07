@@ -14,9 +14,10 @@ Consume the brief, don't stack sections next to it:
 
 - Keep **Problem** and **Out of scope** as they are.
 - **Fold Direction into Solution** - write the detailed Solution and delete the Direction section; Solution supersedes it.
-- Resolve **Open questions** - answer them into Decisions/Solution, or, if one is still genuinely open, keep only that. A final spec carries no stale scaffolding.
+- Resolve **Open questions** - but sort them before answering any, because only some are yours. One you can settle by reading the code, or by taking the option this repo already lives with, is yours to close: answer it into Decisions/Solution, and that's the synthesis. One about what the product should do is the user's: put it to them in prose and wait, exactly as `sharpen` would have. The tell is alternatives that differ in what a user gets rather than in what it costs to build - and being able to argue well for one of them is not evidence it was yours to pick. Whatever is still genuinely open after that, keep only that; a final spec carries no stale scaffolding.
 - **A hole surfaces mid-draft, not one sharpen already listed** - if folding Direction into Solution exposes an assumption that was never actually settled, don't invent a Decision to cover it: add it as an Open question and stop for a prose answer, or send the brief back to `sharpen` if the gap changes the framing itself. The same rule that keeps `to-spec` from interviewing you from scratch is what keeps it from quietly answering for you mid-draft.
 - Add **Scope** (numbered user stories) and **Decisions** (testing seams).
+- **A decision you inline as code gets built literally.** `SPEC-FORMAT` has you inline a snippet where it carries the decision better than prose, and the ticket inherits it - which is the risk, not the feature: prose that's roughly right gets checked against the code, the same claim as an expression gets implemented as written. Before leaving one in, run it against the inputs that story actually takes, especially the wrong-typed and empty ones. A validation expression that holds for well-formed input and quietly passes everything else is the one that gets through.
 - Flip `Status` to `spec`.
 
 ## The one thing to get right: testing seams

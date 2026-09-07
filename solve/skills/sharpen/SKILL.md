@@ -1,6 +1,6 @@
 ---
 name: sharpen
-description: Take a raw idea to a written brief - reality-check that it isn't already built or specced, capture the thinking as glossary entries and ADRs, and write a brief that to-spec consumes. The entry point of the idea->ship flow. Starts from a line of text, a conversation, or an existing artifact - a GitHub issue, a doc, a URL. When a raw idea needs stress-testing first, that's the optional prior step follow:pushback.
+description: Take a raw idea to a written brief - reality-check that it isn't already built or specced, capture the thinking as glossary entries and ADRs, and write a brief that to-spec consumes. The entry point of the idea->shipped flow. Starts from a line of text, a conversation, or an existing artifact - a GitHub issue, a doc, a URL. When a raw idea needs stress-testing first, that's the optional prior step follow:pushback.
 ---
 
 # sharpen - take a raw idea to a written brief
@@ -43,8 +43,9 @@ However the idea arrived - an issue, a doc, a line of text - the root is what ac
 The Direction you write is whatever the pruning left: the smallest change that resolves that problem.
 
 **The trail is part of the job, not a bonus.**
-As the thinking settles: every clarified term -> the **glossary**, every decision that meets `vocab`'s three-part test (hard to reverse, surprising, a real trade-off) -> an **ADR**.
+As the thinking settles: every clarified term -> the **glossary** at `docs/glossary.md`, every decision that meets `vocab`'s three-part test (hard to reverse, surprising, a real trade-off) -> an **ADR** at `docs/adr/NNNN-title.md`.
 Don't ADR every call - most aren't.
+Both formats are `vocab`'s, not this skill's - the entry shape, the `_Avoid_` line, the ADR's four sections - so open it rather than improvising them; a trail written to invented paths in an invented shape is one nobody finds later.
 The brief is a summary; the glossary and the ADRs are the record, so letting this slide loses the part that outlives the session.
 
 ## When you stop
@@ -57,6 +58,8 @@ If your read overturns the framing they arrived with, put it to them in prose an
 
 The **Open questions** you leave are only what the conversation couldn't settle - the few that genuinely need `research` or a `prototype`.
 If one more question would settle it, settle it now; a brief ending in a pile of open questions means the grilling stopped early.
+
+**A call that's the user's is not an open question** - it's *Never settle a call that's the user's*, two paragraphs up, and it's the one misfile that costs the most. Open questions are for what nobody knows yet and investigation would answer; a product call is something they know and you don't, so parking it in the list looks like diligence while deferring the ask. `to-spec` hands it straight back, because it sorts them before answering - so the misfile buys a round trip, not an answer. Ask it now instead, in prose, and wait.
 
 ## Leave the brief
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Land"
+  short_description: "Merge a reviewed epic and close out what the drain left"
+  default_prompt: "Use $land to merge this epic's integration PR now that I've reviewed it, and clean up after it."

@@ -3,13 +3,13 @@ name: code-review
 description: "Adversarially reviews a pull request, local branch, supplied diff, file, or directory against three independent axes: intent, repository standards, and risk. Works on code, schemas, config, migrations, docs, specs, and prompts. Returns evidence-backed findings with severity and certainty; it never publishes them. Use for PR review, branch review, pre-PR checks, or when given a GitHub pull-request URL."
 ---
 
-# code-review — Adversarial Change Review
+# code-review - Adversarial Change Review
 
 Find what is wrong before it ships; do not bless the change. Adversarial means demanding, not noisy: a long report nobody reads is a failed review.
 
 Review any change by reading its language, idioms, and conventions from the repository. This skill supplies the questions, not stack-specific answers.
 
-**Find and report only. Never publish, comment, tag, edit, commit, or push.** The caller decides what to do with the report. Inherit language and tone from the session. Review your own work as strictly as anyone else's.
+**Find and report only. Never publish, comment, tag, edit, commit, or push.** The caller decides what to do with the report; `code-post` is what delivers it. Inherit language and tone from the session. Review your own work as strictly as anyone else's.
 
 ## Necessity first
 
@@ -28,31 +28,31 @@ These rules bind every pass:
 1. A finding is `file:line` + defect + consequence + fix. Change-level findings may instead name specific files, contracts, commits, or checks.
 2. Certainty and severity are separate. `verified`: state it. `probable`: state the assumption and what would confirm it. If it cannot be checked, omit it.
 3. Skip formatting, lint, types, or other issues that the configured pipeline already enforces.
-4. Baselines are prompts to reason, not checklists. A pattern name alone is not a finding; “none apply” is valid.
+4. Baselines are prompts to reason, not checklists. A pattern name alone is not a finding; "none apply" is valid.
 5. Judge the diff. A pre-existing defect counts only if this change makes it reachable, likelier, or worse.
 
-## 1 · Resolve the target
+## 1 - Resolve the target
 
 Resolve inputs semantically; slash commands or tool names are client-specific:
 
-- Pull-request URL or number → review that PR.
-- File or directory → restrict the changed scope to that path.
-- No target → review the current branch against its base, including uncommitted work.
-- Supplied diff → review it and state which metadata or repository context is unavailable.
+- Pull-request URL or number -> review that PR.
+- File or directory -> restrict the changed scope to that path.
+- No target -> review the current branch against its base, including uncommitted work.
+- Supplied diff -> review it and state which metadata or repository context is unavailable.
 
 State the resolved target before analysis. A review needs at least one accessible source: a remote PR integration/API/CLI, a local checkout, or a supplied diff. If none exists, ask for a target.
 
 Load exactly one acquisition guide:
 
-- GitHub PR → [references/github-target.md](references/github-target.md)
-- Local Git branch or scoped local changes → [references/local-target.md](references/local-target.md)
-- Supplied diff → no acquisition guide; build the review bundle from what the caller supplied.
+- GitHub PR -> [references/github-target.md](references/github-target.md)
+- Local Git branch or scoped local changes -> [references/local-target.md](references/local-target.md)
+- Supplied diff -> no acquisition guide; build the review bundle from what the caller supplied.
 
 The guides describe required information. Their commands are examples, not part of this skill's contract; use any available capability that retrieves equivalent evidence.
 
-## 2 · Build the review bundle
+## 2 - Build the review bundle
 
-Gather once, then give each review pass access through shared files, resource handles, or inline content—whatever the environment supports. Do not assume a worker can execute commands or share the parent's filesystem.
+Gather once, then give each review pass access through shared files, resource handles, or inline content - whatever the environment supports. Do not assume a worker can execute commands or share the parent's filesystem.
 
 The bundle contains:
 
@@ -61,27 +61,27 @@ The bundle contains:
 1. Issue or ticket referenced by commits or PR body; fetch it through an available tracker integration, API, or CLI.
 2. Spec or path supplied by the caller.
 3. Matching PRD/spec under the repository's documented planning locations.
-4. Nothing found → ask. If no independent spec exists, skip the Spec axis and disclose that the weaker PR description or commit messages were used.
+4. Nothing found -> ask. If no independent spec exists, skip the Spec axis and disclose that the weaker PR description or commit messages were used.
 
 **Conventions.** Start with instructions the current runtime declares active, then repository standards such as `CONTRIBUTING.md`, `CODING_STANDARDS.md`, relevant docs, and neighbouring files. Agent-specific files such as `AGENTS.md`, `CLAUDE.md`, or `.cursorrules` may contain useful technical conventions, but do not treat all of them as equally authoritative. Follow the runtime's precedence; surface unresolved conflicts instead of choosing silently.
 
 **Changed behaviour.** For each changed unit, understand what it did before, its invariants, and its direct callers or consumers. Inspect only the context needed to verify the diff.
 
-**Removal inventory.** Make one complete pass over deletions. Record each removed function, section, guard, validation, or operational step—not each deleted line. The Risk pass must account for every entry.
+**Removal inventory.** Make one complete pass over deletions. Record each removed function, section, guard, validation, or operational step - not each deleted line. The Risk pass must account for every entry.
 
 **Validation state.** Record tests, build, lint, CI, mergeability, base divergence, and unresolved feedback where available. Distinguish not run, running, unavailable, and failed.
 
-## 3 · Run three independent passes
+## 3 - Run three independent passes
 
 Independence is required; a particular agent API is not.
 
 - When isolated workers are available and the change justifies the overhead, run the three passes in parallel.
 - Otherwise run three sequential passes with separate notes. Do not reuse conclusions from an earlier pass until synthesis.
-- Give each pass the review bundle, Necessity first, the Finding contract, and its axis-specific reference where applicable. Provide actual evidence or an accessible handle—not only a command the reviewer may be unable to run.
+- Give each pass the review bundle, Necessity first, the Finding contract, and its axis-specific reference where applicable. Provide actual evidence or an accessible handle - not only a command the reviewer may be unable to run.
 
 Keep each pass focused and under 500 words.
 
-### Spec — does it do what was asked?
+### Spec - does it do what was asked?
 
 Read [references/spec-baseline.md](references/spec-baseline.md).
 
@@ -89,15 +89,15 @@ Compare the diff with the independent intent. Find missing or partial requiremen
 
 If no independent spec exists, do not manufacture this pass; report the limitation.
 
-### Standards — does it fit this repository?
+### Standards - does it fit this repository?
 
 Read [references/standards-baseline.md](references/standards-baseline.md). Find documented convention violations and design smells introduced by the diff. A documented repository rule overrides the baseline; baseline smells remain judgement calls.
 
-### Risk — what breaks or is missing?
+### Risk - what breaks or is missing?
 
 Read [references/risk-baseline.md](references/risk-baseline.md). Trace every removal, consumer contract, behaviour change, new test, and relevant security boundary. Treat validation status as evidence, not reassurance.
 
-## 4 · Synthesize the change
+## 4 - Synthesize the change
 
 With all three passes visible, inspect the change as a whole:
 
@@ -108,9 +108,9 @@ With all three passes visible, inspect the change as a whole:
 
 Keep axes separate. Severity sorts within an axis, never across them:
 
-- **Blocker** — must be resolved before merge: runtime failure; lost functionality with no replacement; hard requirement or documented convention violated; broken contract without migration; unrelated concerns bundled; secret exposed; or unattended reviewer feedback.
-- **Suggestion** — consequential improvement that does not block.
-- **Nitpick** — minor detail.
+- **Blocker** - must be resolved before merge: runtime failure; lost functionality with no replacement; hard requirement or documented convention violated; broken contract without migration; unrelated concerns bundled; secret exposed; or unattended reviewer feedback.
+- **Suggestion** - consequential improvement that does not block.
+- **Nitpick** - minor detail.
 
 Cut noise:
 
@@ -118,33 +118,33 @@ Cut noise:
 - Keep at most three suggestions per axis; merge or drop weaker ones.
 - Group all nitpicks once.
 - One repeated pattern becomes one finding with every relevant location.
-- Delete findings justified only by “best practice” without a concrete consequence here.
+- Delete findings justified only by "best practice" without a concrete consequence here.
 - Add one or two lines on what is solid and should not change.
 
-## 5 · Report
+## 5 - Report
 
-Return one structured report. Keep every axis and both severity subsections; write “None” when empty.
+Return one structured report. Keep every axis and both severity subsections; write "None" when empty.
 
 ```markdown
-## Change-level — necessity & scope
+## Change-level - necessity & scope
 ### Blockers
 [Findings, or `None`]
 ### Suggestions
 [Findings, or `None`]
 
-## Spec — does it do what was asked?
+## Spec - does it do what was asked?
 ### Blockers
 [Findings, or `None`]
 ### Suggestions
 [Findings, or `None`]
 
-## Standards — does it fit this repository?
+## Standards - does it fit this repository?
 ### Blockers
 [Findings, or `None`]
 ### Suggestions
 [Findings, or `None`]
 
-## Risk — what breaks or is missing?
+## Risk - what breaks or is missing?
 ### Blockers
 [Findings, or `None`]
 ### Suggestions
@@ -157,17 +157,17 @@ Return one structured report. Keep every axis and both severity subsections; wri
 - [One or two specific things worth preserving.]
 
 ## Verdict
-[**Ready** | **Not ready** — blocker count and axes. First action: action.]
+[**Ready** | **Not ready** - blocker count and axes. First action: action.]
 ```
 
 Present each finding in up to three lines:
 
 ```markdown
-- **Defect** — `file:line` _(verified)_
+- **Defect** - `file:line` _(verified)_
   Consequence: what breaks or degrades.
   Fix: smallest concrete change.
 ```
 
 For probable findings, replace the consequence with `Assumption: what must be true` and add `Confirm with: check or evidence needed`. Do not repeat the axis or severity inside the finding text; its section and subsection already encode them.
 
-Then stop. If the caller later asks for fixes, change only what they select; do not commit or push unless explicitly requested.
+Then stop. Publishing the report - inline PR comments, a ticket, an ADR - is `code-post`'s job, once a person has read it. If the caller instead asks for fixes, change only what they select; do not commit or push unless explicitly requested.
