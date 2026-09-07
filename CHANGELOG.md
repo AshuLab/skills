@@ -27,6 +27,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   that ran `setup` before 0.12.0 must **re-run `/solve:setup`** so
   `docs/agents/solve.md` regenerates with the scoped query; `ship` resolves that
   operation from `solve.md`, not from the skill.
+- **Merge-only is enforced, not just documented.** `land`'s squash gate is now a
+  hard stop - a destination repo that disallows merge commits blocks the land
+  (was: let the human accept a squash), matching how `ship` already gated it. No
+  skill squashes or rebases anywhere; the per-slice commits and merge history are
+  kept intact.
+- `land`: `SKILL.md` restructured around a `## The shape` skeleton (gate list,
+  merge sequence, cleanup order, local-tracker variant) like `ship` has, with the
+  redundant "never work around a gate" prose trimmed. Same gates, easier to follow.
 - `sharpen` / `to-spec` / `to-tickets` / `guide` / `code-review`: tighten
   handoffs, thread `land` + `code-post` through the flow docs.
 
