@@ -13,6 +13,7 @@ Every choice below: the harness's choice UI when available, prose otherwise.
 ## 1. Detect the repo
 
 - `git rev-parse --is-inside-work-tree`, then `git remote get-url origin` -> parse `owner/name`.
+- **`git` 2.40.0 or newer** - `land`'s conflict gate runs `git merge-tree --name-only <base> <branch>` (the two-commit form landed in 2.38, `--name-only` in 2.40). On older git it errors out and the exit-0/exit-1 contract that gate reads doesn't hold. Check `git --version`; treat an older install as unsupported rather than working around it.
 - One clear GitHub remote -> **state it and use it** ("detected `<owner/name>`, using it"). Only ask when there's a real choice: multiple remotes, or a non-GitHub remote.
 - A remote that isn't GitHub -> local tracker (step 2), and say so: the branch model still works, but there are no issues and no PRs.
 - **No remote, or not in a repo** -> stop. Say what's missing rather than working around it.

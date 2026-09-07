@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### solve
+
+- New skill **`land`**: merge a finished epic once a human has reviewed it
+  (integration PR in github mode, epic branch in local), then close out the epic
+  branch, its worktree, the epic issue and any leftover slice branches. `ship`
+  stops at one reviewable PR; `land` is the step a person starts.
+- New skill **`code-post`**: take a `code-review` report and publish its findings
+  where each belongs - inline PR comments as one review, a ticket for work too big
+  for the PR, an ADR for a design gap. Re-verifies every finding against current
+  code and requires approval on the exact text before posting.
+- `ship`: opt-in **git worktree isolation** - each epic drains in its own worktree
+  so concurrent epics don't collide. Path derived from `docs/agents/solve.md`,
+  never remembered. New `WORKTREES.md`. Explicit branching model (epic branch /
+  hub / stack), hardened local-tracker paths, clearer stop conditions.
+- `setup`: new worktrees step; git remote now required in both tracker modes;
+  adds a `git` 2.40+ version gate; `REFERENCE.md` rewritten with local-mode
+  Branching/Worktrees templates.
+- **Breaking:** `solve-next-startable` now takes a required `<epic>` argument - an
+  unscoped drain could pick up another epic's slices and never terminate. Repos
+  that ran `setup` at 0.11.2 or earlier must **re-run `/solve:setup`** so
+  `docs/agents/solve.md` regenerates with the scoped query; `ship` resolves that
+  operation from `solve.md`, not from the skill.
+- `sharpen` / `to-spec` / `to-tickets` / `guide` / `code-review`: tighten
+  handoffs, thread `land` + `code-post` through the flow docs.
+
 ## follow 0.4.2
 
 - **Runs on Codex as a native plugin, not just standalone skills** - new
