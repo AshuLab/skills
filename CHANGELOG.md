@@ -5,9 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### solve
+## solve 0.12.0
 
 - New skill **`land`**: merge a finished epic once a human has reviewed it
   (integration PR in github mode, epic branch in local), then close out the epic
@@ -26,11 +24,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Branching/Worktrees templates.
 - **Breaking:** `solve-next-startable` now takes a required `<epic>` argument - an
   unscoped drain could pick up another epic's slices and never terminate. Repos
-  that ran `setup` at 0.11.2 or earlier must **re-run `/solve:setup`** so
+  that ran `setup` before 0.12.0 must **re-run `/solve:setup`** so
   `docs/agents/solve.md` regenerates with the scoped query; `ship` resolves that
   operation from `solve.md`, not from the skill.
 - `sharpen` / `to-spec` / `to-tickets` / `guide` / `code-review`: tighten
   handoffs, thread `land` + `code-post` through the flow docs.
+
+## solve 0.11.2 / follow 0.4.3
+
+- `pre-check`: the "no longer holds" outcome now branches - done/duplicate,
+  stale assumptions, and unvalidated fundamentals each get their own kickback
+  instead of a single generic one.
+- `ship`: a failed definition of done stops the run the same way in both
+  single-slice and drain modes.
+- `to-spec`: genuinely new gaps go back to `sharpen` instead of `to-spec`
+  inventing a Decision to cover them.
+- `sharpen`: claims the GitHub issue only after confirming the thing isn't
+  already solved.
+- `prototype`: guidance for making throwaways actually viewable - `file://`,
+  a single entry point, open it yourself.
+- `setup`: drops the now-moot Projects v2 note.
+- `guide`: picks up `code-resolve`.
+- `follow` `recap`: always writes to `$TMPDIR`, no longer file-optional.
 
 ## follow 0.4.2
 
