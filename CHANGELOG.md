@@ -182,12 +182,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `to-tickets`: notes that a ticket's `Blocked by` `NNN` values are draft indexes,
   resolved to real handles only at publish time.
 - Cosmetic: `->`/`[Q1]` arrows in `pushback` and `solve/README.md` switched from
-  unicode `→` back to ASCII, matching the rest of the repo.
+  unicode `->` back to ASCII, matching the rest of the repo.
 
 ## solve 0.5.1
 
 - `solve/README.md`: caught up with two undocumented changes - `pushback`'s
-  rounds model (single question in prose vs. a numbered `[Q1]/→` round) and
+  rounds model (single question in prose vs. a numbered `[Q1]/->` round) and
   `ship`'s branching model (epic branch, stacking, merge-only, one integration
   PR at the end).
 
@@ -223,7 +223,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## solve 0.4.3
 
-- `pushback`: the `[Q1] <title>` / `→ <lean>` numbered format now applies only
+- `pushback`: the `[Q1] <title>` / `-> <lean>` numbered format now applies only
   when a round carries several questions; a single question is asked in plain
   prose with the lean inline, no scaffolding.
 
@@ -233,7 +233,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ask the whole frontier (every decision whose prerequisites are settled) in one
   round, then wait before recomputing it; early on that's usually one question,
   widening into a numbered round only when several are genuinely independent.
-- `pushback`: questions now use a fixed `[Q1] <title>: ...` / `→ <lean>` format -
+- `pushback`: questions now use a fixed `[Q1] <title>: ...` / `-> <lean>` format -
   same easy-to-answer structure as `AskUserQuestion`, in open prose the user can
   push back on. Also corrects a real gap: `disallowed-tools` only blocks the tool
   on the first turn and clears on the next message, so the no-`AskUserQuestion`

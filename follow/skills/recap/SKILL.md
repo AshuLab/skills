@@ -1,6 +1,5 @@
 ---
 name: recap
-argument-hint: "[what the next session will focus on]"
 description: Package the conversation so another agent can pick it up cold - what got decided and why, what was ruled out, where things stand, what comes next. Reach for it when you're stopping and something else continues - a new session, another machine, a different tool. The reader has no transcript, so it has to stand on its own.
 ---
 

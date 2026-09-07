@@ -20,6 +20,7 @@ Maintains two artifacts, nothing else.
 - **Challenge vague terms** - pin down what "process" or "order" actually mean here; a vague entry is worse than none.
 - **Resolve overloaded words** - if "user" means three things, invent three precise terms, keep those, and list "user" under their `_Avoid_` so it can't creep back.
 - **Domain only, not code** - "idempotency" can go in; "UserRepository" can't.
+- **Cross-check against the code** - when the user states how something works, check whether the code agrees. A contradiction is worth surfacing on the spot: "the code cancels the whole Order, but you just said partial cancellation is possible - which is it?" Let them resolve it; don't silently pick a side.
 
 ## When to create an ADR
 

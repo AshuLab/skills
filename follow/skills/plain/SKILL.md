@@ -1,6 +1,5 @@
 ---
 name: plain
-disable-model-invocation: true
 description: Say the assistant's previous message again in everyday words - same content, fewer words, in whatever language the user is writing in. Reach for it when an answer came out too technical or too dense, or leaned on terms that never landed.
 ---
 

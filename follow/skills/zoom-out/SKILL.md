@@ -1,6 +1,5 @@
 ---
 name: zoom-out
-disable-model-invocation: true
 description: Step out of the detail and show the shape of the whole conversation - what holds, what is still open, where the work drifted - so the next move is obvious. Written for the person who has been deep in it the whole time, not for a fresh agent.
 ---
 

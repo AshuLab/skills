@@ -1,6 +1,5 @@
 ---
 name: brief
-disable-model-invocation: true
 description: Read something long and text-only you were pointed at - a doc, a GitHub issue, a URL, a wall of pasted text - and give back what's under it in plain words - what they want done, why, and how they expect it, with the padding cut. Reach for it when the thing is long, dense or LLM-bloated and you need the intent fast. For re-saying the assistant's own last message simpler, that's plain.
 ---
 
