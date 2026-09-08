@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Post"
+  short_description: "Publish a review's findings where each one belongs"
+  default_prompt: "Use $code-post to deliver this review to the pull request, after re-verifying each finding."

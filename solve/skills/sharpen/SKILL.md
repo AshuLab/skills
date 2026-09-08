@@ -1,13 +1,13 @@
 ---
 name: sharpen
-description: Take a raw idea to a written brief - reality-check that it isn't already built or specced, capture the thinking as glossary entries and ADRs, and write a brief that to-spec consumes. The entry point of the idea->ship flow. Starts from a line of text, a conversation, or an existing artifact - a GitHub issue, a doc, a URL. When a raw idea needs stress-testing first, that's the optional prior step follow:pushback.
+description: Take a raw idea to a written brief - reality-check that it isn't already built or specced, capture the thinking as glossary entries and ADRs, and write a brief that to-spec consumes. The entry point of the idea->shipped flow. Starts from a line of text, a conversation, or an existing artifact - a GitHub issue, a doc, a URL. A raw idea gets stress-tested first by follow:pushback, which sharpen invokes before it writes anything.
 ---
 
 # sharpen - take a raw idea to a written brief
 
 The entry point of the flow, and the step whose output is a **brief**.
-The grilling itself isn't here - that's `follow:pushback`, an optional prior step the human runs when a raw idea needs stress-testing.
-What `sharpen` owns is everything around it: checking the idea isn't already built, holding the trail as the thinking settles, and leaving something on disk that `to-spec` picks up.
+The grilling is `follow:pushback`'s - a separate skill with its own frontier-walk logic. `sharpen` **invokes it** when the idea is raw, then builds the brief from what survived; it doesn't reimplement the questioning.
+What `sharpen` owns is everything around that: checking the idea isn't already built, holding the trail as the thinking settles, and leaving something on disk that `to-spec` picks up.
 
 ## Starting point
 
@@ -33,9 +33,13 @@ Not there -> continue, and if it's a GitHub issue, **claim it now** - `gh issue 
 
 ## Grill it first if it's raw, then keep the trail
 
-If the idea arrived raw - a fuzzy problem, or a solution in disguise - the sharpest move is to stress-test it before writing anything: `follow:pushback`, on its own.
-It's the human's call, not a step `sharpen` forces - recommend it when it earns it, and take whatever the grilling settled as your material.
-`sharpen` doesn't re-run the questioning; it turns a settled conversation into artifacts.
+**If the idea arrived raw - a fuzzy problem, or a solution in disguise - grill it before writing anything**, and don't write a brief off an ungrilled idea: a thin brief is worse than none, `to-spec` inherits every gap it leaves.
+
+- **`follow:pushback` is available** -> invoke it. Hand it the idea and whatever context you have, let it work the frontier to empty, and take what survives as your material. This is the path - `sharpen` doesn't reimplement the questioning.
+- **It isn't** (no `follow` plugin, standalone Codex skill missing) -> do the walk inline: the root first - what actually hurts, for whom, how you'd know it's fixed - then the frontier one round at a time, each question in prose with your lean, pruning before expanding. Stop when nothing answerable is left, not when it has been enough turns.
+
+The only skip: the idea already came through a grilling - a `follow:pushback` run, or a back-and-forth in this session that genuinely settled the root, the scope and the risky assumptions. A well-written issue is **not** that (*An artifact is raw material*, above) - grill it.
+
 Two things are `sharpen`'s throughout:
 
 **The root is this feature's problem.**
@@ -43,8 +47,9 @@ However the idea arrived - an issue, a doc, a line of text - the root is what ac
 The Direction you write is whatever the pruning left: the smallest change that resolves that problem.
 
 **The trail is part of the job, not a bonus.**
-As the thinking settles: every clarified term -> the **glossary**, every decision that meets `vocab`'s three-part test (hard to reverse, surprising, a real trade-off) -> an **ADR**.
+As the thinking settles: every clarified term -> the **glossary** at `docs/glossary.md`, every decision that meets `vocab`'s three-part test (hard to reverse, surprising, a real trade-off) -> an **ADR** at `docs/adr/NNNN-title.md`.
 Don't ADR every call - most aren't.
+Both formats are `vocab`'s, not this skill's - the entry shape, the `_Avoid_` line, the ADR's four sections - so open it rather than improvising them; a trail written to invented paths in an invented shape is one nobody finds later.
 The brief is a summary; the glossary and the ADRs are the record, so letting this slide loses the part that outlives the session.
 
 ## When you stop
@@ -57,6 +62,8 @@ If your read overturns the framing they arrived with, put it to them in prose an
 
 The **Open questions** you leave are only what the conversation couldn't settle - the few that genuinely need `research` or a `prototype`.
 If one more question would settle it, settle it now; a brief ending in a pile of open questions means the grilling stopped early.
+
+**A call that's the user's is not an open question** - it's *Never settle a call that's the user's*, two paragraphs up, and it's the one misfile that costs the most. Open questions are for what nobody knows yet and investigation would answer; a product call is something they know and you don't, so parking it in the list looks like diligence while deferring the ask. `to-spec` hands it straight back, because it sorts them before answering - so the misfile buys a round trip, not an answer. Ask it now instead, in prose, and wait.
 
 ## Leave the brief
 

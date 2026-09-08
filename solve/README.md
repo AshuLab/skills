@@ -5,7 +5,7 @@ It is not a bag of loose commands: it is a system where each skill has a single 
 
 The value is upstream - in thinking well.
 The set does not try to orchestrate the coding itself, because the model already does that well.
-It gives you structure to *think* (sharpen -> to-spec -> to-tickets) and optional discipline tools to *execute* (tdd, code-review, code-resolve).
+It gives you structure to *think* (sharpen -> to-spec -> to-tickets) and optional discipline tools to *execute* (tdd, code-review, code-post, code-resolve).
 
 ## Getting started
 
@@ -33,11 +33,12 @@ The examples below use Claude Code's `/solve:<name>` syntax. The native Codex pl
 
 Restart the session so the skills load, then:
 
-1. **`/solve:setup`** - only if you want a GitHub tracker. Skip it and everything stays as markdown under `docs/`, no config, nothing to maintain.
-2. **`/solve:sharpen <your idea>`** - it checks the thing isn't already built, captures the thinking as it settles, and leaves a brief at `docs/specs/<feature>.md` (grill it first with `/follow:pushback` if it's raw).
+1. **`/solve:setup`** - only if you want a GitHub tracker, or worktree isolation so concurrent epics don't collide in one working tree. Skip it and everything stays as markdown under `docs/`, in a single tree, no config, nothing to maintain. Either way the repo needs a git remote.
+2. **`/solve:sharpen <your idea>`** - it checks the thing isn't already built, captures the thinking as it settles, and leaves a brief at `docs/specs/<feature>.md`. A raw idea gets grilled first - `sharpen` invokes `/follow:pushback` for that (install `follow`, or it walks the questions itself).
 3. **`/solve:to-spec`** - turns that brief into a PRD, deciding where each story gets tested. In GitHub mode this is what publishes the epic issue.
 4. **`/solve:to-tickets`** - cuts the PRD into vertical slices, each with a definition of done and its blocking edges.
 5. **`/solve:ship <ticket>`** - claims it, builds it, closes the loop. Hand it the **epic** instead and it drains every slice in dependency order, unattended.
+6. **`/solve:land <epic>`** - after *you* read the integration PR and accept it: merges it and closes out everything the drain left open (epic branch, worktree, epic issue). `ship` deliberately stops short of this; `land` is where a person says go.
 
 Not sure which step you're on?
 **`/solve:guide`**.
@@ -53,24 +54,27 @@ Setup (once per repo, optional)
   | setup - pick the tracker: local markdown (default) or a GitHub repo
 
 Main flow | idea -> shipped
-  sharpen -> to-spec -> to-tickets -> ship
+  sharpen -> to-spec -> to-tickets -> ship -> land
     | sharpen - reality-check it doesn't already exist, capture the trail, leave a brief
-      (grill it first with `follow:pushback` if it's raw)
+      (invokes `follow:pushback` to grill a raw idea first)
     | to-spec - formalize into a PRD, a product requirements document (file or epic
       issue) - no new interview; its real call is where each story gets tested
     | to-tickets - vertical slices + blocking edges + a definition of done
     | ship - carry a ticket to done (claim, build, close the loop), or drain a whole epic
+    | land - you've read the integration PR and accept it: merge it and close out the
+      epic branch, its worktree, the epic issue. The one step a human starts.
   -> build the middle freely, or hand it to a specialized skill; reach for
     tdd / code-review / code-resolve when they earn it
 
   | pre-check - optional gate before advancing: run it when there's distance
     (time passed, or the task isn't from sharpen) - rechecks it still applies +
-    sets tags/milestone. Skip it when you just sharpened and are building now.
+    sets labels/milestone. Skip it when you just sharpened and are building now.
 
 Cross-cutting | invoke anytime
   | vocab - domain glossary + architecture decision records (ADRs)
   | tdd - red -> green, seams first; optional, never mandatory
   | code-review - adversarial review on three axes: spec, standards, risk
+  | code-post - deliver that review: inline comments, a ticket, an ADR - once you've read it
   | code-resolve - judge, fix, and reply to reviewer comments on your PR
 
 Feed the thinking | evidence for sharpen
@@ -83,7 +87,7 @@ On-ramps | you don't always start from a new idea
 
 ## The main flow, in one line
 
-You take the idea to a brief that holds up (`sharpen` - grilling it first with `follow:pushback` if it's raw) -> you formalize it into a PRD and pin down where each story gets tested (`to-spec`, which never re-interviews you) -> you break it into vertical, agent-ready tickets (`to-tickets`) -> you carry each ticket to done (`ship`): claim it, build the middle freely - the model codes well, or hand it to a specialized skill - and close the loop with a PR.
+You take the idea to a brief that holds up (`sharpen` - which invokes `follow:pushback` to grill a raw idea first) -> you formalize it into a PRD and pin down where each story gets tested (`to-spec`, which never re-interviews you) -> you break it into vertical, agent-ready tickets (`to-tickets`) -> you carry each ticket to done (`ship`): claim it, build the middle freely - the model codes well, or hand it to a specialized skill - and close the loop with a PR -> you read the integration PR and accept it (`land`), which merges it and closes out the epic.
 Reach for `tdd`, `code-review`, or `code-resolve` when they earn it.
 
 Each boundary is a **guard**: it forces you to close the previous phase before moving on.
@@ -99,8 +103,8 @@ One skill doing both would have created that issue on the way out of sharpening.
 - **One responsibility per skill.** If `to-spec` starts creating tickets, the guard breaks.
 - **The value is upstream.** The set structures *thinking*, not coding. There is no build orchestrator - a good ticket is the instruction, and the model takes it from there.
 - **Less, on purpose.** Reuse before building, delete before adding, three lines before an abstraction. Every phase biases toward *not* writing code - `sharpen` chases the smallest fix, `code-review` asks "could this be less?" - never toward not caring: safety and correctness aren't negotiable.
-- **Composition over monolith.** `sharpen` doesn't invent ADRs; it calls `vocab`. It doesn't own the grill either - that's `follow:pushback`, an optional prior step; `sharpen` frames whatever it settled with the reality-check, the trail and the brief. Skills compose instead of duplicating.
-- **Optional by design.** `pre-check`, `tdd`, `code-review`, and `code-resolve` are invoked when they earn it, never forced as pipeline steps.
+- **Composition over monolith.** `sharpen` doesn't invent ADRs; it calls `vocab`. It doesn't own the grill either - that's `follow:pushback`, which `sharpen` invokes when the idea is raw; `sharpen` frames whatever it settled with the reality-check, the trail and the brief. Skills compose instead of duplicating.
+- **Optional by design.** `pre-check`, `tdd`, `code-review`, `code-post`, and `code-resolve` are invoked when they earn it, never forced as pipeline steps.
 - **State lives in artifacts, not in the conversation.** Glossary, ADRs, specs and tickets are files (or issues). That's why the flow survives across sessions.
 - **Primary sources.** Decisions rest on official docs, source code and specs - not on memory.
 - **Reality-check before sharpening.** A cheap look - at the code *and* the docs/specs - comes first; don't sharpen something already built or already written.
@@ -131,8 +135,10 @@ docs/
 ```
 
 Everything lives under `docs/`, committed and versioned - not scratch.
-In local mode the tickets under `docs/tickets/` are the source of truth.
+In local mode the tickets under `docs/tickets/` are the source of truth - committed on the **epic branch**, not the base, so read them with `git show <epic-branch>:<path>`.
 The tracker mode itself is declared in `docs/agents/solve.md` - there's no separate config file.
+
+Local means *the tracker* is files, not that the repo is offline: **a git remote is required in both modes**. Branches get pushed, bases resolve from `origin/`, and no branch is ever deleted without checking the merge against its remote ref first. What local mode drops is issues and PRs, not the remote.
 
 **GitHub** - run `setup` to pick a repo.
 Then:
@@ -142,7 +148,8 @@ Then:
 - `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
 
 Either mode:
-- `code-review`, `code-resolve`, and `diagnose` don't persist a file - their output is thinking or feedback, not an artifact. A diagnosis that surfaces a design gap becomes an ADR or a ticket via `vocab`.
+- **Worktrees are off by default** - one shared working tree, as before. Turn them on in `setup` and `ship` drains each epic in its own git worktree (`~/.solve/worktrees/<repo>/<feature>/` by default), so two epics can run at once without colliding. The location is declared once in `docs/agents/solve.md`, never decided per run - `ship` derives the path from it and reuses the worktree if it's already there. It never removes one: it doesn't merge the integration PR, so it can't know when the branch is safe to drop - instead it names the path and the `git worktree remove` in that PR's body, for `land`, which removes it after the merge.
+- `code-review`, `code-resolve`, and `diagnose` don't persist a file - their output is thinking or feedback, not an artifact. `code-post` is what turns a review's findings into PR comments, a ticket or an ADR when they deserve one. A diagnosis that surfaces a design gap becomes an ADR or a ticket via `vocab`.
 - **Agent scratch** - repro scripts, intermediate output, HTML reports, throwaway drafts - goes to `$TMPDIR`, never the repo. A repro script worth keeping becomes a regression test, not a loose file.
 
 ## Skills
@@ -155,16 +162,18 @@ Either mode:
 | to-spec      | main          | you                     |
 | to-tickets   | main          | you                     |
 | ship         | main          | you                     |
+| land         | main          | you (after reviewing)   |
 | pre-check    | gate          | you                     |
 | tdd          | cross-cutting | you / diagnose / ship   |
 | code-review  | cross-cutting | you                     |
+| code-post    | cross-cutting | you (after reading it)  |
 | code-resolve | cross-cutting | you                     |
 | research     | feed          | you / sharpen           |
 | prototype    | feed          | you / sharpen           |
 | diagnose     | on-ramp       | you                     |
 | guide        | router        | you                     |
 
-All 14 skills drafted (the grill, `pushback`, moved out to the `follow` set).
+All 16 skills drafted (the grill, `pushback`, moved out to the `follow` set).
 The thinking chain (sharpen -> to-spec -> to-tickets) was dogfooded against real repos in both modes - a full local run, plus `setup` and sharpen -> to-spec against a GitHub repo - with the refinements folded back in.
-One caveat on that: `sharpen` has been restructured since, with the grilling moved out to `follow:pushback`, so it's newer than the run that validated it.
-Still unproven: the execution skills (ship, tdd, code-review, code-resolve - they only exercise with real code), plus diagnose, prototype, pre-check and guide.
+One caveat on that: `sharpen` has been restructured since - the grilling moved out to `follow:pushback`, which `sharpen` now invokes - so it's newer than the run that validated it.
+Still unproven: the execution skills (ship, land, tdd, code-review, code-post, code-resolve - they only exercise with real code), plus diagnose, prototype, pre-check and guide.

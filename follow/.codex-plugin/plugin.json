@@ -1,6 +1,6 @@
 {
   "name": "follow",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Skills that work on the conversation itself, so someone can follow it.",
   "author": {
     "name": "Diego Ghersi",

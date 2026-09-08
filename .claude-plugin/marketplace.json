@@ -13,7 +13,7 @@
       "source": "./solve",
       "description": "Skills for the app development cycle — idea to shipped.",
       "category": "engineering",
-      "keywords": ["engineering", "tdd", "code-review", "spec", "tickets"]
+      "keywords": ["engineering", "tdd", "code-review", "code-post", "spec", "tickets", "land", "worktrees"]
     },
     {
       "name": "follow",

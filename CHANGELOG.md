@@ -7,6 +7,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.12.0
+
+- New skill **`land`**: merge a finished epic once a human has reviewed it
+  (integration PR in github mode, epic branch in local), then close out the epic
+  branch, its worktree, the epic issue and any leftover slice branches. `ship`
+  stops at one reviewable PR; `land` is the step a person starts.
+- New skill **`code-post`**: take a `code-review` report and publish its findings
+  where each belongs - inline PR comments as one review, a ticket for work too big
+  for the PR, an ADR for a design gap. Re-verifies every finding against current
+  code and requires approval on the exact text before posting.
+- `ship`: opt-in **git worktree isolation** - each epic drains in its own worktree
+  so concurrent epics don't collide. Path derived from `docs/agents/solve.md`,
+  never remembered. New `WORKTREES.md`. Explicit branching model (epic branch /
+  hub / stack), hardened local-tracker paths, clearer stop conditions.
+- `setup`: new worktrees step; git remote now required in both tracker modes;
+  adds a `git` 2.40+ version gate; `REFERENCE.md` rewritten with local-mode
+  Branching/Worktrees templates.
+- **Breaking:** local mode now needs a **git remote**. `setup` step 1 and `ship`
+  hard-stop without one, and `land` reads bases from `origin/` and verifies every
+  merge against the remote ref before deleting anything. An offline local-only
+  repo (valid on 0.11.2) has to add a remote.
+- **Breaking:** `solve-next-startable` now takes a required `<epic>` argument - an
+  unscoped drain could pick up another epic's slices and never terminate. Repos
+  that ran `setup` before 0.12.0 must **re-run `/solve:setup`** so
+  `docs/agents/solve.md` regenerates with the scoped query; `ship` resolves that
+  operation from `solve.md`, not from the skill.
+- **Merge-only is enforced, not just documented.** `land`'s squash gate is now a
+  hard stop - a destination repo that disallows merge commits blocks the land
+  (was: let the human accept a squash), matching how `ship` already gated it. No
+  skill squashes or rebases anywhere; the per-slice commits and merge history are
+  kept intact.
+- `land`: `SKILL.md` restructured around a `## The shape` skeleton (gate list,
+  merge sequence, cleanup order, local-tracker variant) like `ship` has, with the
+  redundant "never work around a gate" prose trimmed. Same gates, easier to follow.
+- `sharpen` now **invokes `follow:pushback`** on a raw idea instead of only
+  recommending it - it won't write a brief off an ungrilled idea. Without the
+  `follow` plugin it walks the frontier questions inline. Fixes `sharpen` asking
+  one or two questions and jumping straight to the brief.
+- `sharpen` / `to-spec` / `to-tickets` / `guide` / `code-review`: tighten
+  handoffs, thread `land` + `code-post` through the flow docs.
+
+## solve 0.11.2 / follow 0.4.3
+
+- `pre-check`: the "no longer holds" outcome now branches - done/duplicate,
+  stale assumptions, and unvalidated fundamentals each get their own kickback
+  instead of a single generic one.
+- `ship`: a failed definition of done stops the run the same way in both
+  single-slice and drain modes.
+- `to-spec`: genuinely new gaps go back to `sharpen` instead of `to-spec`
+  inventing a Decision to cover them.
+- `sharpen`: claims the GitHub issue only after confirming the thing isn't
+  already solved.
+- `prototype`: guidance for making throwaways actually viewable - `file://`,
+  a single entry point, open it yourself.
+- `setup`: drops the now-moot Projects v2 note.
+- `guide`: picks up `code-resolve`.
+- `follow` `recap`: always writes to `$TMPDIR`, no longer file-optional.
+
 ## follow 0.4.2
 
 - **Runs on Codex as a native plugin, not just standalone skills** - new
