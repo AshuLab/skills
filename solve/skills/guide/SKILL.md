@@ -30,7 +30,7 @@ Each step consumes what the last one left, so they run in order:
 
 ## Reach for these any time
 
-- Stress-test an idea, plan or decision, with nothing written -> `follow:pushback`. `sharpen` recommends it for a raw idea.
+- Stress-test an idea, plan or decision, with nothing written -> `follow:pushback`. `sharpen` invokes it for a raw idea; reach for it directly when you just want the thinking grilled.
 - External facts before you can decide -> `research`. Primary sources, in the background.
 - A design question only code can answer -> `prototype`. Throwaway; the output is a decision, not the thing.
 - Pin down a term or record a hard decision -> `vocab`. The glossary and the ADRs.

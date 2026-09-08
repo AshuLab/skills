@@ -34,7 +34,7 @@ The examples below use Claude Code's `/solve:<name>` syntax. The native Codex pl
 Restart the session so the skills load, then:
 
 1. **`/solve:setup`** - only if you want a GitHub tracker, or worktree isolation so concurrent epics don't collide in one working tree. Skip it and everything stays as markdown under `docs/`, in a single tree, no config, nothing to maintain. Either way the repo needs a git remote.
-2. **`/solve:sharpen <your idea>`** - it checks the thing isn't already built, captures the thinking as it settles, and leaves a brief at `docs/specs/<feature>.md` (grill it first with `/follow:pushback` if it's raw).
+2. **`/solve:sharpen <your idea>`** - it checks the thing isn't already built, captures the thinking as it settles, and leaves a brief at `docs/specs/<feature>.md`. A raw idea gets grilled first - `sharpen` invokes `/follow:pushback` for that (install `follow`, or it walks the questions itself).
 3. **`/solve:to-spec`** - turns that brief into a PRD, deciding where each story gets tested. In GitHub mode this is what publishes the epic issue.
 4. **`/solve:to-tickets`** - cuts the PRD into vertical slices, each with a definition of done and its blocking edges.
 5. **`/solve:ship <ticket>`** - claims it, builds it, closes the loop. Hand it the **epic** instead and it drains every slice in dependency order, unattended.
@@ -56,7 +56,7 @@ Setup (once per repo, optional)
 Main flow | idea -> shipped
   sharpen -> to-spec -> to-tickets -> ship -> land
     | sharpen - reality-check it doesn't already exist, capture the trail, leave a brief
-      (grill it first with `follow:pushback` if it's raw)
+      (invokes `follow:pushback` to grill a raw idea first)
     | to-spec - formalize into a PRD, a product requirements document (file or epic
       issue) - no new interview; its real call is where each story gets tested
     | to-tickets - vertical slices + blocking edges + a definition of done
@@ -87,7 +87,7 @@ On-ramps | you don't always start from a new idea
 
 ## The main flow, in one line
 
-You take the idea to a brief that holds up (`sharpen` - grilling it first with `follow:pushback` if it's raw) -> you formalize it into a PRD and pin down where each story gets tested (`to-spec`, which never re-interviews you) -> you break it into vertical, agent-ready tickets (`to-tickets`) -> you carry each ticket to done (`ship`): claim it, build the middle freely - the model codes well, or hand it to a specialized skill - and close the loop with a PR -> you read the integration PR and accept it (`land`), which merges it and closes out the epic.
+You take the idea to a brief that holds up (`sharpen` - which invokes `follow:pushback` to grill a raw idea first) -> you formalize it into a PRD and pin down where each story gets tested (`to-spec`, which never re-interviews you) -> you break it into vertical, agent-ready tickets (`to-tickets`) -> you carry each ticket to done (`ship`): claim it, build the middle freely - the model codes well, or hand it to a specialized skill - and close the loop with a PR -> you read the integration PR and accept it (`land`), which merges it and closes out the epic.
 Reach for `tdd`, `code-review`, or `code-resolve` when they earn it.
 
 Each boundary is a **guard**: it forces you to close the previous phase before moving on.
@@ -103,7 +103,7 @@ One skill doing both would have created that issue on the way out of sharpening.
 - **One responsibility per skill.** If `to-spec` starts creating tickets, the guard breaks.
 - **The value is upstream.** The set structures *thinking*, not coding. There is no build orchestrator - a good ticket is the instruction, and the model takes it from there.
 - **Less, on purpose.** Reuse before building, delete before adding, three lines before an abstraction. Every phase biases toward *not* writing code - `sharpen` chases the smallest fix, `code-review` asks "could this be less?" - never toward not caring: safety and correctness aren't negotiable.
-- **Composition over monolith.** `sharpen` doesn't invent ADRs; it calls `vocab`. It doesn't own the grill either - that's `follow:pushback`, an optional prior step; `sharpen` frames whatever it settled with the reality-check, the trail and the brief. Skills compose instead of duplicating.
+- **Composition over monolith.** `sharpen` doesn't invent ADRs; it calls `vocab`. It doesn't own the grill either - that's `follow:pushback`, which `sharpen` invokes when the idea is raw; `sharpen` frames whatever it settled with the reality-check, the trail and the brief. Skills compose instead of duplicating.
 - **Optional by design.** `pre-check`, `tdd`, `code-review`, `code-post`, and `code-resolve` are invoked when they earn it, never forced as pipeline steps.
 - **State lives in artifacts, not in the conversation.** Glossary, ADRs, specs and tickets are files (or issues). That's why the flow survives across sessions.
 - **Primary sources.** Decisions rest on official docs, source code and specs - not on memory.
@@ -175,5 +175,5 @@ Either mode:
 
 All 16 skills drafted (the grill, `pushback`, moved out to the `follow` set).
 The thinking chain (sharpen -> to-spec -> to-tickets) was dogfooded against real repos in both modes - a full local run, plus `setup` and sharpen -> to-spec against a GitHub repo - with the refinements folded back in.
-One caveat on that: `sharpen` has been restructured since, with the grilling moved out to `follow:pushback`, so it's newer than the run that validated it.
+One caveat on that: `sharpen` has been restructured since - the grilling moved out to `follow:pushback`, which `sharpen` now invokes - so it's newer than the run that validated it.
 Still unproven: the execution skills (ship, land, tdd, code-review, code-post, code-resolve - they only exercise with real code), plus diagnose, prototype, pre-check and guide.

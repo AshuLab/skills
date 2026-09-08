@@ -35,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `land`: `SKILL.md` restructured around a `## The shape` skeleton (gate list,
   merge sequence, cleanup order, local-tracker variant) like `ship` has, with the
   redundant "never work around a gate" prose trimmed. Same gates, easier to follow.
+- `sharpen` now **invokes `follow:pushback`** on a raw idea instead of only
+  recommending it - it won't write a brief off an ungrilled idea. Without the
+  `follow` plugin it walks the frontier questions inline. Fixes `sharpen` asking
+  one or two questions and jumping straight to the brief.
 - `sharpen` / `to-spec` / `to-tickets` / `guide` / `code-review`: tighten
   handoffs, thread `land` + `code-post` through the flow docs.
 
