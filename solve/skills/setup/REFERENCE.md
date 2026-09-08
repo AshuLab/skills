@@ -196,24 +196,31 @@ The tokens below are placeholders `setup` resolves, never literals to emit.
 - land the epic (a human accepted the integration PR) -> `gh pr ready <pr>`, then `gh pr merge <pr> --merge`, then clean up in this order: `git worktree remove <path>` (it holds the epic branch, so it goes first), delete `<epic-branch>`, delete any leftover slice branch under `<type>/<feature>/*`, close `#<epic>` if the merge didn't. Every delete after `git fetch origin` + `git merge-base --is-ancestor origin/<branch> origin/<destination>` - run the `land` skill rather than these by hand
 
 ## Worktrees
-**off** - `ship` works in the shared working tree.
+**off** - `ship` works in the shared working tree by default. An explicit per-run
+request ("worktree this epic"), or the pre-flight halt's `worktree` exit, still
+isolates a single epic at the path below.
+- **path** - `~/.solve/worktrees/<repo>/<feature>/`, `<feature>` the same token the
+  epic branch uses
+- **bootstrap** - `<command>` (omit when the ecosystem's obvious command applies -
+  ship infers it from the lockfile)
+- **linked config** - gitignored files the app needs to boot, symlinked into the
+  worktree; name them, or "none". Never `node_modules`, build output or caches
+- **cleanup** - `ship` names the path and the `git worktree remove` in the
+  integration PR body; `land` removes it when it merges that PR
 ```
 
-The **Worktrees** section applies in both tracker modes. Write the variant picked in step 5: *off* is the block above, one line and nothing else; *on* looks like this, path filled with this repo's real values and `<feature>` the same token the branch pattern uses:
+The **Worktrees** section applies in both tracker modes, and **always carries a path** - `ship` needs a known home whether it makes the worktree automatically (*on*) or only when a run asks (*off*). Write the mode picked in step 5 with this repo's real values, `<feature>` the same token the branch pattern uses. The *on* variant is identical bar the first line:
 
 ```markdown
 ## Worktrees
 **on** - each epic is drained in its own git worktree, so concurrent epics can't
 collide in one tree. `ship` derives the path (never remembers it) and reuses the
 worktree if it's already there.
-- **path** - `~/.solve/worktrees/<repo>/<feature>/`, where `<feature>` is the same
-  token the epic branch uses
-- **bootstrap** - `<command>` (omit the line entirely when the ecosystem's obvious
-  command applies - ship infers that from the lockfile)
-- **linked config** - gitignored files this repo actually has that the app needs to
-  boot, symlinked into the worktree; list them by name, and write "none" when there
-  are none rather than naming a file that doesn't exist. Never `node_modules`, build
-  output or caches - those get installed or rebuilt per worktree
+- **path** - `~/.solve/worktrees/<repo>/<feature>/`, `<feature>` the same token the
+  epic branch uses
+- **bootstrap** - `<command>` (omit when the ecosystem's obvious command applies)
+- **linked config** - gitignored files the app needs to boot, symlinked in; name
+  them, or "none". Never `node_modules`, build output or caches
 - **cleanup** - `ship` names the path and the `git worktree remove` in the
   integration PR body; `land` removes it when it merges that PR
 ```

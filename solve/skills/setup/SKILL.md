@@ -44,12 +44,15 @@ gh label create solve:refined --color 1a7f37 --description "Slice fully defined,
 
 Applies in both tracker modes - the code lives in git either way.
 
-Ask whether `ship` should isolate each epic in its own **git worktree**. Three answers:
-- **off** (default) - one shared working tree, today's behaviour. Recommend it unless they actually run epics concurrently: a worktree costs a dependency install and a set of symlinks every time.
-- **on, default location** - `~/.solve/worktrees/<repo>/<feature>/`.
-- **on, custom location** - take their path. Warn when it's inside the repo (`.worktrees/`): it needs a `.gitignore` entry, and any tool that walks the tree without honouring it - a loose jest glob, a wide `tsc` include, a watcher, a Docker build context - silently finds a second copy of the codebase and runs the suite twice.
+Two separate axes - ask both:
 
-In the *on* cases only, ask about **bootstrap**: a command a fresh worktree needs before it can run the app and the test suite. Leave it empty for the ecosystem's obvious one (`npm ci`, `go mod download`, ...) - `ship` infers that from the lockfile. Capture only the genuinely non-obvious: a `make setup`, a private registry that needs auth, a database that has to be seeded. Same for any gitignored file beyond `.env` the app needs to boot.
+**Mode** - when does `ship` create a worktree?
+- **off** (default) - `ship` works in the shared tree. Recommend it unless they routinely run epics concurrently: an automatic worktree costs a dependency install and a set of symlinks every epic. `off` does **not** mean "never" - an explicit per-run request ("worktree this epic") is still honoured, and so is the pre-flight halt's `worktree` exit; it just isn't the default.
+- **on** - every epic drains in its own worktree, no asking.
+
+**Path** - where a worktree goes *when one is created* (in `on` mode always, in `off` mode on request). Default `~/.solve/worktrees/<repo>/<feature>/`; ask if they want it elsewhere and take their path. Warn when it's inside the repo (`.worktrees/`): it needs a `.gitignore` entry, and any tool that walks the tree without honouring it - a loose jest glob, a wide `tsc` include, a watcher, a Docker build context - silently finds a second copy of the codebase and runs the suite twice. The resolved path goes into `solve.md` in **both** modes, so `ship` never has to guess a home for the on-request case.
+
+Unless they took plain `off` *and* say they'll never request a worktree, also ask about **bootstrap**: a command a fresh worktree needs before it can run the app and the test suite. Leave it empty for the ecosystem's obvious one (`npm ci`, `go mod download`, ...) - `ship` infers that from the lockfile. Capture only the genuinely non-obvious: a `make setup`, a private registry that needs auth, a database that has to be seeded. Same for any gitignored file beyond `.env` the app needs to boot.
 
 ## 6. Wire the reference
 
@@ -62,7 +65,7 @@ There's no config file - the repo's tracker mode is declared in the reference yo
   - **base branch** - the remote's default. `git symbolic-ref refs/remotes/origin/HEAD` only works if the repo was cloned; otherwise `git remote show origin` reports it, and `gh repo view --json defaultBranchRef` works on GitHub. `git remote set-head origin -a` fixes the first for later runs
   - **branch name pattern** - the repo's branch type from `git branch -a` / CONTRIBUTING / CLAUDE.md / AGENTS.md (`feat`, `chore`, ...; none -> `feature`), namespaced per feature: epic `<type>/<feature>/epic`, slices `<type>/<feature>/<NNN-slug>` - siblings, never nested, because git won't allow both a branch `x` and a branch `x/y`
   - **destination** - default: the base branch
-- Fill its **Worktrees** section from step 5: *off*, or the resolved path template plus the bootstrap command and any extra linked files. Use the same `<feature>` token the branch pattern uses - `ship` derives the path from it on every run, and a differently-slugified token breaks the reuse.
+- Fill its **Worktrees** section from step 5: the mode (*off* or *on*) and - in both cases - the resolved path, plus the bootstrap command and any extra linked files unless worktrees can never happen here. Use the same `<feature>` token the branch pattern uses - `ship` derives the path from it on every run, and a differently-slugified token breaks the reuse.
 
 Both follow the templates in `REFERENCE.md` (next to this file). Resolve every either/or hedge ("GitHub Issues (github mode) or `docs/tickets/`") to the value this repo uses - never ship the hedge.
 

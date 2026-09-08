@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## solve 0.12.0
+## solve 0.13.0
+
+- `ship`: **start-of-run pre-flight** on the working tree, every worktree mode.
+  A dirty shared tree at the start of a run now halts `ship` - it lists the
+  uncommitted paths and offers the exits (commit, stash, or `worktree` to
+  isolate this epic), instead of `off` mode silently folding the work onto the
+  epic branch or `on` mode silently routing around it. An AFK drain with no one
+  to answer stops.
+- `ship` / `setup`: **per-epic worktree isolation without turning the mode on.**
+  `off` no longer means "never" - an explicit per-run request ("worktree this
+  epic") is honoured in any mode, at the path from `docs/agents/solve.md`.
+- `setup`: the worktrees step is now **two axes** - mode (`off` / `on`) and
+  path, asked separately. The path is written to `solve.md` in both modes, so
+  `ship` always has a known home for an on-request worktree. `REFERENCE.md`
+  Worktrees template updated - the `off` block now carries the path.
 
 - New skill **`land`**: merge a finished epic once a human has reviewed it
   (integration PR in github mode, epic branch in local), then close out the epic

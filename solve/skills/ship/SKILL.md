@@ -54,7 +54,12 @@ Read the ticket + its linked spec section before touching code.
 
 **Resolve where you're working before you touch a branch** - building wherever you're standing is the mistake when another epic is already in flight there.
 
-Read **Worktrees** in `docs/agents/solve.md`. Absent or *off* -> the shared tree, skip the rest. On, take the first row that matches, top to bottom:
+**Pre-flight, every mode:** `git status --porcelain` before you touch anything. One thing is expected and passes: new **untracked** files under the solve hand-off paths (`docs/specs/`, `docs/tickets/`, `docs/adr/`, `docs/glossary.md`, `docs/agents/`) - that's `sharpen`/`to-spec`/`to-tickets` leaving their output for you, and *Clean the tree* commits it to the epic branch. **Anything else** - a modified tracked file, an untracked file outside those paths - is working state you can't account for: your own from an earlier run, or another drain in that tree right now. **Stop and surface it:** list the paths and offer the exits - commit it, stash it, or `worktree` to isolate this epic (which leaves the shared tree's dirt untouched). Don't sort it into "mine" and route around it - you can't tell from git whose it is, and *Clean the tree* downstream folds whatever's loose onto your epic branch. The worktree is an exit the human picks, not one you take to skip the question; an AFK drain with no one to answer just stops. This is a start-of-run gate - a drain's own later slices leave the tree dirty by design, and that's fine.
+
+Read **Worktrees** in `docs/agents/solve.md`.
+*Off* or absent -> the shared tree - **unless this run was told to isolate this epic** (the invoker asked up front, or the pre-flight halt was answered `worktree`). That request is honoured in any mode: [WORKTREES.md](./WORKTREES.md) at the configured path (none configured -> `~/.solve/worktrees/<repo>/<feature>/`) - reuse the epic's worktree if it's already there, otherwise create it. No such request -> skip the rest.
+
+*On* -> take the first row of the table that matches, top to bottom:
 
 | Situation | Tree |
 |---|---|
@@ -64,13 +69,13 @@ Read **Worktrees** in `docs/agents/solve.md`. Absent or *off* -> the shared tree
 | A single slice, something else in flight | Create the epic's |
 
 **One per epic, never per slice.**
-*Something else in flight* is three checks, any one enough: `git worktree list` shows another epic's worktree, the current branch carries another epic's `<feature>`, or `git status` is dirty. It doesn't matter whether that's your own earlier state or another run happening right now - either way the shared tree isn't yours alone, and the answer is the same.
+*Something else in flight* is three checks, any one enough: `git worktree list` shows another epic's worktree, the current branch carries another epic's `<feature>`, or `git status` is dirty (the pre-flight already stops on a dirty tree - this is the backstop for a run that reached here regardless). It doesn't matter whether that's your own earlier state or another run happening right now - either way the shared tree isn't yours alone, and the answer is the same.
 **Treat all three as a floor, never as proof of the opposite.** They're a snapshot, and another run can start between the check and your next command, so a clean read doesn't mean nothing is in flight - it means nothing was, a moment ago. Anything you find that isn't yours, leave alone: don't switch to its branch, don't remove its worktree, don't stash its work.
 While draining, never ask: decide from those checks and report which tree you took.
 
 Create it **here**, before the checks below - they run on the tree you'll work in.
 
-Dirty shared tree? **Only carry across work you put there yourself in this run.** You cannot tell from git whose uncommitted work it is, and another run may be mid-slice in that tree - stashing it moves it out from under them and commits it onto your epic branch. Anything you didn't create: **stop the whole run**, not just this step - report what's there and end. Don't stash it, and don't create the worktree and carry on either: a fresh worktree *is* clean by construction, so proceeding feels safe and is the workaround this forbids. It also leaves an epic branch a later run reads as a live claim.
+Dirty shared tree when you go to create the worktree? The pre-flight already surfaced it and the human (or invoker) chose isolation, so what's here is **yours** - **only that carries across.** A run could still have started since the pre-flight, though: another may be mid-slice in that tree, and stashing its work moves it out from under them and commits it onto your epic branch. Anything you didn't create: **stop the whole run**, not just this step - report what's there and end. Don't stash it, and don't create the worktree and carry on either: a fresh worktree *is* clean by construction, so proceeding feels safe and is the workaround this forbids. It also leaves an epic branch a later run reads as a live claim.
 Nothing on disk will record that you stopped, so your report is the only trace. Say what's dirty, that it isn't yours, and that the drain resumes once whoever owns it commits or drops it.
 Work that *is* yours goes across stashed **by path**, before you create - order and paths both matter, and getting either wrong loses work: *Carrying loose work across* in [WORKTREES.md](./WORKTREES.md). Read that file before creating one - it also holds the derived path, the reuse check, symlinked config and dependency install.
 
