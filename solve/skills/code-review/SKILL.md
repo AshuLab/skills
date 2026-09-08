@@ -73,13 +73,30 @@ The bundle contains:
 
 ## 3 - Run three independent passes
 
-Independence is required; a particular agent API is not.
+Independence is a property to guarantee, not an API to call. However this runtime dispatches work - parallel workers, separate sessions, or one worker at a time with sealed notes - every pass must hold three properties:
 
-- When isolated workers are available and the change justifies the overhead, run the three passes in parallel.
-- Otherwise run three sequential passes with separate notes. Do not reuse conclusions from an earlier pass until synthesis.
-- Give each pass the review bundle, Necessity first, the Finding contract, and its axis-specific reference where applicable. Provide actual evidence or an accessible handle - not only a command the reviewer may be unable to run.
+- **Blind to siblings** - no pass sees another's notes, findings, or verdict before synthesis.
+- **Blind to the author's case** - PR narrative, commit rationale, and any prior approval enter a pass only as claims inside the bundle, never as framing.
+- **Equal inputs** - each pass gets the same review bundle, not a digest of it.
 
-Keep each pass focused and under 500 words.
+Prefer real isolation when the runtime offers it and the change justifies the overhead. Sequential passes qualify only with sealed notes: complete and record one axis before starting the next; do not reconcile until synthesis.
+
+Hand each pass, unabridged:
+
+1. The review bundle, or a handle that resolves to the whole of it - not only a command the reviewer may be unable to run.
+2. Necessity first and the Finding contract from this skill.
+3. Its axis brief below with the matching `references/*-baseline.md`.
+4. This charge: find what is wrong; do not bless the change. "None apply" is a valid result. Keep analysis under 500 words and obey the section 4 caps.
+
+Each pass returns this envelope so synthesis can trust or reject it:
+
+```
+Axis:                Spec | Standards | Risk
+Bundle received:     yes, with <contents> | missing <what>
+Baseline consulted:  <file> - <sections that bore on the diff>
+Foreign inputs seen: none | <name them>
+Findings:            <Finding-contract format> | none apply
+```
 
 ### Spec - does it do what was asked?
 
@@ -98,6 +115,8 @@ Read [references/standards-baseline.md](references/standards-baseline.md). Find 
 Read [references/risk-baseline.md](references/risk-baseline.md). Trace every removal, consumer contract, behaviour change, new test, and relevant security boundary. Treat validation status as evidence, not reassurance.
 
 ## 4 - Synthesize the change
+
+**Validate the passes first.** Reject any envelope reporting a missing bundle, a baseline never consulted, or foreign inputs seen - re-run that pass in a clean context before continuing. A pass you cannot validate is a missing pass; say so in the report rather than synthesizing around it.
 
 With all three passes visible, inspect the change as a whole:
 

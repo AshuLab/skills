@@ -2,7 +2,7 @@
   "name": "solve",
   "displayName": "solve",
   "description": "Skills for the app development cycle - take an idea from raw to shipped through phases with clear boundaries. sharpen -> to-spec -> to-tickets -> ship -> land, plus tdd/code-review/code-post/code-resolve, research/prototype, diagnose, pre-check.",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "author": {
     "name": "Diego Ghersi",
     "email": "ghersidl@gmail.com"

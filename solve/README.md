@@ -114,7 +114,7 @@ One skill doing both would have created that issue on the way out of sharpening.
 The skills describe capabilities instead of provider tool names, so each harness uses its native equivalent:
 
 - **Questions, by type.** Closed, tactical choices use the harness's choice UI when available and prose otherwise. `sharpen` always asks in prose when its read overturns the framing.
-- **Subagents.** `research` delegates to a background subagent when supported; `code-review` runs its three axes as independent subagents, in parallel when supported.
+- **Subagents.** `research` delegates to a background subagent when supported; `code-review` runs its three axes as independent passes - parallel workers when supported, sequential with sealed notes otherwise - and each pass returns an envelope synthesis validates before trusting it.
 - **Primary sources.** `research` uses the harness's web access to read official docs and other first-party sources directly.
 
 ## Artifacts
