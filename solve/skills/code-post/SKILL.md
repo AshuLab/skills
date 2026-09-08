@@ -13,7 +13,7 @@ description: "Takes a code-review report and publishes its findings where each o
 
 Rules that bind every finding:
 
-1. **Re-verify before publishing.** Read the current code at each `file:line`, not the state the review saw. Already fixed -> drop it, silently. Never post a finding you have not re-confirmed.
+1. **Re-verify before publishing.** Read the current code at each `file:line`, not the state the review saw. Already fixed -> drop it: it goes in *Dropped* at the approval step, never to the author. Never post a finding you have not re-confirmed.
 2. **Certainty travels with the finding.** Post a `probable` finding with its assumption and what would confirm it. Never launder `probable` into a flat assertion by dropping the hedge.
 3. **The stance is the human's, not yours.** Default to a plain comment; never select approve or request-changes on your own - offer it at the approval step.
 4. **One submission, not many.** Inline comments go out as a single review.

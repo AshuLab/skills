@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
 ## solve 0.12.0
 
 - New skill **`land`**: merge a finished epic once a human has reviewed it
@@ -22,6 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `setup`: new worktrees step; git remote now required in both tracker modes;
   adds a `git` 2.40+ version gate; `REFERENCE.md` rewritten with local-mode
   Branching/Worktrees templates.
+- **Breaking:** local mode now needs a **git remote**. `setup` step 1 and `ship`
+  hard-stop without one, and `land` reads bases from `origin/` and verifies every
+  merge against the remote ref before deleting anything. An offline local-only
+  repo (valid on 0.11.2) has to add a remote.
 - **Breaking:** `solve-next-startable` now takes a required `<epic>` argument - an
   unscoped drain could pick up another epic's slices and never terminate. Repos
   that ran `setup` before 0.12.0 must **re-run `/solve:setup`** so
