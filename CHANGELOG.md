@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ship` always has a known home for an on-request worktree. `REFERENCE.md`
   Worktrees template updated - the `off` block now carries the path.
 
+## solve 0.12.0
+
 - New skill **`land`**: merge a finished epic once a human has reviewed it
   (integration PR in github mode, epic branch in local), then close out the epic
   branch, its worktree, the epic issue and any leftover slice branches. `ship`
