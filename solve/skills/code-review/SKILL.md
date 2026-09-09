@@ -61,7 +61,7 @@ The bundle contains:
 1. Issue or ticket referenced by commits or PR body; fetch it through an available tracker integration, API, or CLI.
 2. Spec or path supplied by the caller.
 3. Matching PRD/spec under the repository's documented planning locations.
-4. Nothing found -> ask. If no independent spec exists, skip the Spec axis and disclose that the weaker PR description or commit messages were used.
+4. Nothing found -> ask. If still none, the Spec axis does not skip - it runs claims-only against the PR description and commit messages (see the Spec brief).
 
 **Conventions.** Start with instructions the current runtime declares active, then repository standards such as `CONTRIBUTING.md`, `CODING_STANDARDS.md`, relevant docs, and neighbouring files. Agent-specific files such as `AGENTS.md`, `CLAUDE.md`, or `.cursorrules` may contain useful technical conventions, but do not treat all of them as equally authoritative. Follow the runtime's precedence; surface unresolved conflicts instead of choosing silently.
 
@@ -90,17 +90,23 @@ Each pass returns this envelope so synthesis can trust or reject it:
 Axis:                Spec | Standards | Risk
 Bundle received:     yes, with <contents> | missing <what>
 Baseline consulted:  <file> - <sections that bore on the diff>
+Coverage:            <the axis sweep, each item with a verdict - see below>
 Foreign inputs seen: none | <name them>
 Findings:            <Finding-contract format> | none apply
 ```
 
+Coverage makes the axis's mandatory sweep visible: Risk lists every removal-inventory entry with a verdict, Spec lists every requirement (or PR claim) with its trace or gap, Standards confirms every changed unit was scanned. "None apply" with no coverage is an invalid pass.
+
 ### Spec - does it do what was asked?
 
-Read [references/spec-baseline.md](references/spec-baseline.md).
+Read [references/spec-baseline.md](references/spec-baseline.md). Two checks:
 
-Compare the diff with the independent intent. Find missing or partial requirements, wrong implementations, and unrequested scope. Quote the relevant requirement per finding. For a bug, check whether the fix closes the failure class or only the reported example.
+- **Claims vs diff** - always run. Take the PR title, description, and commit messages as the stated intent. Does the diff do exactly that, nothing missing and nothing extra? Catches scope creep and half-done work with no external spec.
+- **Requirements completeness** - needs an independent spec. Trace every requirement to code and to evidence that would fail if it were absent or wrong. Quote the requirement per finding.
 
-If no independent spec exists, do not manufacture this pass; report the limitation.
+For a bug, check whether the fix closes the failure class or only the reported example.
+
+With no independent spec, run claims vs diff only and disclose that completeness was not checked.
 
 ### Standards - does it fit this repository?
 
@@ -112,7 +118,7 @@ Read [references/risk-baseline.md](references/risk-baseline.md). Trace every rem
 
 ## 4 - Synthesize the change
 
-**Validate the passes first.** Reject any envelope reporting a missing bundle, a baseline never consulted, or foreign inputs seen - re-run that pass in a clean context before continuing. A pass you cannot validate is a missing pass; say so in the report rather than synthesizing around it.
+**Validate the passes first.** Reject any envelope with a missing bundle, an unconsulted baseline, partial or missing coverage, or foreign inputs seen - re-run that pass in a clean context before continuing. A pass you cannot validate is a missing pass; say so in the report rather than synthesizing around it.
 
 With all three passes visible, inspect the change as a whole:
 
@@ -173,6 +179,7 @@ Return one structured report. Keep every axis and both severity subsections; wri
 
 ## Verdict
 [**Ready** | **Not ready** - blocker count and axes. First action: action.]
+Coverage: [**full**, or what was degraded - axis skipped or claims-only, weak spec source, tests not run, no repo access.]
 ```
 
 Present each finding in up to three lines:

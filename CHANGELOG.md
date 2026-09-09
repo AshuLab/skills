@@ -13,9 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   says plainly: run the three axes as separate subagents, or one at a time with
   sealed notes - each pass blind to the others and to the author's case, working
   from the same full bundle. Each pass returns an **envelope** (bundle received,
-  baseline consulted, foreign inputs seen, findings), and synthesis gains a gate
-  that rejects an envelope reporting a missing bundle, an unconsulted baseline,
-  or foreign inputs - re-run that pass clean, never synthesize around it.
+  baseline consulted, coverage, foreign inputs seen, findings), and synthesis
+  gains a gate that rejects an envelope with a missing bundle, an unconsulted
+  baseline, partial coverage, or foreign inputs - re-run that pass clean, never
+  synthesize around it.
+- `code-review`: **the envelope proves work, not just contact.** New `Coverage`
+  line makes each axis's mandatory sweep visible - Risk lists every
+  removal-inventory entry with a verdict, Spec every requirement or PR claim with
+  its trace or gap, Standards confirms every changed unit was scanned. "None
+  apply" with no coverage fails the gate.
+- `code-review`: **the Spec axis no longer collapses without a spec.** It splits
+  into *claims vs diff* (always run - does the diff do exactly what the PR says,
+  nothing missing or extra) and *requirements completeness* (needs an
+  independent spec). With no spec, claims vs diff still runs.
+- `code-review`: the report **Verdict** now carries a `Coverage` line stating
+  what was degraded - axis skipped or claims-only, weak spec source, tests not
+  run, no repo access - or `full`.
 
 ## solve 0.13.0
 
