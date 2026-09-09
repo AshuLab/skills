@@ -73,7 +73,7 @@ The bundle contains:
 
 ## 3 - Run three independent passes
 
-Run Spec, Standards, and Risk as separate subagents. No runtime for that? Run them one at a time with sealed notes - finish and record one axis before opening the next.
+Run Spec, Standards, and Risk as separate subagents. Can't spawn subagents? Do the three passes yourself, one at a time, with sealed notes - finish and record one axis before opening the next.
 
 Either way each pass stays blind to the others and to the author's case: PR narrative, commit rationale, and prior approvals are claims to verify, not framing. And each works from the same full bundle, not a summary.
 
