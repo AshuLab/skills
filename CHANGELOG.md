@@ -9,17 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## solve 0.14.0
 
-- `code-review`: **independence is now a verifiable contract, not a soft
-  preference.** Section 3 drops "when isolated workers are available" and instead
-  names three properties every pass must hold however the runtime dispatches it -
-  blind to siblings, blind to the author's case, equal inputs - with sequential
-  sealed-notes passes as the explicit fallback. Each pass is handed its inputs
-  unabridged (bundle, Necessity first, Finding contract, axis baseline, and a
-  verbatim adversarial charge) and returns an **envelope** (bundle received,
-  baseline consulted, foreign inputs seen, findings). Synthesis gains a gate:
-  reject an envelope that reports a missing bundle, an unconsulted baseline, or
-  foreign inputs, re-run that pass clean, and never synthesize around a pass that
-  cannot be validated.
+- `code-review`: **pass independence is now a verifiable contract.** Section 3
+  says plainly: run the three axes as separate subagents, or one at a time with
+  sealed notes - each pass blind to the others and to the author's case, working
+  from the same full bundle. Each pass returns an **envelope** (bundle received,
+  baseline consulted, foreign inputs seen, findings), and synthesis gains a gate
+  that rejects an envelope reporting a missing bundle, an unconsulted baseline,
+  or foreign inputs - re-run that pass clean, never synthesize around it.
 
 ## solve 0.13.0
 

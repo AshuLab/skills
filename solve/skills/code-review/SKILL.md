@@ -73,20 +73,16 @@ The bundle contains:
 
 ## 3 - Run three independent passes
 
-Independence is a property to guarantee, not an API to call. However this runtime dispatches work - parallel workers, separate sessions, or one worker at a time with sealed notes - every pass must hold three properties:
+Run Spec, Standards, and Risk as separate subagents. No runtime for that? Run them one at a time with sealed notes - finish and record one axis before opening the next.
 
-- **Blind to siblings** - no pass sees another's notes, findings, or verdict before synthesis.
-- **Blind to the author's case** - PR narrative, commit rationale, and any prior approval enter a pass only as claims inside the bundle, never as framing.
-- **Equal inputs** - each pass gets the same review bundle, not a digest of it.
+Either way each pass stays blind to the others and to the author's case: PR narrative, commit rationale, and prior approvals are claims to verify, not framing. And each works from the same full bundle, not a summary.
 
-Prefer real isolation when the runtime offers it and the change justifies the overhead. Sequential passes qualify only with sealed notes: complete and record one axis before starting the next; do not reconcile until synthesis.
+Give each pass:
 
-Hand each pass, unabridged:
-
-1. The review bundle, or a handle that resolves to the whole of it - not only a command the reviewer may be unable to run.
-2. Necessity first and the Finding contract from this skill.
-3. Its axis brief below with the matching `references/*-baseline.md`.
-4. This charge: find what is wrong; do not bless the change. "None apply" is a valid result. Keep analysis under 500 words and obey the section 4 caps.
+- the review bundle, or a handle to all of it
+- Necessity first and the Finding contract from this skill
+- its axis brief below and matching `references/*-baseline.md`
+- the charge: find what is wrong; do not bless the change. "None apply" is valid. Stay under 500 words.
 
 Each pass returns this envelope so synthesis can trust or reject it:
 
