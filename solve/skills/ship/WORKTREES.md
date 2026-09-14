@@ -60,7 +60,8 @@ In local mode there's no issue to write on, so `git worktree list` on that machi
 
 One worktree per batch member of a parallel batch, in addition to the epic worktree above - *Pick the tree* in `SKILL.md` calls this out as the one exception to "one per epic, never per slice".
 
-**The path**: the epic's own worktree path with the slice appended - `<epic-path>/<slice>/`, `<slice>` the ticket handle (e.g. `002-parallel-batch-dispatch-...`). Same guard as *The path* above: it keeps two batch members apart, and keeps either one from colliding with the epic worktree itself.
+**The path**: a sibling of the epic's own worktree path, never a child of it - `~/.solve/worktrees/<repo>/<feature>--<slice>/` (or the configured path's parent with the same substitution), `<slice>` the ticket handle (e.g. `002-parallel-batch-dispatch-...`). Nesting it under the epic path instead (`<epic-path>/<slice>/`) would sit the member's checkout inside the epic worktree's own tracked tree - `git status` there would then see it as untracked content, tripping the dirty-tree checks *Pick the tree* runs on the epic worktree (the pre-flight gate, the "something else in flight" test) against the batch's own in-flight work. A sibling avoids that, and still keeps two batch members apart from each other and from the epic worktree.
+Batch dispatch needs this worktree regardless of whether **Worktrees** in `docs/agents/solve.md` is *On* or *Off* - concurrent subagents can't share one working tree either way, so a batch creates one per member even when a sequential drain in this repo would use the shared tree.
 
 **Creating one**: a batch only dispatches mid-drain, so the epic branch always exists by then (*Clean the tree, cut the epic branch* in `SKILL.md` already ran) - every member's worktree is case **A** above, just at the member's own path:
 
@@ -74,6 +75,7 @@ The subagent handed that path cuts its own slice branch inside it, same as any h
 *Making it runnable*, below, applies the same way as the epic worktree.
 
 **Removing one**: once that member's merge lands (*Close the loop* step 4 in `SKILL.md`), `git worktree remove <member-path>` - immediately, done by the draining agent itself. This differs from *Cleanup* below: `land` removes the epic worktree because `ship` never merges the integration PR and so never learns when that one's safe to drop; a batch member is different - the draining agent performs that member's merge itself, so it's already there to remove the worktree the moment it lands. Never reuse a removed member's path for a later round - each dispatch gets a fresh one.
+A batch that halts on a stopped member (*Draining an epic* in `SKILL.md`) never reaches this step for any member, including ones that finished cleanly - their worktrees are left standing, same as a stopped slice's branch, for whoever resolves the stop to inspect.
 
 ## Making it runnable
 
