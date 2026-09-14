@@ -18,4 +18,4 @@ docs/specs/ship-parallel-slices.md#solution (Scope story 5), docs/adr/0001-paral
 
 ## Blocked by
 
-[002](./002-parallel-batch-dispatch-with-per-slice-worktree-isolation-and-serialized-merge.md)
+[002](./002-parallel-batch-dispatch-with-lane-worktree-isolation-and-serialized-merge.md)

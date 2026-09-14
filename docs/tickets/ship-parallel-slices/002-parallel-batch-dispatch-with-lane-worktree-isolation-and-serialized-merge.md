@@ -1,4 +1,4 @@
-# 002 - Parallel batch dispatch with per-slice worktree isolation and serialized merge
+# 002 - Parallel batch dispatch with lane worktree isolation and serialized merge
 
 ## Goal
 

@@ -87,7 +87,7 @@ The drain's leftovers, **in this order** - each step unblocks the next. Three ru
 - **Never a flag that skips a refusal** - not `git branch -D`, not `git worktree remove --force`. Those refusals are the last thing between you and work that never landed. Note `git worktree remove` only refuses on a *dirty* tree - a clean worktree holding unmerged work goes without a murmur, which is why the check above comes first.
 - **`<type>/<feature>/`** is the branch namespace from **Branching** (`feature/<feature>/` when there's no config).
 
-**1. The worktree(s)**, if the epic ran in one - the epic worktree, plus any lane worktrees a parallel batch left standing (`docs/agents/solve.md` -> `WORKTREES.md` -> *Lane worktrees*). First - the epic worktree holds the epic branch checked out, and deleting that branch under it fails.
+**1. The worktree(s)**, if the epic ran in one - the epic worktree, plus any lane worktrees a parallel batch left standing ([WORKTREES.md](../ship/WORKTREES.md) -> *Lane worktrees*). First - the epic worktree holds the epic branch checked out, and deleting that branch under it fails.
 Act only on `git worktree list` - the sole authority for what exists on *this* machine. A path in the PR body or epic issue comment that it doesn't list is on another machine - report it, never remove it.
 `git worktree remove <path>`, once per path listed. Refuses because a tree is dirty -> **leave that one** and report what's uncommitted: something in there never reached the epic branch. A dirty lane doesn't block removing the others.
 
