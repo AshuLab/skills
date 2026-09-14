@@ -42,6 +42,26 @@ Check what you were handed:
 - **a ticket (a slice)** - run the lifecycle below once, on it.
 - **an epic** - *drain* it: run that same lifecycle on every slice, in dependency order, unattended (AFK). Which slice comes next and when to stop is in **Draining an epic** at the end.
 
+## Delegate the build
+
+*Claim it* and *Build it*, plus *Close the loop*'s steps 1-3, run inside a subagent, launched fresh for each slice - not inline in the draining agent's own session. *Pick the tree* and *Clean the tree, cut the epic branch* stay outside that scope: the draining agent runs them once, before the first slice of a drain dispatches, and hands the subagent the ticket handle, the epic's `<feature>` token, and the tree already resolved for it - the subagent builds there, it never re-decides the drain's worktree strategy.
+This holds for every slice, one ticket or a whole drain: the subagent claims the slice, builds it, commits, pushes and opens the PR (steps 1-3), then stops - it never merges, never closes the issue, never deletes a branch.
+The subagent hands back a close-out report, nothing else - the draining agent reads only this, never the subagent's own transcript or tool history, and acts on it to run *Close the loop*'s steps 4-6 (merge, close the issue, delete the branch):
+
+```
+{
+  slice: <ticket handle>,
+  outcome: "ready-to-merge" | "stopped",
+  branch: <pushed slice branch name>,
+  pr: <PR reference (github) | ticket path (local)>,
+  definitionOfDone: { <box>: boolean, ... },
+  reason?: <string, present when outcome is "stopped" - what would close it>,
+  note?: <string, present whenever there's something to surface regardless of outcome - e.g. *Close the loop*'s "the repo arrived broken, not your slice's fault" case, which still needs to reach a human between drains>
+}
+```
+
+`outcome: "stopped"` is the subagent's report of *Close the loop*'s stop condition - the draining agent doesn't re-verify the definition of done itself, it halts on the report and reads `reason` for what would close it.
+
 ## Claim it
 
 Claim the ticket before any git, so no one doubles up - the *claim* operation in `docs/agents/solve.md` -> **Tracker operations**.
@@ -108,6 +128,7 @@ Handed a slice and you need its epic - the number for `Closes`, the title for th
 
 ## Close the loop
 
+Steps 1-3 run inside the subagent (*Delegate the build*); steps 4-6 run in the draining agent, off that subagent's report alone. Read this section as one continuous lifecycle regardless of which side runs which step - the split is who executes it, not what it means.
 Verify the definition of done first: the repo's static checks if it has any, the full suite, and the tests at the agreed seam - the place the spec named for testing this story. No spec ever named one (a ticket that didn't come from `to-tickets`, or a repo with no `docs/specs/`)? Say so and test at the obvious seam for the change instead of ticking a box against nothing.
 If it doesn't pass - test failure, typecheck error, a design gap - **stop**: don't mark it done, don't skip it, don't force a fix that isn't real. Report the blocker and what would close it (a fix, a decision, merging the base in). This holds carrying one ticket or draining an epic (draining just decides the rest of the queue, below).
 **First find out whether you broke it.** Run the same check against the base branch **without touching any tree** - `git fetch origin <base>` (a long drain's `origin/<base>` is stale), then `git archive origin/<base> | tar -x -C <a scratch dir>`, run it there and delete it. Don't switch branches to find out: you may be standing in a tree you're not allowed to disturb, and that's precisely when this question comes up. Green on the base and red here means it's yours, and the rule above applies. Red on both means the repo arrived broken - a wrong test command, a missing dep, an unrelated failure - and that is **not** your slice's blocker. Report it, say it predates you, and carry on. **Don't fix it - not in a slice, and not on the base branch either.** A drain never pushes the base (*The shape*), so a repo-wide fix is a human's commit between drains, not yours during one: inside a slice it lands an unrelated change in someone else's epic diff, and on the base it moves the ground under every sibling epic mid-flight. Name the one-line fix in your report and leave it.
@@ -151,7 +172,7 @@ One slice at a time, and the only thing you pick is which.
 **The next startable slice** is a slice **of this epic** that's open, unblocked (every blocker done), unclaimed, lowest number - `docs/agents/solve.md` -> **Tracker operations** has how to get it. Absent that file it's local mode: the lowest-numbered ticket in `docs/tickets/<feature>/` whose Definition-of-done boxes aren't all `[x]` and whose `Blocked by` tickets' all are - read from the same place the check below reads them.
 A ticket's `## Blocked by` is either the word `nothing` or one relative link per blocker, in the format `to-tickets` publishes. Anything you can't resolve is a blocker you can't check: treat the slice as blocked and say which link failed, rather than starting a slice whose dependency may never have landed.
 *Of this epic* is load-bearing: an unscoped query returns the lowest startable slice in the whole **repo**, so the drain starts shipping another epic's slices into this epic branch - and never terminates.
-Run the lifecycle on it, then look again.
+Run the lifecycle on it, then look again - each slice's build still goes through *Delegate the build*, one subagent at a time.
 The initial *Clean the tree* covers the whole drain - a slice picked up later doesn't need pre-check again just because time passed waiting on its blockers.
 
 It ends one of these ways, and none is "keep going anyway":
