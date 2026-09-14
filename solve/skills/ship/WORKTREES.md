@@ -56,6 +56,27 @@ Once it's up, in github **record it on the epic issue** - path and machine, in o
 It's the only record spanning the worktree's whole life - a halted drain never opens the integration PR - and the only cross-machine one: a failing `git worktree add` sees only *this* machine.
 In local mode there's no issue to write on, so `git worktree list` on that machine is the whole record.
 
+## Per-slice worktrees, for a parallel batch
+
+One worktree per batch member of a parallel batch, in addition to the epic worktree above - *Pick the tree* in `SKILL.md` calls this out as the one exception to "one per epic, never per slice".
+
+**The path**: a sibling of the epic's own worktree path, never a child of it - `~/.solve/worktrees/<repo>/<feature>--<slice>/` (or the configured path's parent with the same substitution), `<slice>` the ticket handle (e.g. `002-parallel-batch-dispatch-...`). Nesting it under the epic path instead (`<epic-path>/<slice>/`) would sit the member's checkout inside the epic worktree's own tracked tree - `git status` there would then see it as untracked content, tripping the dirty-tree checks *Pick the tree* runs on the epic worktree (the pre-flight gate, the "something else in flight" test) against the batch's own in-flight work. A sibling avoids that, and still keeps two batch members apart from each other and from the epic worktree.
+Batch dispatch needs this worktree regardless of whether **Worktrees** in `docs/agents/solve.md` is *On* or *Off* - concurrent subagents can't share one working tree either way, so a batch creates one per member even when a sequential drain in this repo would use the shared tree.
+
+**Creating one**: a batch only dispatches mid-drain, so the epic branch always exists by then (*Clean the tree, cut the epic branch* in `SKILL.md` already ran) - every member's worktree is case **A** above, just at the member's own path:
+
+```
+git fetch
+git worktree add <member-path> <epic-branch>
+git -C <member-path> pull
+```
+
+The subagent handed that path cuts its own slice branch inside it, same as any hub slice off the epic branch (*Build it* in `SKILL.md`) - the draining agent resolves the tree before dispatch, it doesn't pre-cut the branch (*Delegate the build*).
+*Making it runnable*, below, applies the same way as the epic worktree.
+
+**Removing one**: once that member's merge lands (*Close the loop* step 4 in `SKILL.md`), `git worktree remove <member-path>` - immediately, done by the draining agent itself. This differs from *Cleanup* below: `land` removes the epic worktree because `ship` never merges the integration PR and so never learns when that one's safe to drop; a batch member is different - the draining agent performs that member's merge itself, so it's already there to remove the worktree the moment it lands. Never reuse a removed member's path for a later round - each dispatch gets a fresh one.
+A batch that halts on a stopped member (*Draining an epic* in `SKILL.md`) never reaches this step for any member, including ones that finished cleanly - their worktrees are left standing, same as a stopped slice's branch, for whoever resolves the stop to inspect.
+
 ## Making it runnable
 
 In this order. Config first, because a missing registry credential fails the install itself.
@@ -72,6 +93,6 @@ In this order. Config first, because a missing registry credential fails the ins
 
 ## Cleanup
 
-`ship` never removes a worktree - it doesn't merge the integration PR, so it never learns when the branch is safe to drop. It leaves the path in two places instead: the epic-issue comment (survives a halted drain) and the `git worktree remove <path>` in the integration PR body. `land` is what actually removes it.
+`ship` never removes the epic worktree - it doesn't merge the integration PR, so it never learns when the branch is safe to drop. It leaves the path in two places instead: the epic-issue comment (survives a halted drain) and the `git worktree remove <path>` in the integration PR body. `land` is what actually removes it. A per-slice batch worktree is the one exception - *Per-slice worktrees, for a parallel batch* above, *removing one* - `ship` removes those itself.
 
 Cleaning up by hand: `git worktree remove` refuses on a dirty tree, so it can't take unmerged work with it, and `git worktree list` is the source of truth (`git worktree prune` clears records of any deleted outside git).
