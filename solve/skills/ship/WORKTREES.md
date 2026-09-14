@@ -76,6 +76,8 @@ git worktree add -b <member-slice-branch> <lane-path> origin/<epic-branch>
 git -C <lane-path> push -u origin <member-slice-branch>
 ```
 
+Once it's up, record it the same way *Creating a worktree* above records the epic worktree - `gh issue comment <epic> --body "lane: <lane-path> on <machine>"` - once per lane path, the first time it's created; a reused lane doesn't need a second comment, its path is already on record. Without this, a batch that halts leaves lane worktrees with no trace beyond `git worktree list` on the machine that created them - exactly the cross-machine gap *Cleanup*'s two-places claim below depends on not existing.
+
 **Reusing a lane** (the path already exists, parked from an earlier occupant): no `worktree add` - the worktree is already there, just move it onto the new member's branch:
 
 ```
