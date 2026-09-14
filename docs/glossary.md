@@ -12,5 +12,5 @@ _Avoid_: "subagent slice", "isolated build".
 **Parallel batch** - the set of up to 3 simultaneously-startable hub slices that `ship` dispatches together as concurrent delegated builds, github tracker mode only. The draining agent still serializes the merge of each finished slice into the epic branch one at a time.
 _Avoid_: "concurrent drain", "parallel drain".
 
-**Draining agent** - the agent running `ship`, whether on one ticket or a whole epic. Owns everything outside a slice's own [[delegated-build]]: finding the next startable slice, `Pick the tree`, `Clean the tree, cut the epic branch`, and Close the loop's steps 4-6 (merge, close the issue, delete the branch) off each subagent's close-out report.
+**Draining agent** - the agent running `ship`, whether on one ticket or a whole epic. Owns everything outside a slice's own delegated build: finding the next startable slice, *Pick the tree*, *Clean the tree, cut the epic branch*, and Close the loop's steps 4-6 (merge, close the issue, delete the branch) off each subagent's close-out report.
 _Avoid_: "the orchestrator", "ship itself".

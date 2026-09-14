@@ -60,22 +60,23 @@ In local mode there's no issue to write on, so `git worktree list` on that machi
 
 One worktree per batch member of a parallel batch, in addition to the epic worktree above - *Pick the tree* in `SKILL.md` calls this out as the one exception to "one per epic, never per slice".
 
-**The path**: a sibling of the epic's own worktree path, never a child of it - `~/.solve/worktrees/<repo>/<feature>--<slice>/` (or the configured path's parent with the same substitution), `<slice>` the ticket handle (e.g. `002-parallel-batch-dispatch-...`). Nesting it under the epic path instead (`<epic-path>/<slice>/`) would sit the member's checkout inside the epic worktree's own tracked tree - `git status` there would then see it as untracked content, tripping the dirty-tree checks *Pick the tree* runs on the epic worktree (the pre-flight gate, the "something else in flight" test) against the batch's own in-flight work. A sibling avoids that, and still keeps two batch members apart from each other and from the epic worktree.
+**The path**: a sibling of the epic's own worktree path, never a child of it - `~/.solve/worktrees/<repo>/<feature>--<slice>/` (or the configured path's parent with the same substitution), `<slice>` the ticket handle (e.g. `002-parallel-batch-dispatch-...`). Nesting it under the epic path instead (`<epic-path>/<slice>/`) would sit the member's checkout inside the epic worktree's own tracked tree - `git status` there would then see it as untracked content, tripping the dirty-tree checks *Pick the tree* runs on the epic worktree (the pre-flight gate, the "something else in flight" test) against the batch's own in-flight work. A sibling avoids that, and still keeps two batch members apart from each other and from the epic worktree. This assumes `<feature>` and `<slice>` never contain a literal `--` themselves - both come from slugified titles and ticket filenames, which collapse word-separators to single hyphens in practice.
 Batch dispatch needs this worktree regardless of whether **Worktrees** in `docs/agents/solve.md` is *On* or *Off* - concurrent subagents can't share one working tree either way, so a batch creates one per member even when a sequential drain in this repo would use the shared tree.
 
-**Creating one**: a batch only dispatches mid-drain, so the epic branch always exists by then (*Clean the tree, cut the epic branch* in `SKILL.md` already ran) - every member's worktree is case **A** above, just at the member's own path:
+**Creating one**: a batch only dispatches mid-drain, so the epic branch always exists by then (*Clean the tree, cut the epic branch* in `SKILL.md` already ran) - but unlike case **A** above, the member's worktree can't check out `<epic-branch>` itself: that branch is already checked out elsewhere (the epic worktree, or the shared tree), and git refuses a second checkout of the same branch. Cut the member's own slice branch off `<epic-branch>` at creation time instead - this is the same branch *Build it* in `SKILL.md` says a hub slice gets anyway, just cut here rather than after:
 
 ```
 git fetch
-git worktree add <member-path> <epic-branch>
-git -C <member-path> pull
+git worktree add -b <member-slice-branch> <member-path> <epic-branch>
+git -C <member-path> push -u origin <member-slice-branch>
 ```
 
-The subagent handed that path cuts its own slice branch inside it, same as any hub slice off the epic branch (*Build it* in `SKILL.md`) - the draining agent resolves the tree before dispatch, it doesn't pre-cut the branch (*Delegate the build*).
+The subagent handed that path builds directly on its own slice branch, already checked out - the draining agent resolves the tree and cuts the branch before dispatch, the subagent doesn't cut it itself (*Delegate the build*).
 *Making it runnable*, below, applies the same way as the epic worktree.
 
 **Removing one**: once that member's merge lands (*Close the loop* step 4 in `SKILL.md`), `git worktree remove <member-path>` - immediately, done by the draining agent itself. This differs from *Cleanup* below: `land` removes the epic worktree because `ship` never merges the integration PR and so never learns when that one's safe to drop; a batch member is different - the draining agent performs that member's merge itself, so it's already there to remove the worktree the moment it lands. Never reuse a removed member's path for a later round - each dispatch gets a fresh one.
 A batch that halts on a stopped member (*Draining an epic* in `SKILL.md`) still reaches this step for every member that reported `ready-to-merge` - each merges and its worktree is removed the moment that merge lands, same as any batch member. Only the stopped member's worktree is left standing, same as a stopped slice's branch, for whoever resolves the stop to inspect.
+Resuming that same stopped member later reuses this standing worktree - *Reuse before you create* above already covers it, the derived path is still there so it's yours from the halted attempt. That's different from *never reuse a removed member's path*, above: this is the same slice being retried, not a later round's fresh dispatch.
 
 ## Making it runnable
 
