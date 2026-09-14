@@ -14,3 +14,6 @@ _Avoid_: "concurrent drain", "parallel drain".
 
 **Draining agent** - the agent running `ship`, whether on one ticket or a whole epic. Owns everything outside a slice's own delegated build: finding the next startable slice, *Pick the tree*, *Clean the tree, cut the epic branch*, and Close the loop's steps 4-6 (merge, close the issue, delete the branch) off each subagent's close-out report.
 _Avoid_: "the orchestrator", "ship itself".
+
+**Lane worktree** - one of up to 3 fixed worktree slots a parallel batch dispatches into, matching the concurrency cap. A lane outlives any one occupant: freed (detached at the epic branch's tip, not removed) when its occupant merges, reused by whichever slice the next round dispatches into it.
+_Avoid_: "per-slice worktree", "batch worktree".
