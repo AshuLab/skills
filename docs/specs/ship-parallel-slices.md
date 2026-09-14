@@ -40,6 +40,7 @@ Parallel dispatch in local mode - local epics get delegated build (the context f
 Concurrency above 3 simultaneous slices in a batch - capped so a wide fan-out doesn't turn into an unreviewable pile of subagents running at once.
 Any change to how merge conflicts at integration are handled - the existing "stop and report, never auto-resolve" policy carries over unchanged; it will simply fire more often, since a parallel batch's slices aren't sequenced against each other's changes during build.
 Per-slice human review - a parallel batch still merges each finished slice on its own, same trust level `ship` already has today; only the final integration PR is a human review surface.
+Fixing the `<feature>` path-collision assumption across epics with similarly-slugified titles - lanes share the same assumption the epic worktree's own path already carries, just across up to 3 paths instead of 1, held open for the whole drain.
 
 ## Open questions
 

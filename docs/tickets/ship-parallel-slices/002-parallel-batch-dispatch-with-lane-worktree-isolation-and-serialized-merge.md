@@ -6,7 +6,7 @@ In github tracker mode, ship dispatches up to 3 currently-startable hub slices p
 
 ## Context
 
-docs/specs/ship-parallel-slices.md#solution (Scope stories 2-4), docs/glossary.md - parallel batch, hub slice, docs/adr/0001-parallel-slice-draining-in-ship.md. Builds on 001's delegated-build report contract.
+docs/specs/ship-parallel-slices.md#solution (Scope stories 2-4), docs/glossary.md - parallel batch, hub slice, lane worktree, docs/adr/0001-parallel-slice-draining-in-ship.md. Builds on 001's delegated-build report contract.
 
 ## Definition of done
 
