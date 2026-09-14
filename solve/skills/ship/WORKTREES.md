@@ -75,7 +75,7 @@ The subagent handed that path cuts its own slice branch inside it, same as any h
 *Making it runnable*, below, applies the same way as the epic worktree.
 
 **Removing one**: once that member's merge lands (*Close the loop* step 4 in `SKILL.md`), `git worktree remove <member-path>` - immediately, done by the draining agent itself. This differs from *Cleanup* below: `land` removes the epic worktree because `ship` never merges the integration PR and so never learns when that one's safe to drop; a batch member is different - the draining agent performs that member's merge itself, so it's already there to remove the worktree the moment it lands. Never reuse a removed member's path for a later round - each dispatch gets a fresh one.
-A batch that halts on a stopped member (*Draining an epic* in `SKILL.md`) never reaches this step for any member, including ones that finished cleanly - their worktrees are left standing, same as a stopped slice's branch, for whoever resolves the stop to inspect.
+A batch that halts on a stopped member (*Draining an epic* in `SKILL.md`) still reaches this step for every member that reported `ready-to-merge` - each merges and its worktree is removed the moment that merge lands, same as any batch member. Only the stopped member's worktree is left standing, same as a stopped slice's branch, for whoever resolves the stop to inspect.
 
 ## Making it runnable
 
