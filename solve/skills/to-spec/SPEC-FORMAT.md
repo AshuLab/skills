@@ -3,8 +3,7 @@
 The spec file at `docs/specs/<feature>.md` matures in stages - one file:
 
 - `sharpen` creates it as a **brief** (`Status: sharpening`) - scaffolding to hold the thinking so it survives the session.
-- `to-spec` **consumes** the brief into a final **PRD** (`Status: spec`) - it folds the scaffolding into the real sections and drops what's now redundant.
-- In local mode, `land` marks it **`Status: landed`** once the epic is merged and closed out - the terminal value, the counterpart of closing the epic issue in github mode. Nothing consumes the file after that; the status is there so a reader can tell a live spec from a delivered one.
+- `to-spec` **consumes** the brief into a final **PRD** (`Status: spec`) - it folds the scaffolding into the real sections and drops what's now redundant, then publishes it as the epic issue. `land` closing that issue once the epic merges is the terminal signal; the on-disk file's `Status:` never changes after that.
 
 The final PRD carries no scaffolding: git history holds the evolution, the document holds only the result.
 
@@ -45,5 +44,4 @@ Status: spec
 ## Open questions   (only if genuinely still open - otherwise omit)
 ```
 
-The `# <feature>` H1 and the `Status:` header serve the standalone local file.
-When `to-spec` publishes to a GitHub issue, they're dropped from the body - the issue has its own title and the `solve:epic` label instead.
+When `to-spec` publishes to the GitHub issue, the `# <feature>` H1 and `Status:` header are dropped from the body - the issue has its own title and the `solve:epic` label instead. Keep them in the on-disk file if you want the PRD versioned in git.
