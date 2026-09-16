@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.16.0
+
+- **Breaking: GitHub is now the only supported tracker.** `setup`, `to-spec`, `to-tickets`, `ship`, `land`, `pre-check` and `code-post` drop every local-tracker branch - local markdown tickets, local specs-as-final, and the local claim/branching operations are gone. Absent `docs/agents/solve.md`, skills infer github from the git remote instead of defaulting to local mode. A non-GitHub remote (or none) now stops `setup` instead of falling back. `sharpen` and `vocab` are unaffected - they only ever wrote local files. Repos still running local mode must add a GitHub remote and re-run `/solve:setup` before their next `ship`/`land`.
+
 ## solve 0.15.0
 
 - `ship`: **every slice's build now runs in a subagent with fresh context.** `Delegate the build` launches `Claim it` through `Close the loop`'s steps 1-3 per slice, so the draining agent's own session only ever holds each slice's close-out report, not a full build transcript - fixes context degrading across a long drain.

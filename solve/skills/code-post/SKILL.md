@@ -34,7 +34,7 @@ Resolve inputs semantically; slash commands or tool names are client-specific.
 
 - Pull-request URL or number -> that PR.
 - No target, but the source names one or the current branch has an open PR -> resolve it and state what you resolved.
-- No pull request at all (a local tracker has none) -> nowhere to comment. Hand the report back as a file and say why; never invent a destination.
+- No pull request at all (the source is a supplied diff, or a file with no PR to resolve) -> nowhere to comment. Hand the report back as a file and say why; never invent a destination.
 
 State both before doing anything. If the PR's head has moved since the review ran, say so here.
 

@@ -15,13 +15,13 @@ The entry point is set by what you already know, not by whether it's a feature o
 - **The problem isn't clear** - you can't yet name what hurts, for whom, or how you'd know it's fixed -> `sharpen`. It grills the raw idea into a brief; a fuzzy bug ("it feels slow", no definition yet) enters here too.
 - **The problem is clear, the cause isn't** - it misbehaves and you don't know why -> `diagnose`. It builds a reliable repro before theorizing.
 - **Both are clear** - it's no longer an idea or a mystery, just work to cut -> `to-tickets` to split it, or straight to `ship` if it's already one startable slice. Came from outside (someone else's issue, a handed-down ticket)? `pre-check` first.
-- **First time in this repo and you want a GitHub tracker, or worktree isolation** -> `setup`. Skip it for the default: local markdown in one tree, zero config - either way the repo needs a git remote.
+- **First time in this repo and you want worktree isolation** -> `setup`. No config file = github tracker inferred, single working tree, zero setup - either way the repo needs a GitHub remote.
 
 ## Moving it forward
 
 Each step consumes what the last one left, so they run in order:
 
-- A brief, formalize it into a PRD -> `to-spec`. Decides where each story gets tested; in github mode it publishes the epic.
+- A brief, formalize it into a PRD -> `to-spec`. Decides where each story gets tested; publishes the epic.
 - A spec, split the work -> `to-tickets`. Vertical, agent-ready slices with their blocking edges.
 - A startable ticket, take it to done -> `ship`. Claim, build, close the loop; reach for `tdd` / `code-review` when they earn it.
 - A whole epic, drained slice by slice, unattended -> `ship`, handed the epic instead of one ticket.
