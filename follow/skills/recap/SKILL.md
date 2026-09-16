@@ -23,5 +23,5 @@ Be exact - paths, names, numbers, commands, versions.
 "We updated some of the config" is worth nothing to a reader who can't see the screen.
 End on one concrete next step, a step and not a direction.
 
-Goes to the chat as a single block ready to paste, plus a copy in the OS temp directory so it outlives the session - never into the workspace.
+Goes to the chat as a single block ready to paste, plus a copy in the OS temp directory (whatever it resolves to on that machine - never into the workspace), named `recap-<repo-slug>-<YYYYMMDDTHHMMSS>.md`, so it outlives the session and stays identifiable among unrelated temp files.
 Strip secrets on the way out (keys, tokens, passwords, personal data), because this text leaves the session and whatever is in it leaves too.
