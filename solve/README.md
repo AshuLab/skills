@@ -33,9 +33,9 @@ The examples below use Claude Code's `/solve:<name>` syntax. The native Codex pl
 
 Restart the session so the skills load, then:
 
-1. **`/solve:setup`** - only if you want a GitHub tracker, or worktree isolation so concurrent epics don't collide in one working tree. Skip it and everything stays as markdown under `docs/`, in a single tree, no config, nothing to maintain. Either way the repo needs a git remote.
+1. **`/solve:setup`** - optional: creates the `solve:*` labels up front and lets you turn on worktree isolation so concurrent epics don't collide in one working tree. Skip it and the labels get created lazily on first use, in a single working tree, no config to maintain. Either way the repo needs a GitHub remote.
 2. **`/solve:sharpen <your idea>`** - it checks the thing isn't already built, captures the thinking as it settles, and leaves a brief at `docs/specs/<feature>.md`. A raw idea gets grilled first - `sharpen` invokes `/follow:pushback` for that (install `follow`, or it walks the questions itself).
-3. **`/solve:to-spec`** - turns that brief into a PRD, deciding where each story gets tested. In GitHub mode this is what publishes the epic issue.
+3. **`/solve:to-spec`** - turns that brief into a PRD, deciding where each story gets tested, and publishes it as the epic issue.
 4. **`/solve:to-tickets`** - cuts the PRD into vertical slices, each with a definition of done and its blocking edges.
 5. **`/solve:ship <ticket>`** - claims it, builds it, closes the loop. Hand it the **epic** instead and it drains every slice in dependency order, unattended.
 6. **`/solve:land <epic>`** - after *you* read the integration PR and accept it: merges it and closes out everything the drain left open (epic branch, worktree, epic issue). `ship` deliberately stops short of this; `land` is where a person says go.
@@ -51,14 +51,14 @@ Just want to be grilled about something, with nothing written down afterwards?
 guide | router - tells you which skill to reach for
 
 Setup (once per repo, optional)
-  | setup - pick the tracker: local markdown (default) or a GitHub repo
+  | setup - create the solve labels, and turn on worktree isolation if you want it
 
 Main flow | idea -> shipped
   sharpen -> to-spec -> to-tickets -> ship -> land
     | sharpen - reality-check it doesn't already exist, capture the trail, leave a brief
       (invokes `follow:pushback` to grill a raw idea first)
-    | to-spec - formalize into a PRD, a product requirements document (file or epic
-      issue) - no new interview; its real call is where each story gets tested
+    | to-spec - formalize into a PRD, a product requirements document, published as
+      the epic issue - no new interview; its real call is where each story gets tested
     | to-tickets - vertical slices + blocking edges + a definition of done
     | ship - carry a ticket to done (claim, build, close the loop), or drain a whole epic
     | land - you've read the integration PR and accept it: merge it and close out the
@@ -119,35 +119,25 @@ The skills describe capabilities instead of provider tool names, so each harness
 
 ## Artifacts
 
-`setup` picks where work is published.
-Two modes.
-
-**Local (default, zero setup)** - everything is markdown in the repo:
-
 ```
 docs/
   agents/solve.md      <- setup: how THIS repo uses the solve skills (CLAUDE.md/AGENTS.md points here)
   glossary.md          <- vocab
   adr/NNNN-title.md    <- vocab
-  specs/<feature>.md   <- sharpen (brief) -> to-spec (PRD)
-  tickets/<feature>/   <- to-tickets: one markdown file per slice (local mode)
+  specs/<feature>.md   <- sharpen (brief) -> to-spec (PRD, also published as the epic issue)
   research/<topic>.md  <- research: findings, every claim cited
 ```
 
-Everything lives under `docs/`, committed and versioned - not scratch.
-In local mode the tickets under `docs/tickets/` are the source of truth - committed on the **epic branch**, not the base, so read them with `git show <epic-branch>:<path>`.
-The tracker mode itself is declared in `docs/agents/solve.md` - there's no separate config file.
-
-Local means *the tracker* is files, not that the repo is offline: **a git remote is required in both modes**. Branches get pushed, bases resolve from `origin/`, and no branch is ever deleted without checking the merge against its remote ref first. What local mode drops is issues and PRs, not the remote.
-
-**GitHub** - run `setup` to pick a repo.
-Then:
+Everything above lives under `docs/`, committed and versioned - not scratch.
+Epics and tickets are GitHub Issues, not files:
 - `to-spec` publishes the PRD as an epic issue (`solve:epic`).
 - `to-tickets` publishes each slice as a sub-issue of the epic (`solve:ticket` + `solve:refined`), with real `blocked-by` dependencies - native GitHub Issues features via `gh`, no Projects v2 needed.
 - `ship` integrates each slice into the feature's **epic branch** - off that branch, or off its blocker when it has one (a stack) - **merge-only** (never squash or rebase). Each slice gets its own PR with `Closes #<n>`; once every slice is done, one integration PR (epic -> destination) with `Closes #<epic>` for a human to review. Bases and names follow the repo's convention, captured by `setup`.
 - `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
 
-Either mode:
+A **GitHub remote is required**: branches get pushed, bases resolve from `origin/`, issues and PRs live in that repo, and no branch is ever deleted without checking the merge against its remote ref first.
+
+Also:
 - **Worktree isolation is on-demand.** By default `ship` works in the shared tree, but any epic can be isolated in its own git worktree (`~/.solve/worktrees/<repo>/<feature>/` by default) on request - and `ship`'s start-of-run pre-flight offers exactly that when it finds a dirty shared tree. Flip `setup` to `on` and every epic gets one automatically, so two can drain at once without colliding. The location is declared once in `docs/agents/solve.md`, never decided per run - `ship` derives the path from it and reuses the worktree if it's already there. It never removes one: it doesn't merge the integration PR, so it can't know when the branch is safe to drop - instead it names the path and the `git worktree remove` in that PR's body, for `land`, which removes it after the merge.
 - `code-review`, `code-resolve`, and `diagnose` don't persist a file - their output is thinking or feedback, not an artifact. `code-post` is what turns a review's findings into PR comments, a ticket or an ADR when they deserve one. A diagnosis that surfaces a design gap becomes an ADR or a ticket via `vocab`.
 - **Agent scratch** - repro scripts, intermediate output, HTML reports, throwaway drafts - goes to `$TMPDIR`, never the repo. A repro script worth keeping becomes a regression test, not a loose file.
@@ -174,6 +164,6 @@ Either mode:
 | guide        | router        | you                     |
 
 All 16 skills drafted (the grill, `pushback`, moved out to the `follow` set).
-The thinking chain (sharpen -> to-spec -> to-tickets) was dogfooded against real repos in both modes - a full local run, plus `setup` and sharpen -> to-spec against a GitHub repo - with the refinements folded back in.
+The thinking chain (sharpen -> to-spec -> to-tickets) was dogfooded against real repos - a full run predating the github-only change, plus `setup` and sharpen -> to-spec against a GitHub repo - with the refinements folded back in.
 One caveat on that: `sharpen` has been restructured since - the grilling moved out to `follow:pushback`, which `sharpen` now invokes - so it's newer than the run that validated it.
 Still unproven: the execution skills (ship, land, tdd, code-review, code-post, code-resolve - they only exercise with real code), plus diagnose, prototype, pre-check and guide.
