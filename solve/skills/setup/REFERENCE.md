@@ -7,27 +7,9 @@ Claude Code invokes skills as `/solve:<name>` or `/follow:<name>`. The native Co
 
 ## Block for the repo's CLAUDE.md / AGENTS.md
 
-Append to whichever exists, resolving symlinks first (`setup` step 6 has the rule).
+Append to whichever exists, resolving symlinks first (`setup` step 5 has the rule).
 Keep it **minimal** - it auto-loads every session: three short labelled lines, what it is, the tracker, the pointer.
 Detail (paths, `gh` usage, tracker operations) lives in `solve.md`, not here.
-Write only the variant that matches the tracker.
-
-**local** tracker:
-
-```markdown
-## solve skills
-
-This repo uses the **solve** skill set - ideas ship through
-`sharpen -> to-spec -> to-tickets -> ship -> land`, reaching for `tdd` /
-`code-review` / `code-post` when they earn it.
-
-**Tracker:** local markdown under `docs/tickets/`.
-
-**How it works here** - where things live, the tracker operations, conventions:
-`docs/agents/solve.md`.
-```
-
-**github** tracker:
 
 ```markdown
 ## solve skills
@@ -46,70 +28,6 @@ This repo uses the **solve** skill set - ideas ship through
 ## docs/agents/solve.md
 
 A summary (not a copy of the plugin README), filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
-The **Tracker** section here declares the repo's mode - there is no config file - so write the block for the mode this repo runs in.
-The template below is **github** mode; a **local** repo swaps two sections wholesale, **Tracker** (immediately below) and **Branching** (after it). Write one set or the other, never both - two Branching sections leave every `-> **Branching**` pointer in the skills ambiguous.
-The rest of the template is written github-flavoured too. In local mode reword it as you go - **The flow**'s "close the loop (a PR)" and `land`'s "the integration PR", **Where things live**'s tickets line - so the file describes only what this repo actually does.
-
-The local **Tracker** section reads:
-
-> ## Tracker
-> This repo runs in **local** mode - epics and tickets are markdown files, no board.
->
-> ### Tracker operations
-> - publish a slice -> write `docs/tickets/<feature>/NNN-slug.md` in the Ticket format
->   (see to-tickets); its `## Blocked by` line links each blocker's file relatively
->   (`[001](./001-slug.md)`)
-> - claim -> just open the ticket file
-> - close the loop -> tick every box in the ticket's **Definition of done** to
->   `- [x]`, then commit referencing the ticket
-> - a slice is done -> every box in its Definition of done is `[x]`. There is no
->   board, so those boxes are the only completion signal - an unticked ticket reads
->   as not done, however finished the code is
-> - find the next startable slice -> the lowest-numbered ticket **in this feature's
->   directory** (`docs/tickets/<feature>/`, never across features) that isn't done and
->   whose `Blocked by` slices all are. Read them off the **epic branch** - that's where they
->   were committed, so from the base branch the directory doesn't exist and every ticket reads
->   as done: `git ls-tree --full-tree --name-only <epic-branch> docs/tickets/<feature>/`, then
->   `git show <epic-branch>:<path>` for each. Keep `--full-tree` or the pathspec is relative to
->   the current directory and comes back empty, exit 0. On the epic's **first** slice that branch
->   doesn't exist yet (`git rev-parse --verify <epic-branch>` fails) - read the working tree
-> - find a slice's epic -> the `<feature>` is its parent directory name, and the epic is the
->   spec at `docs/specs/<feature>.md`. Take the `<feature>` token from that directory, never by
->   re-slugifying the spec's title - the two can disagree, and the directory is what the drain reads
->
-In local mode the `## Branching` section further down is replaced too, and reads in full:
-
-> ## Branching
-> Same epic-branch / slice model as github, in plain git. Names follow the repo's
-> convention (`git branch -a` / CONTRIBUTING / AGENTS.md / CLAUDE.md - its `<type>`; none ->
-> `feature`), each feature namespaced so epic and slices are siblings:
-> - **base** (`<base>`) - the repo's default branch
-> - **epic branch** (`<epic-branch>`) - `<type>/<feature>/epic`
-> - **slice branch** (`<slice-branch>`) - `<type>/<feature>/<NNN-slug>`
-> - **destination** (`<destination>`) - where the epic branch merges when done; default `<base>`
->
-> Merge-only, **never** squash or rebase - the history keeps every slice.
->
-> ### Branching operations
-> Same commands as github minus the PRs. A compound command that fails halfway still leaves
-> the branch it created, so check the exit.
-> - start the epic branch (lazy, first slice) -> `git fetch && git switch -c <epic-branch> origin/<base> && git push -u origin <epic-branch>`
-> - branch a slice, **hub** -> `git switch <epic-branch> && git pull && git switch -c <slice-branch> && git push -u origin <slice-branch>` - the `git pull` isn't optional: without it you cut from a base missing every slice merged so far, and git still prints "up to date" because it hasn't fetched
-> - branch a slice, **stack** (exactly one open blocker) -> `git switch <blocker-branch> && git pull && git switch -c <slice-branch> && git push -u origin <slice-branch>`
-> - merge a slice -> `git switch <its base> && git merge --no-ff <slice-branch> -m "<message>" && git push` -
->   switch first, or you merge a branch into itself: `Already up to date.`, exit 0, nothing done.
->   `-m` so git never opens an editor and hangs an unattended drain
-> - delete a merged slice branch -> confirm remote ref against remote ref:
->   `git fetch && git merge-base --is-ancestor origin/<slice-branch> origin/<its base>`. Then
->   `git switch <its base> && git pull`, `git branch -d <slice-branch>` + `git push origin --delete <slice-branch>`; never `-D`
-> - land the epic -> `git switch <destination> && git merge --no-ff <epic-branch> -m "<message>" && git push`,
->   then delete the epic branch the same way
-> - sweep leftover slice branches (after the epic branch is gone) ->
->   `git branch --merged <destination> --list '<type>/<feature>/*'`, dropping any `*/epic` entry,
->   then per branch `git fetch && git merge-base --is-ancestor origin/<branch> origin/<destination>` before
->   `git branch -d <branch>` + `git push origin --delete <branch>`
-> - a ticket's state lives **on the epic branch**, not the base - read it with
->   `git show <epic-branch>:docs/tickets/<feature>/<NNN-slug>.md`
 
 ```markdown
 # solve skills - how this repo uses them
@@ -141,11 +59,10 @@ Reach for `tdd`, `code-review`, `code-post` and `code-resolve` when they earn it
 ## Where things live
 - PRDs / specs -> `docs/specs/`
 - Glossary + ADRs -> `docs/glossary.md`, `docs/adr/` (always files)
-- Tickets -> GitHub Issues (github mode) or `docs/tickets/<feature>/` (local mode)
+- Tickets -> GitHub Issues
 
 ## Tracker
-This repo runs in **github** mode - epics and tickets are GitHub Issues in
-`owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice)
+Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice)
 | `solve:refined` (fully defined, agent-ready). List them: `gh issue list --label solve:refined`.
 
 ### Tracker operations
@@ -209,7 +126,7 @@ isolates a single epic at the path below.
   integration PR body; `land` removes it when it merges that PR
 ```
 
-The **Worktrees** section applies in both tracker modes, and **always carries a path** - `ship` needs a known home whether it makes the worktree automatically (*on*) or only when a run asks (*off*). Write the mode picked in step 5 with this repo's real values, `<feature>` the same token the branch pattern uses. The *on* variant is identical bar the first line:
+The **Worktrees** section **always carries a path** - `ship` needs a known home whether it makes the worktree automatically (*on*) or only when a run asks (*off*). Write the mode picked in step 4 with this repo's real values, `<feature>` the same token the branch pattern uses. The *on* variant is identical bar the first line:
 
 ```markdown
 ## Worktrees
