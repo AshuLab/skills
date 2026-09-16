@@ -2,6 +2,8 @@
 
 Status: spec
 
+Local mode, described throughout below as a live alternative, was removed by [ADR 0002](../adr/0002-github-becomes-solves-only-tracker-mode.md) - this spec is a historical record of what PR #4 shipped, not current behavior for that axis.
+
 ## Problem
 
 Diego runs `ship` to drain epics in other repos, and a single drain has run up to 800k tokens in one session because `ship` today builds every slice sequentially inside one shared session, reusing one worktree per epic across the whole epic.
