@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.15.0
+
+- `ship`: **every slice's build now runs in a subagent with fresh context.** `Delegate the build` launches `Claim it` through `Close the loop`'s steps 1-3 per slice, so the draining agent's own session only ever holds each slice's close-out report, not a full build transcript - fixes context degrading across a long drain.
+- `ship`: **github-mode epics with a wide dependency graph drain in parallel.** Up to 3 simultaneously-startable hub slices dispatch as one batch of concurrent delegated builds, each in its own reusable lane worktree; the draining agent still serializes the actual merges, one at a time. Local mode keeps sequential draining - it gets the context fix above, not the speed one, since its claiming isn't atomic.
+- `ship`: **a partial batch failure no longer discards clean work.** Members that finish cleanly still merge before the drain halts on the one that didn't, instead of merging nothing.
+
 ## solve 0.14.0
 
 - `code-review`: **pass independence is now a verifiable contract.** Section 3 says plainly: run the three axes as separate subagents, or one at a time with sealed notes - each pass blind to the others and to the author's case, working from the same full bundle. Each pass returns an **envelope** (bundle received, baseline consulted, coverage, foreign inputs seen, findings), and synthesis gains a gate that rejects an envelope with a missing bundle, an unconsulted baseline, partial coverage, or foreign inputs - re-run that pass clean, never synthesize around it.

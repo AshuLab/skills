@@ -42,6 +42,27 @@ Check what you were handed:
 - **a ticket (a slice)** - run the lifecycle below once, on it.
 - **an epic** - *drain* it: run that same lifecycle on every slice, in dependency order, unattended (AFK). Which slice comes next and when to stop is in **Draining an epic** at the end.
 
+## Delegate the build
+
+*Claim it* and *Build it*, plus *Close the loop*'s steps 1-3, run inside a subagent, launched fresh for each slice - not inline in the draining agent's own session. *Pick the tree* and *Clean the tree, cut the epic branch* stay outside that scope: the draining agent runs them once, before the first slice of a drain dispatches, and hands the subagent the ticket handle, the epic's `<feature>` token, and the tree already resolved for it - the subagent builds there, it never re-decides the drain's worktree strategy.
+This holds for every slice, one ticket or a whole drain: the subagent claims the slice, builds it, commits, pushes and opens the PR (steps 1-3), then stops - it never merges, never closes the issue, never deletes a branch.
+The subagent hands back a close-out report, nothing else - the draining agent reads only this, never the subagent's own transcript or tool history, and acts on it to run *Close the loop*'s steps 4-6 (merge, close the issue, delete the branch):
+
+```
+{
+  slice: <ticket handle>,
+  outcome: "ready-to-merge" | "stopped",
+  branch: <pushed slice branch name>,
+  pr: <PR reference (github) | ticket path (local)>,
+  definitionOfDone: { <box>: boolean, ... },
+  reason?: <string, present when outcome is "stopped" - what would close it>,
+  note?: <string, present whenever there's something to surface regardless of outcome - e.g. *Close the loop*'s "the repo arrived broken, not your slice's fault" case, which still needs to reach a human between drains>
+}
+```
+
+`outcome: "stopped"` is the subagent's report of *Close the loop*'s stop condition - the draining agent doesn't re-verify the definition of done itself, it halts on the report and reads `reason` for what would close it.
+`note`, when present, always reaches a human - surface it verbatim in this slice's own report, or, inside a batch, appended to the consolidated line (*Draining an epic*), regardless of `outcome`. Nothing else in *Close the loop* or *Draining an epic* relays it.
+
 ## Claim it
 
 Claim the ticket before any git, so no one doubles up - the *claim* operation in `docs/agents/solve.md` -> **Tracker operations**.
@@ -72,6 +93,8 @@ Read **Worktrees** in `docs/agents/solve.md`.
 *Something else in flight* is three checks, any one enough: `git worktree list` shows another epic's worktree, the current branch carries another epic's `<feature>`, or `git status` is dirty (the pre-flight already stops on a dirty tree - this is the backstop for a run that reached here regardless). It doesn't matter whether that's your own earlier state or another run happening right now - either way the shared tree isn't yours alone, and the answer is the same.
 **Treat all three as a floor, never as proof of the opposite.** They're a snapshot, and another run can start between the check and your next command, so a clean read doesn't mean nothing is in flight - it means nothing was, a moment ago. Anything you find that isn't yours, leave alone: don't switch to its branch, don't remove its worktree, don't stash its work.
 While draining, never ask: decide from those checks and report which tree you took.
+
+**A parallel batch (*Draining an epic*) adds one exception to "one per epic, never per slice"**: up to 3 lane worktrees, in addition to - not instead of - the epic's own worktree from the table above. A lane isn't tied to one slice - it's a slot, created once and reused round after round for as long as the drain keeps dispatching, parked (not removed) between occupants. This applies only while the drain is in a github-mode epic; every row in the table above, and the one-per-epic rule itself, is otherwise unchanged for sequential drains and local mode. [WORKTREES.md](./WORKTREES.md) has the path and the mechanics.
 
 Create it **here**, before the checks below - they run on the tree you'll work in.
 
@@ -108,6 +131,8 @@ Handed a slice and you need its epic - the number for `Closes`, the title for th
 
 ## Close the loop
 
+Steps 1-3 run inside the subagent (*Delegate the build*); steps 4-6 run in the draining agent, off that subagent's report alone. Read this section as one continuous lifecycle regardless of which side runs which step - the split is who executes it, not what it means.
+Before step 4, the draining agent runs one sanity check on the report itself, not a re-run of steps 1-3's own checks: `git fetch` and confirm `origin/<branch>` exists, and that the ticket's Definition of done boxes read `[x]` in that branch's copy of the file. A report that doesn't hold up here is treated as `outcome: "stopped"` - name the mismatch and halt, don't merge on faith.
 Verify the definition of done first: the repo's static checks if it has any, the full suite, and the tests at the agreed seam - the place the spec named for testing this story. No spec ever named one (a ticket that didn't come from `to-tickets`, or a repo with no `docs/specs/`)? Say so and test at the obvious seam for the change instead of ticking a box against nothing.
 If it doesn't pass - test failure, typecheck error, a design gap - **stop**: don't mark it done, don't skip it, don't force a fix that isn't real. Report the blocker and what would close it (a fix, a decision, merging the base in). This holds carrying one ticket or draining an epic (draining just decides the rest of the queue, below).
 **First find out whether you broke it.** Run the same check against the base branch **without touching any tree** - `git fetch origin <base>` (a long drain's `origin/<base>` is stale), then `git archive origin/<base> | tar -x -C <a scratch dir>`, run it there and delete it. Don't switch branches to find out: you may be standing in a tree you're not allowed to disturb, and that's precisely when this question comes up. Green on the base and red here means it's yours, and the rule above applies. Red on both means the repo arrived broken - a wrong test command, a missing dep, an unrelated failure - and that is **not** your slice's blocker. Report it, say it predates you, and carry on. **Don't fix it - not in a slice, and not on the base branch either.** A drain never pushes the base (*The shape*), so a repo-wide fix is a human's commit between drains, not yours during one: inside a slice it lands an unrelated change in someone else's epic diff, and on the base it moves the ground under every sibling epic mid-flight. Name the one-line fix in your report and leave it.
@@ -139,6 +164,7 @@ That explicit close releases the next tickets and fires the **retarget**: any sl
 Skip this and step 6 closes those PRs outright: GitHub closes any open PR whose base branch is deleted. Operations in `docs/agents/solve.md` -> **Branching**.
 
 **6. Delete the slice branch.** Get off it first - `git switch <the base you merged into> && git pull` - then `git branch -d <slice-branch>` + `git push origin --delete <slice-branch>`. In github nothing moved you off the slice branch (the merge happened server-side), and git refuses to delete the branch you're standing on. The `pull` is what leaves the base current for the next slice.
+**In a lane worktree, get off it by detaching instead of switching** - the base is already checked out elsewhere (the epic worktree, or the shared tree), so `git switch <base>` is refused there: *Freeing a lane* in [WORKTREES.md](./WORKTREES.md) has the exact steps. Delete the branch the same way either side.
 Two rules, both about not losing work:
 - **Delete after the retarget (step 5), never before** - dropping a branch an open PR still targets orphans the slice stacked on it. So `gh pr merge --delete-branch` at step 4 is the wrong tool: it deletes on merge, before the retarget runs.
 - **Confirm the merge landed before deleting**, and not with `-d`: with an upstream set (step 2) it validates against that upstream, not the base you merged into, and will delete an unmerged branch - warning, but exiting 0.
@@ -147,11 +173,21 @@ Two rules, both about not losing work:
 
 ## Draining an epic
 
-One slice at a time, and the only thing you pick is which.
-**The next startable slice** is a slice **of this epic** that's open, unblocked (every blocker done), unclaimed, lowest number - `docs/agents/solve.md` -> **Tracker operations** has how to get it. Absent that file it's local mode: the lowest-numbered ticket in `docs/tickets/<feature>/` whose Definition-of-done boxes aren't all `[x]` and whose `Blocked by` tickets' all are - read from the same place the check below reads them.
+One slice at a time in local mode; in github mode, up to 3 at once - even just one, so a freed lane can be reused. Either way the only thing you pick is which.
+**The next startable slice(s)** is every slice **of this epic** that's open, unblocked (every blocker done), unclaimed - `docs/agents/solve.md` -> **Tracker operations** has how to get the set. Absent that file it's local mode: the lowest-numbered ticket in `docs/tickets/<feature>/` whose Definition-of-done boxes aren't all `[x]` and whose `Blocked by` tickets' all are - read from the same place the check below reads them.
 A ticket's `## Blocked by` is either the word `nothing` or one relative link per blocker, in the format `to-tickets` publishes. Anything you can't resolve is a blocker you can't check: treat the slice as blocked and say which link failed, rather than starting a slice whose dependency may never have landed.
 *Of this epic* is load-bearing: an unscoped query returns the lowest startable slice in the whole **repo**, so the drain starts shipping another epic's slices into this epic branch - and never terminates.
-Run the lifecycle on it, then look again.
+
+**In github mode**, take up to 3 of the currently-startable hub slices (no open blocker), lowest-numbered first, as this round's batch - still *of this epic*, still unclaimed. Even a single startable hub slice goes through this path now, not just when two or more are ready at once: a lane a previous round freed (below) can then be reused instead of always creating fresh. More than 3 startable at once still caps the batch at 3; the rest wait for the next round, found the same way once this one's done. The batch is also capped by however many lanes are actually free - a lane still held by an unresolved stopped member from an earlier round doesn't count as available (*Sizing the round* in [WORKTREES.md](./WORKTREES.md)), so it can shrink a round below 3 even with 3+ slices startable; the slice that doesn't fit waits for the next round too. Local mode isn't a batch - single dispatch, the shared epic worktree, proceed exactly as before.
+Dispatch each batch member through *Delegate the build* concurrently, without claiming any of them first - one subagent per member, each resolved to a lane worktree (*Pick the tree*, *Lane worktrees, for a parallel batch* in [WORKTREES.md](./WORKTREES.md)) - reused from an earlier round when one's free, created fresh otherwise. Each subagent claims its own slice as the first step of its own lifecycle (*Claim it*, unchanged), exactly like a single dispatch; the draining agent doesn't pre-claim members before dispatch.
+Wait for every member's close-out report, then merge every member that reported `ready-to-merge` into the epic branch, one at a time, in the order the reports arrived - never two merges in flight. If any member reported `outcome: "stopped"` (*Delegate the build*'s report contract), halt the batch once those ready-to-merge merges land, and report it - don't merge the stopped member, and don't pick another startable slice to replace it or retry it automatically, same as today's single-slice halt. Each merge is still *Close the loop*'s steps 4-6, unchanged, its conflict-stop policy included: a same-file conflict between two members' merges stops that merge and reports it, exactly as a single-slice conflict does today - it just fires more often, since batch members build without being sequenced against each other.
+**Never wait on a report that isn't coming.** A member whose subagent errors out, gets killed, or returns anything short of a well-formed close-out report (*Delegate the build*'s shape) is treated as `outcome: "stopped"`, `reason: "subagent did not return a report"` - same halt-after-merging-clean-siblings path as any other stopped member. This holds even if every other member already reported `ready-to-merge`: don't hold their merges hostage to one that will never resolve on its own.
+That also covers a subagent that's still running but has gone silent: **2 hours with no report, counted from that member's own dispatch** (not from the round's start, so a slow earlier member doesn't shorten a later one's wait), gets the same `outcome: "stopped"`, `reason: "subagent exceeded the wait bound with no report"` - don't wait past it on the chance it's still working.
+Before resolving that stop - retrying the slice, reassigning its lane - check `origin/<member-slice-branch>` for activity after the timeout mark: the subagent may have kept working past the bound and pushed anyway, and redispatching over a live push loses it.
+A conflict on one member's merge halts the rest of the queue immediately - any ready-to-merge members not yet merged wait for the next round, same as a stopped member: their ticket stays claimed, their PR stays open, and their lane stays occupied on their own branch, unparked (*Freeing a lane* in [WORKTREES.md](./WORKTREES.md) never runs for a merge that never landed). The next round retries them first - re-attempt each one's merge, in the order it was skipped, before dispatching any new members - rather than re-querying startable slices, which wouldn't find them: they're already claimed and built. A batch only ever runs in github mode, so this is `gh pr merge` refusing server-side, not a local conflict - nothing touches the epic worktree or any lane, there's no local state to clean up before reporting it.
+Report the batch's outcome as one consolidated line, not a running per-subagent stream - e.g. "batch of 3: 004 merged, 005 merged, 006 stopped - `<reason>`". A member whose report carried a `note` (*Delegate the build*'s contract) appends it to that member's own clause in the same line, regardless of `outcome` - e.g. "batch of 3: 004 merged - `<note>`, 005 merged, 006 stopped - `<reason>`" - never dropped just because it arrived inside a batch.
+
+Run the lifecycle - on the slice, or on each batch member - then look again. Each slice's build still goes through *Delegate the build*, whether that's the one subagent of a sequential drain or the concurrent subagents of a batch (above).
 The initial *Clean the tree* covers the whole drain - a slice picked up later doesn't need pre-check again just because time passed waiting on its blockers.
 
 It ends one of these ways, and none is "keep going anyway":
@@ -165,6 +201,6 @@ It ends one of these ways, and none is "keep going anyway":
 - **A merge conflict on integration.** `git status` to identify the conflicts, then **stop and report** - don't auto-resolve: resolving them wrong silently corrupts the epic branch.
 - **Every slice closed.** The drain is done. If the repo keeps a changelog or release notes (`CHANGELOG.md`, `.changeset/`, or whatever `CONTRIBUTING` names), add the **feature's** entry in that format - one per feature, not one per slice. Then in github, open the **integration PR** - the epic branch into its destination (`docs/agents/solve.md` -> **Branching**), as a **draft** with `Closes #<epic>` for a human to review; ship never merges it.
   **ship never closes the epic** - "every slice is closed" is checkable, "the feature is delivered" is a judgement. Report the state, leave it open, and leave the spec's `Status` alone in local. (On merge GitHub closes it anyway if the destination is the default branch; into a non-default like `develop` it stays open - the human's call.)
-  **If the epic ran in a worktree, name it in that PR body** - the path, the machine, and the `git worktree remove <path>` for after the merge. ship never removes one: [WORKTREES.md](./WORKTREES.md) -> *Cleanup*.
+  **If the epic ran in a worktree, name it in that PR body** - the path, the machine, and the `git worktree remove <path>` for after the merge, one line per path: the epic worktree, plus any lane still standing from the last round the drain dispatched. ship never removes any of them: [WORKTREES.md](./WORKTREES.md) -> *Cleanup*.
   **In local mode there's no PR**, so name the review surface instead: `git diff <base>...<epic-branch>` is the whole feature as one diff, design artifacts included. Say where the epic branch is, and where its worktree is if it ran in one.
   Point them at **`land`** for what comes next: it merges (the PR in github, the epic branch in local) and closes out the epic branch, the worktree, the epic issue and any slice branch still around.
