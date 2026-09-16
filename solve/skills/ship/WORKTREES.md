@@ -52,9 +52,8 @@ Failing here because the branch is checked out at a path you *didn't* derive is 
 **From here, every command runs inside `<path>`** - pass the path per command (`git -C <path> ...`, the install's own prefix flag) or chain it in the same invocation (`cd <path> && ...`). Never assume a bare `cd` survives to the next command - many runtimes reset the working directory between them, landing the install in the shared tree while every slice in the epic fails its done.
 Git only blocks the shared tree while the worktree holds that exact branch - for most of a drain the worktree sits on a slice branch, so the shared tree silently takes the epic branch.
 
-Once it's up, in github **record it on the epic issue** - path and machine, in one comment: `gh issue comment <epic> --body "worktree: <path> on <machine>"`. Always `--body`; without it `gh` opens an interactive prompt that hangs a drain with no output. (*find a slice's epic* in `docs/agents/solve.md` -> **Tracker operations**.)
+Once it's up, **record it on the epic issue** - path and machine, in one comment: `gh issue comment <epic> --body "worktree: <path> on <machine>"`. Always `--body`; without it `gh` opens an interactive prompt that hangs a drain with no output. (*find a slice's epic* in `docs/agents/solve.md` -> **Tracker operations**.)
 It's the only record spanning the worktree's whole life - a halted drain never opens the integration PR - and the only cross-machine one: a failing `git worktree add` sees only *this* machine.
-In local mode there's no issue to write on, so `git worktree list` on that machine is the whole record.
 
 ## Lane worktrees, for a parallel batch
 
