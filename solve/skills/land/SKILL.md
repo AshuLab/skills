@@ -1,6 +1,6 @@
 ---
 name: land
-description: Merge a finished epic once a human has reviewed it - its integration PR in github mode, its epic branch with a local tracker - then close what the drain left open: epic branch, worktree, epic issue, slice branches. Counterpart to ship - ship carries work to one reviewable thing, land puts it in. Invoked by a person who has read and accepts the feature; never decides that itself.
+description: Merge a finished epic once a human has reviewed it - its integration PR - then close what the drain left open: epic branch, worktree, epic issue, slice branches. Counterpart to ship - ship carries work to one reviewable thing, land puts it in. Invoked by a person who has read and accepts the feature; never decides that itself.
 ---
 
 # land - put the epic in
@@ -28,11 +28,9 @@ description: Merge a finished epic once a human has reviewed it - its integratio
                  prove each merged (origin vs origin) before removing it; no --force
 ```
 
-**Local tracker:** no PR - epic branch is the target. Only gates 1 and 4 apply; 2, 3, 5 are `gh`-only - report that, don't fake them. *Merge it* becomes `git merge --no-ff` instead of `gh pr merge`.
-
 **Run every command from the repo's main working tree, never the epic's worktree** - it holds the epic branch, so switching to the destination or deleting that branch fails from inside it. Can't leave it -> stop and say so. Exception: gate 4's suite run needs the epic branch, read-only there or via scratch export - gate 4 explains how.
 
-Read tracker mode from `docs/agents/solve.md` -> **Tracker**, branch names from **Branching**. No such file: local mode, default branch as destination, branches `feature/<feature>/epic` + `feature/<feature>/<NNN-slug>` - *Close it out*'s slice sweep needs that pattern.
+Read branch names from `docs/agents/solve.md` -> **Branching**. No such file: default branch as destination, branches `feature/<feature>/epic` + `feature/<feature>/<NNN-slug>` - *Close it out*'s slice sweep needs that pattern.
 
 ## What you were handed
 
@@ -44,11 +42,9 @@ An epic as a number, a branch, a PR URL, or just a feature name. Resolve it to t
 - **None open, one CLOSED unmerged** -> someone rejected it. Stop and say so - landing it is not your call.
 - **None at all** -> nothing to land. Say so rather than guessing, and re-check the epic branch name you resolved.
 
-**Local tracker: no PR** - the epic branch is the target. Already merged? `git fetch && git merge-base --is-ancestor origin/<epic-branch> origin/<destination>` succeeding means skip *Merge it*, go to *Close it out* - your local destination is what's stale.
-
 ## Check first
 
-Each blocks the merge: report the failure and stop, never work around one. **Run 1-4 in order** (1 then 4 locally) - cheapest first, each can moot the rest: 1-3 are a `merge-tree` and two `gh` calls; gate 4 reads every ticket and runs the suite twice. Gate 5 runs later - it explains why.
+Each blocks the merge: report the failure and stop, never work around one. **Run 1-4 in order** - cheapest first, each can moot the rest: 1-3 are a `merge-tree` and two `gh` calls; gate 4 reads every ticket and runs the suite twice. Gate 5 runs later - it explains why.
 
 1. **Still applies to the destination.** Epics share a base and never rebase, so a sibling that landed first can collide here - undetected by either drain, both reporting success. `git fetch`, then `git merge-tree --name-only origin/<destination> origin/<epic-branch>`: **exit 0 clean, exit 1 conflict**; printed names are the files - don't read stdout for the verdict, it prints a tree OID either way.
    **exit 1, empty stdout, `not something we can merge` on stderr is neither** - a ref failed to resolve (wrong `<destination>`/`<epic-branch>`, or a name `git fetch` never created): re-check the names, don't call it a conflict.
@@ -57,25 +53,23 @@ Each blocks the merge: report the failure and stop, never work around one. **Run
 2. **Merge commits allowed.** `gh repo view --json mergeCommitAllowed`. Allowed -> proceed. Disallowed -> **stop**: this model keeps every slice's commits and merge history, which squash/rebase discards. A repo-config conflict for a human to fix, never squashed around. (`ship` gates on the same thing.)
 3. **It's the integration PR** - head is the epic branch, base the destination in **Branching**. A slice PR here would merge a fragment into the destination.
 4. **Every slice is closed.** `gh issue view <epic> --json subIssues --jq '[.subIssues[] | select(.state == "OPEN")]'` must come back empty. Not `ship`'s `solve-next-startable`, which returns the next *startable* slice and prints nothing when the rest are blocked or assigned - exactly the halted drain this catches.
-   **Local mode:** read tickets **off the remote epic branch** - gate 1 already ran `git fetch`, so use `origin/<epic-branch>`: `git ls-tree --full-tree --name-only origin/<epic-branch> docs/tickets/<feature>/`, then `git show origin/<epic-branch>:<path>` each - every Definition-of-done box must be `[x]`. The bare local ref is wrong: a clone that never checked out the epic branch leaves it missing or stale, so `land` reads `origin/` throughout. Keep `--full-tree` - otherwise the pathspec is cwd-relative, and from a subdirectory an empty listing exits 0 as "all done". (Reading the branch also lets this run from the main tree, where the tickets aren't on disk.)
-   Those boxes are the drain's own claim; locally nothing else checks them. So **run the repo's test command against the epic branch yourself** - read-only in the epic's drain worktree (no switch, no writes), which already has drain's deps installed. No worktree -> `git archive origin/<epic-branch> | tar -x` into a scratch dir, deleted after, but **install deps first** or the run becomes a *Never ran* below that tells you nothing. Three outcomes:
+   That check is the drain's own claim, not proof the suite is green; so **run the repo's test command against the epic branch yourself** - read-only in the epic's drain worktree (no switch, no writes), which already has drain's deps installed. No worktree -> `git archive origin/<epic-branch> | tar -x` into a scratch dir, deleted after, but **install deps first** or the run becomes a *Never ran* below that tells you nothing. Three outcomes:
    - **Green** -> proceed.
    - **Ran and failed** -> the boxes lied: stop. Unless the destination fails the same tests - then it predates the epic, and belongs to the base's owner.
    - **Never ran** (broken script, missing runner, `MODULE_NOT_FOUND`) isn't failure, even if identical on both sides: it leaves no signal, worse than red. Invoke the suite directly, say which invocation you used, report the broken script.
 5. **Mergeable.** Doesn't run here - it needs a non-draft PR, and `ship` leaves one drafted; checking a draft always reports `mergeStateStatus: BLOCKED`, failing every healthy epic. Runs inside *Merge it*, right after `gh pr ready`.
    `gh pr view <pr> --json state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,reviewDecision`. Require: `state` `OPEN`, `mergeable` `MERGEABLE`, `mergeStateStatus` `CLEAN`, `reviewDecision` not `CHANGES_REQUESTED`, every `statusCheckRollup` conclusion `SUCCESS`/`NEUTRAL`/`SKIPPED`. Red check stops, doesn't just warn.
 
-Then **show the plan and wait for a yes**: the PR (or, local, epic branch and destination), the merge method, and every branch/worktree *Close it out* will delete - the merge is irreversible and public, and invoking `land` isn't consent for the specifics. No way to get an answer -> stop and hand over the plan; never take silence as approval.
+Then **show the plan and wait for a yes**: the PR, the merge method, and every branch/worktree *Close it out* will delete - the merge is irreversible and public, and invoking `land` isn't consent for the specifics. No way to get an answer -> stop and hand over the plan; never take silence as approval.
 
 ## Merge it
 
 Nothing here runs before the yes.
 
-**`git switch <destination> && git pull`** first, both modes: near-simultaneous landings get a non-fast-forward push rejection - fix by pull-and-retry, never force.
+**`git switch <destination> && git pull`** first: near-simultaneous landings get a non-fast-forward push rejection - fix by pull-and-retry, never force.
 
-- **github:** `gh pr ready <pr>`, then **gate 5** on the now-ready PR, then `gh pr merge <pr> --merge` - a merge commit, never `--squash`/`--rebase`.
-  Gate 5 failing here is the one stop after a public change - the PR's no longer draft. Restore with `gh pr ready --undo <pr>` before reporting, so the next run finds `ship`'s original state.
-- **local:** no PR, no gate 5 - `git merge --no-ff <epic-branch> -m "<message>" && git push`.
+`gh pr ready <pr>`, then **gate 5** on the now-ready PR, then `gh pr merge <pr> --merge` - a merge commit, never `--squash`/`--rebase`.
+Gate 5 failing here is the one stop after a public change - the PR's no longer draft. Restore with `gh pr ready --undo <pr>` before reporting, so the next run finds `ship`'s original state.
 
 Into the repo's default branch, GitHub closes the epic issue on merge (`Closes #<epic>` is in the body); into a non-default branch it doesn't - *Close it out* step 4 handles that.
 
@@ -101,7 +95,6 @@ Same ancestor check per branch, then delete local and remote. Anything not prova
 
 **4. The epic issue**, if the merge didn't already close it - the non-default-destination case.
 Close it now, referencing the merged PR - the human invoking `land` plus the merge going through *is* the acceptance signal.
-Local mode has no issue: set the spec's `Status` to `landed` and **commit that on `<destination>`** - left uncommitted, the next `ship` reads the stale spec and commits this epic's status onto the *next* epic's branch. No spec at all (tickets only)? Nothing to mark - say so, don't invent a file.
 
 ## Report
 
