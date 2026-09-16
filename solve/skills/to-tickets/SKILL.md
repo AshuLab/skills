@@ -76,7 +76,7 @@ Labels don't inherit - each slice gets only its own `solve:` labels (below).
 No milestone on the epic -> nothing to carry, nothing to ask.
 
 Then publish each slice as a sub-issue, in **topological order** (blocker before blocked) - which is what makes the cross-references resolvable: a slice's blockers already exist by the time it's created, so before creating it, swap each draft index (`001`) in the body for the blocker's real `#<issue number>` handle, which GitHub auto-links, alongside the native `--blocked-by` edge.
-The concrete operation is in `docs/agents/solve.md` -> **Tracker operations** (*publish a slice*); run it per slice. **No such file** means the repo never ran `setup`: infer `owner/repo` from the git remote and use the operation below. Say so once and carry on - don't stop, and don't write a config file.
+The concrete operation is in `docs/agents/solve.md` -> **Tracker operations** (*publish a slice*); run it per slice. **No such file** means the repo never ran `setup`: infer `owner/repo` from the git remote and use `setup/REFERENCE.md`'s **Tracker operations** -> *publish a slice*. Say so once and carry on - don't stop, and don't write a config file.
 Throttle the loop - creating issues too fast trips rate limiting.
 
 Every slice gets `solve:ticket` + `solve:refined` at publish - **blocked or not**.

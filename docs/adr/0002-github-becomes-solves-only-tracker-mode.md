@@ -11,7 +11,7 @@ The parallel local/github logic paths are also a real, evidenced maintenance cos
 
 ## Decision
 
-We remove local tracker mode entirely from the solve skill set - github becomes the only supported tracker, in sharpen, to-spec (+ SPEC-FORMAT.md), to-tickets, ship (+ WORKTREES.md), land, pre-check, code-post, and setup.
+We remove local tracker mode entirely from the solve skill set - github becomes the only supported tracker, in to-spec (+ SPEC-FORMAT.md), to-tickets, ship (+ WORKTREES.md), land, pre-check, code-post, and setup.
 This is not "github becomes mandatory config" - the zero-config ergonomics this repo's own epic just relied on are preserved: absent `docs/agents/solve.md`, skills now assume github (infer owner/name from the git remote, infer the base branch from origin's HEAD, create the `solve:*` labels lazily the first time they're actually needed) instead of assuming local markdown.
 `/solve:setup` stays a real, optional skill - it loses its "pick a tracker" question but keeps everything else: git/gh version gates, upfront label creation, and its still-genuine value, writing `docs/agents/solve.md`'s Branching/Worktrees sections with the repo's actual values instead of every skill re-inferring defaults on every run.
 GitHub UI scope stays what github mode already used: issues, PRs, labels, milestones - explicitly not Projects v2, already ruled out and marked moot in this repo's own CHANGELOG history under solve 0.11.2, not reopened here.
