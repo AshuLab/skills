@@ -20,6 +20,14 @@ codex plugin add solve@ashulab-local
 codex plugin add follow@ashulab-local
 ```
 
+Antigravity (untested), from a clone - no marketplace, so `git pull` and reinstall to update:
+
+```
+git clone https://github.com/AshuLab/skills
+agy plugin install ./skills/solve
+agy plugin install ./skills/follow
+```
+
 Codex and other agents, skills-only for either set:
 
 ```
