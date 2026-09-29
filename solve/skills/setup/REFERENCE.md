@@ -29,7 +29,7 @@ This repo uses the **solve** skill set - ideas ship through
 
 A summary (not a copy of the plugin README), filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
 
-```markdown
+````markdown
 # solve skills - how this repo uses them
 
 This repo uses the **solve** skill set to take an idea from raw to shipped. Each
@@ -141,7 +141,7 @@ isolates a single epic at the path below.
   worktree; name them, or "none". Never `node_modules`, build output or caches
 - **cleanup** - `ship` names the path and the `git worktree remove` in the
   integration PR body; `land` removes it when it merges that PR
-```
+````
 
 The **Worktrees** section **always carries a path** - `ship` needs a known home whether it makes the worktree automatically (*on*) or only when a run asks (*off*). Write the mode picked in step 4 with this repo's real values, `<feature>` the same token the branch pattern uses. The *on* variant is identical bar the first line:
 
