@@ -35,9 +35,15 @@ A summary (not a copy of the plugin README), filled with the repo's real values,
 This repo uses the **solve** skill set to take an idea from raw to shipped. Each
 step is a skill - invoke it however this agent invokes skills.
 
+## Where to enter
+The entry point is what you already know, not whether it's a feature or a bug:
+- the problem isn't clear (can't yet say what hurts, for whom, how you'd know it's fixed) -> `sharpen`; a fuzzy bug enters here too
+- the problem is clear, the cause isn't (it misbehaves and you don't know why) -> `diagnose`
+- both are clear, it's just work to cut -> `to-tickets`, or straight to `ship` if it's already one startable slice; if it came from outside (someone else's issue, a handed-down ticket) run `pre-check` first
+- first time in this repo -> `setup`
+
 ## The flow
-New work enters at `sharpen` - even when it arrives already written, as an issue
-or a doc. Each step consumes what the previous one left, so they run in order.
+Each step consumes what the previous one left, so they run in order.
 
 - `sharpen` - take a raw idea, doc or issue to a brief: reality-check + capture the thinking (grill it first with the follow skill `pushback` if it's raw)
 - `to-spec` - turn the brief into a PRD, deciding where each story gets tested
@@ -46,8 +52,6 @@ or a doc. Each step consumes what the previous one left, so they run in order.
   Handed the epic instead, it drains every slice in dependency order
 - `land` - once you've read the integration PR and accept it: merge it, then close
   out the epic branch, its worktree and the epic issue. The step a human starts
-
-Reach for `tdd` when the behavior is clear and a seam exists, and `guide` if you're unsure which skill fits.
 
 ## Reviewing
 `ship` ends at a draft integration PR; a review pass sits between it and `land`.
@@ -64,12 +68,14 @@ Repeat until a review pass has no blockers; then the PR is ready for `land`.
 - `land` - a person read the integration PR and accepts it
 - `ship` - runs unattended, stops at the draft PR
 
-## Feeds and on-ramps
-- `diagnose` - a bug or performance regression you don't understand
-- `research`, `prototype` - gather evidence to feed `sharpen`
-- `pre-check` - revalidate a spec or ticket that sat a while
-- the follow skill `pushback` - just the grilling, on anything, nothing written (sharpen recommends it for a raw idea)
-- `vocab` - the glossary and ADRs (shared vocabulary)
+## Reach for these any time
+- the follow skill `pushback` - stress-test an idea, plan or decision, nothing written (`sharpen` invokes it for a raw idea)
+- `research` - external facts before you can decide; primary sources, findings saved in the repo
+- `prototype` - a design question only code can answer; throwaway, the output is a decision
+- `vocab` - pin down a term or record a hard-to-reverse decision (glossary + ADRs)
+- `tdd` - the behavior is clear and a seam exists; also turns a `diagnose`-reproduced bug into a regression test
+- `pre-check` - revalidate a spec or ticket that sat a while or came from outside, before it advances
+- `guide` - not sure which skill fits; it points, it doesn't do the work
 
 ## Where things live
 - PRDs / specs -> `docs/specs/`

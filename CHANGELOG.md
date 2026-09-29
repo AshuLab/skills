@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## solve 0.16.1
 
-- `setup`: **the `docs/agents/solve.md` template now describes the review flow and where a person is needed.** New *Reviewing* section (reviewer side: `code-review` -> `code-post`; author side: `code-resolve`; repeat until a pass has no blockers, then `land`), a *Where a person is needed* section naming which steps wait for a human and which run unattended, and the artifact chain from brief to integration PR. The `AGENTS.md`/`CLAUDE.md` block now lists `code-resolve` too. Also fixes the template rendering: its outer code fence is now four backticks, so the nested `jq` block no longer closes it early and swallows Branching and Worktrees. Docs only - no skill behavior changes.
+- `setup`: **the `docs/agents/solve.md` template now describes the review flow and where a person is needed.** New *Reviewing* section (reviewer side: `code-review` -> `code-post`; author side: `code-resolve`; repeat until a pass has no blockers, then `land`), a *Where a person is needed* section naming which steps wait for a human and which run unattended, and the artifact chain from brief to integration PR. The `AGENTS.md`/`CLAUDE.md` block now lists `code-resolve` too. The template also gains *Where to enter* (sharpen vs diagnose vs to-tickets, aligned with `guide`; the old "everything enters at sharpen" line is gone) and *Reach for these any time*, which says when to use `pushback`, `research`, `prototype`, `vocab`, `tdd`, `pre-check` and `guide`. Also fixes the template rendering: its outer code fence is now four backticks, so the nested `jq` block no longer closes it early and swallows Branching and Worktrees. Docs only - no skill behavior changes.
 
 ## solve 0.16.0
 
