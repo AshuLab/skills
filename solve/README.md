@@ -33,7 +33,7 @@ The examples below use Claude Code's `/solve:<name>` syntax. The native Codex pl
 
 Restart the session so the skills load, then:
 
-1. **`/solve:setup`** - optional: creates the `solve:*` labels up front and lets you turn on worktree isolation so concurrent epics don't collide in one working tree. Skip it and the labels get created lazily on first use, in a single working tree, no config to maintain. Either way the repo needs a GitHub remote.
+1. **`/solve:setup`** - optional: creates the `solve:*` labels up front and lets you turn on worktree isolation so concurrent epics don't collide in one working tree. Skip it and the labels get created lazily on first use, in a single working tree, no config to maintain. Run it and it also writes `docs/agents/solve.md` (tracker, branching, worktrees) and `docs/agents/solve-flow.md` (the flow). Either way the repo needs a GitHub remote.
 2. **`/solve:sharpen <your idea>`** - it checks the thing isn't already built, captures the thinking as it settles, and leaves a brief at `docs/specs/<feature>.md`. A raw idea gets grilled first - `sharpen` invokes `/follow:pushback` for that (install `follow`, or it walks the questions itself).
 3. **`/solve:to-spec`** - turns that brief into a PRD, deciding where each story gets tested, and publishes it as the epic issue.
 4. **`/solve:to-tickets`** - cuts the PRD into vertical slices, each with a definition of done and its blocking edges.
@@ -51,7 +51,8 @@ Just want to be grilled about something, with nothing written down afterwards?
 guide | router - tells you which skill to reach for
 
 Setup (once per repo, optional)
-  | setup - create the solve labels, and turn on worktree isolation if you want it
+  | setup - create the solve labels, turn on worktree isolation if you want it, and write
+      docs/agents/solve.md + solve-flow.md
 
 Main flow | idea -> shipped
   sharpen -> to-spec -> to-tickets -> ship -> land

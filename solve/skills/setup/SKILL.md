@@ -5,7 +5,7 @@ description: Configure how the solve skill set works in this repo - GitHub Issue
 
 # setup - configure the repo, once
 
-Run once per repo - to create the solve labels, or set up worktree isolation so concurrent epics don't collide.
+Run once per repo, and again to refresh `solve-flow.md` - to create the solve labels, or set up worktree isolation so concurrent epics don't collide.
 No config file = github tracker inferred, single working tree, zero setup.
 Either way the repo needs a **GitHub remote**: branches are pushed, bases are read from `origin/`, and every merge is verified against the remote ref before anything is deleted.
 Every choice below: the harness's choice UI when available, prose otherwise.
@@ -61,4 +61,6 @@ There's no config file beyond what you write here.
 
 Follow the template in `REFERENCE.md` (next to this file), resolved to this repo's real values.
 
-Then **commit them** (`solve-flow.md` and `solve.md` together) - they're the repo's config, not anyone's feature work.
+Re-running is safe: if the block is already in the context file, update it in place instead of appending; if `docs/agents/solve.md` exists, take its current values as the defaults; `solve-flow.md` is a verbatim copy, overwrite it.
+
+Then **commit them** (the context file, `solve-flow.md` and `solve.md` together) - they're the repo's config, not anyone's feature work.

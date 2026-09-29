@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `setup`: **`docs/agents/solve.md` keeps only Tracker, Branching and Worktrees**, under the same section names, so `ship`/`land` don't load orientation they don't use and repos set up before this keep working unchanged. Re-run `setup` to get the new file. The `AGENTS.md`/`CLAUDE.md` block now points at both files and lists `code-resolve`.
 - `setup`: fixes the template rendering - the outer code fence is now four backticks, so the nested `jq` block no longer closes it early and swallows Branching and Worktrees.
 
-Docs only - no skill behavior changes.
+No changes to the other skills; `setup` also re-runs safely now (an existing block is updated in place, `solve.md` values are kept as defaults) and `ship`'s list of the repo's own config includes `solve-flow.md`.
 
 ## solve 0.16.0
 
