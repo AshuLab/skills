@@ -65,19 +65,22 @@ Each step consumes what the previous one left, so they run in order.
   out the epic branch, its worktree and the epic issue. The step a human starts
 
 ## Reviewing
-`ship` ends at a draft integration PR; a review pass sits between it and `land`.
+`ship` ends at a draft integration PR; a review pass sits between it and `land`. Nothing starts it automatically: whoever is driving, a person or an agent, runs `code-review` on that PR.
 Two sides, which may be different people or agents:
 - reviewer - `code-review` reads the PR and returns findings (it never publishes);
   `code-post` delivers them as PR comments once approved
 - author - `code-resolve` judges each comment on your own PR, fixes what applies, replies
 
-Repeat until a review pass has no blockers; then the PR is ready for `land`.
+Repeat until a review pass has no blockers; then the PR is ready for `land`. No round limit is enforced - if it isn't converging, bring a person in.
 
 ## Where a person is needed
 - `sharpen` - a conversation; the product calls are the user's
+- `to-spec` - the open questions that are about what the product should do, and the milestone
 - `to-tickets`, `code-post`, `code-resolve` - the text is approved before it's published
 - `land` - a person read the integration PR and accepts it
 - `ship` - runs unattended, stops at the draft PR
+
+When nobody can answer: `code-post` and `land` stop and hand over what they prepared instead of acting; `sharpen`, `to-spec`, `to-tickets` and `code-resolve` wait for the answer. An agent running unattended stops at those points - it doesn't answer for the person.
 
 ## Reach for these any time
 - the follow skill `pushback` - stress-test an idea, plan or decision, nothing written (`sharpen` invokes it for a raw idea)
