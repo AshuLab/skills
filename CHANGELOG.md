@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.16.1
+
+- `setup`: **the `docs/agents/solve.md` template now describes the review flow and where a person is needed.** New *Reviewing* section (reviewer side: `code-review` -> `code-post`; author side: `code-resolve`; repeat until a pass has no blockers, then `land`), a *Where a person is needed* section naming which steps wait for a human and which run unattended, and the artifact chain from brief to integration PR. The `AGENTS.md`/`CLAUDE.md` block now lists `code-resolve` too. Docs only - no skill behavior changes.
+
 ## solve 0.16.0
 
 - **Breaking: GitHub is now the only supported tracker.** `setup`, `to-spec`, `to-tickets`, `ship`, `land`, `pre-check` and `code-post` drop every local-tracker branch - local markdown tickets, local specs-as-final, and the local claim/branching operations are gone. Absent `docs/agents/solve.md`, skills infer github from the git remote instead of defaulting to local mode. A non-GitHub remote (or none) now stops `setup` instead of falling back. `sharpen` and `vocab` are unaffected - they only ever wrote local files. Repos still running local mode must add a GitHub remote and re-run `/solve:setup` before their next `ship`/`land`.

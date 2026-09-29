@@ -16,7 +16,7 @@ Detail (paths, `gh` usage, tracker operations) lives in `solve.md`, not here.
 
 This repo uses the **solve** skill set - ideas ship through
 `sharpen -> to-spec -> to-tickets -> ship -> land`, reaching for `tdd` /
-`code-review` / `code-post` when they earn it.
+`code-review` / `code-post` / `code-resolve` when they earn it.
 
 **Tracker:** GitHub Issues via the `gh` CLI - work is labelled `solve:epic`,
 `solve:ticket`, `solve:refined`.
@@ -47,7 +47,22 @@ or a doc. Each step consumes what the previous one left, so they run in order.
 - `land` - once you've read the integration PR and accept it: merge it, then close
   out the epic branch, its worktree and the epic issue. The step a human starts
 
-Reach for `tdd`, `code-review`, `code-post` and `code-resolve` when they earn it, and `guide` if you're unsure which skill fits.
+Reach for `tdd` when the behavior is clear and a seam exists, and `guide` if you're unsure which skill fits.
+
+## Reviewing
+`ship` ends at a draft integration PR; a review pass sits between it and `land`.
+Two sides, which may be different people or agents:
+- reviewer - `code-review` reads the PR and returns findings (it never publishes);
+  `code-post` delivers them as PR comments once approved
+- author - `code-resolve` judges each comment on your own PR, fixes what applies, replies
+
+Repeat until a review pass has no blockers; then the PR is ready for `land`.
+
+## Where a person is needed
+- `sharpen` - a conversation; the product calls are the user's
+- `to-tickets`, `code-post`, `code-resolve` - the text is approved before it's published
+- `land` - a person read the integration PR and accepts it
+- `ship` - runs unattended, stops at the draft PR
 
 ## Feeds and on-ramps
 - `diagnose` - a bug or performance regression you don't understand
@@ -60,6 +75,8 @@ Reach for `tdd`, `code-review`, `code-post` and `code-resolve` when they earn it
 - PRDs / specs -> `docs/specs/`
 - Glossary + ADRs -> `docs/glossary.md`, `docs/adr/` (always files)
 - Tickets -> GitHub Issues
+
+What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-spec` the PRD, published as the epic issue -> `to-tickets` one sub-issue per slice -> `ship` a PR per slice, then one draft integration PR -> `land` the merge.
 
 ## Tracker
 Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice)
