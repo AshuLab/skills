@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Configure how the solve skill set works in this repo - GitHub Issues tracking and whether ship isolates each epic in its own git worktree so concurrent epics don't collide. Run once per repo. Detects your git remote, writes docs/agents/solve.md declaring the branching and worktrees, and creates the solve labels. The repo needs a GitHub remote.
+description: Configure how the solve skill set works in this repo - GitHub Issues tracking and whether ship isolates each epic in its own git worktree so concurrent epics don't collide. Run once per repo. Detects your git remote, writes docs/agents/solve.md (branching, worktrees, tracker operations) and docs/agents/solve-flow.md (how the flow works), and creates the solve labels. The repo needs a GitHub remote.
 ---
 
 # setup - configure the repo, once
@@ -51,6 +51,7 @@ There's no config file beyond what you write here.
 
 - **Find the context file** - look for both `CLAUDE.md` and `AGENTS.md`; one is often a **symlink to the other** (typically `CLAUDE.md -> AGENTS.md`). Resolve any symlink to its real target (`realpath` / `ls -la`) and append the block to that real file, not the symlink - some tools replace the link with a regular file. If either already exists (or the symlink points to one), use it; never create the second. Append essentials + a pointer.
 - If **neither** exists, ask which to create. Default to `AGENTS.md`, the provider-neutral convention, and create it with an H1 containing the repo name followed by the block.
+- Write `docs/agents/solve-flow.md`: the flow, who does what, when to use each skill - the orientation for a human or agent who needs the whole picture. No skill reads it.
 - Write `docs/agents/solve.md`: a summary with this repo's real values. Its **Tracker operations** section is what the skills resolve their verbs against.
 - Fill its **Branching** section with the repo's real values, not the template's defaults:
   - **base branch** - the remote's default. `git symbolic-ref refs/remotes/origin/HEAD` only works if the repo was cloned; otherwise `git remote show origin` reports it, and `gh repo view --json defaultBranchRef` works on GitHub. `git remote set-head origin -a` fixes the first for later runs
@@ -60,4 +61,4 @@ There's no config file beyond what you write here.
 
 Follow the template in `REFERENCE.md` (next to this file), resolved to this repo's real values.
 
-Then **commit them** - they're the repo's config, not anyone's feature work.
+Then **commit them** (`solve-flow.md` and `solve.md` together) - they're the repo's config, not anyone's feature work.

@@ -121,7 +121,8 @@ The skills describe capabilities instead of provider tool names, so each harness
 
 ```
 docs/
-  agents/solve.md      <- setup: how THIS repo uses the solve skills (CLAUDE.md/AGENTS.md points here)
+  agents/solve.md      <- setup: tracker, branching, worktrees for THIS repo (CLAUDE.md/AGENTS.md points here)
+  agents/solve-flow.md <- setup: the flow, who does what, when to use each skill (CLAUDE.md/AGENTS.md points here)
   glossary.md          <- vocab
   adr/NNNN-title.md    <- vocab
   specs/<feature>.md   <- sharpen (brief) -> to-spec (PRD, also published as the epic issue)

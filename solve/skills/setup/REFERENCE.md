@@ -1,6 +1,7 @@
 # Templates setup writes
 
-Two pieces `setup` writes into the user's repo, so an agent opening it knows this repo uses the solve skills.
+Three pieces `setup` writes into the user's repo, so an agent opening it knows this repo uses the solve skills.
+The flow (`solve-flow.md`) and the operations (`solve.md`) are separate files on purpose: skills read `solve.md` on every run for the tracker and branching commands, and shouldn't load the orientation they don't use.
 
 **Naming rule:** in prose, always write "the solve skill set" / "solve skills" - never a bare "solve", which reads as the verb "to solve".
 Claude Code invokes skills as `/solve:<name>` or `/follow:<name>`. The native Codex solve plugin uses `$solve:<name>`; follow's standalone Codex skills use `$<name>`. Tracker labels such as `solve:epic` stay as is.
@@ -9,7 +10,7 @@ Claude Code invokes skills as `/solve:<name>` or `/follow:<name>`. The native Co
 
 Append to whichever exists, resolving symlinks first (`setup` step 5 has the rule).
 Keep it **minimal** - it auto-loads every session: three short labelled lines, what it is, the tracker, the pointer.
-Detail (paths, `gh` usage, tracker operations) lives in `solve.md`, not here.
+Detail lives in `solve-flow.md` (the flow) and `solve.md` (tracker, branching, worktrees), not here.
 
 ```markdown
 ## solve skills
@@ -21,19 +22,22 @@ This repo uses the **solve** skill set - ideas ship through
 **Tracker:** GitHub Issues via the `gh` CLI - work is labelled `solve:epic`,
 `solve:ticket`, `solve:refined`.
 
-**How it works here** - where things live, the tracker operations, conventions:
+**How it works here** - the flow, who does what, when to use each skill:
+`docs/agents/solve-flow.md`. Tracker, branching and worktree operations:
 `docs/agents/solve.md`.
 ```
 
-## docs/agents/solve.md
+## docs/agents/solve-flow.md
 
-A summary (not a copy of the plugin README), filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
+A summary (not a copy of the plugin README) of how work moves through the solve skills in this repo, in flowing prose (one line per paragraph, not hard-wrapped).
+Nothing here is repo-specific except the tracker's `owner/name`; no skill reads this file - it's for the human or agent who needs the whole picture.
 
 ````markdown
-# solve skills - how this repo uses them
+# solve skills - the flow
 
 This repo uses the **solve** skill set to take an idea from raw to shipped. Each
-step is a skill - invoke it however this agent invokes skills.
+step is a skill - invoke it however this agent invokes skills. The commands
+each step runs (tracker, branching, worktrees) are in `solve.md`.
 
 ## Where to enter
 The entry point is what you already know, not whether it's a feature or a bug:
@@ -83,6 +87,19 @@ Repeat until a review pass has no blockers; then the PR is ready for `land`.
 - Tickets -> GitHub Issues
 
 What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-spec` the PRD, published as the epic issue -> `to-tickets` one sub-issue per slice -> `ship` a PR per slice, then one draft integration PR -> `land` the merge.
+
+````
+
+## docs/agents/solve.md
+
+The operations the skills resolve their verbs against, filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
+The section names below (**Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them as `solve.md` -> **Branching**, and repos set up before the split keep this exact file. Rename none.
+
+````markdown
+# solve skills - operations
+
+The commands the solve skills run in this repo: tracker, branching, worktrees.
+The flow and who does what are in `solve-flow.md`.
 
 ## Tracker
 Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice)
