@@ -48,6 +48,6 @@ feeds     research, prototype, follow:pushback  (into the thinking, upstream)
 support   tdd, code-review, code-post, code-resolve  (on the code, when they earn it)
 gate      pre-check  (revalidate a stale or handed-down artifact before ship)
 on-ramp   diagnose  (enter from a bug, not an idea)
-setup     once per repo, for a GitHub tracker or worktree isolation (optional)
+setup     once per repo (re-run to refresh), for a GitHub tracker or worktree isolation (optional)
 base      vocab  (glossary + ADRs, drawn on throughout)
 ```

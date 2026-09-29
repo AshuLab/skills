@@ -7,13 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## solve 0.16.1
+## solve 0.17.0
 
 - `setup`: **new `docs/agents/solve-flow.md`, the orientation for a human or agent reading the repo.** It covers *Where to enter* (sharpen vs diagnose vs to-tickets, aligned with `guide` - the old "everything enters at sharpen" line is gone), *The flow*, *Reviewing* (reviewer side: `code-review` -> `code-post`; author side: `code-resolve`; repeat until a pass has no blockers, then `land`), *Where a person is needed*, *Reach for these any time* (when to use `pushback`, `research`, `prototype`, `vocab`, `tdd`, `pre-check`, `guide`) and the artifact chain from brief to integration PR. No skill reads it.
 - `setup`: **`docs/agents/solve.md` keeps only Tracker, Branching and Worktrees**, under the same section names, so `ship`/`land` don't load orientation they don't use and repos set up before this keep working unchanged. Re-run `setup` to get the new file. The `AGENTS.md`/`CLAUDE.md` block now points at both files and lists `code-resolve`.
 - `setup`: fixes the template rendering - the outer code fence is now four backticks, so the nested `jq` block no longer closes it early and swallows Branching and Worktrees.
-
-No changes to the other skills; `setup` also re-runs safely now (an existing block is updated in place, `solve.md` values are kept as defaults) and `ship`'s list of the repo's own config includes `solve-flow.md`.
+- `setup`: **re-running is safe now.** An existing `## solve skills` section is replaced in place, `solve.md`'s Branching and Worktrees values carry over as the defaults, and only the paths that changed are committed (someone else's edits to the context file are asked about, not swept in).
+- `ship`: the repo-config list in *Clean the tree* includes `docs/agents/solve-flow.md`.
 
 ## solve 0.16.0
 

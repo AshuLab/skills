@@ -49,7 +49,7 @@ The entry point is what you already know, not whether it's a feature or a bug:
 - the problem isn't clear (can't yet say what hurts, for whom, how you'd know it's fixed) -> `sharpen`; a fuzzy bug enters here too
 - the problem is clear, the cause isn't (it misbehaves and you don't know why) -> `diagnose`
 - both are clear, it's just work to cut -> `to-tickets`, or straight to `ship` if it's already one startable slice; if it came from outside (someone else's issue, a handed-down ticket) run `pre-check` first
-- first time in this repo and you want worktree isolation -> `setup` (optional: without it github is inferred and there's one working tree)
+- first time in this repo and you want worktree isolation -> `setup` (optional: without it github is inferred and there's one working tree; the repo needs a GitHub remote either way)
 
 ## The flow
 Each step consumes what the previous one left, so they run in order.
@@ -68,7 +68,7 @@ Two sides, which may be different people or agents:
 - reviewer - `code-review` reads the PR and returns findings (it never publishes); `code-post` delivers them as PR comments once approved
 - author - `code-resolve` judges each comment on your own PR, fixes what applies, replies
 
-Repeat until a review pass has no blockers; then the PR is ready for `land`. No round limit is enforced - if it isn't converging, bring a person in.
+Suggested loop: repeat until a review pass has no blockers, then the PR is ready for `land` (which itself only checks that the review isn't CHANGES_REQUESTED and the checks are green; on your own PR GitHub won't let you approve, so a solo review is comments only). No round limit is enforced - if it isn't converging, bring a person in.
 
 ## Where a person is needed
 - `sharpen` - a conversation; the product calls are the user's
@@ -78,7 +78,7 @@ Repeat until a review pass has no blockers; then the PR is ready for `land`. No 
 - `ship` - an epic drain runs unattended and stops at the draft integration PR; it also stops on a dirty tree, a failed slice or a merge conflict
 - `setup` - a few questions, optional
 
-When nobody can answer: `code-post`, `code-resolve` and `land` stop and hand over what they prepared instead of acting; `sharpen`, `to-spec` and `to-tickets` wait for the answer. An agent running unattended stops at those points - it doesn't answer for the person.
+When nobody can answer: `code-post`, `code-resolve` and `land` stop and hand over (or show) what they prepared instead of acting; `sharpen`, `to-spec` and `to-tickets` wait for the answer. An agent running unattended stops at those points - it doesn't answer for the person.
 
 ## Reach for these any time
 - the follow skill `pushback` - stress-test an idea, plan or decision, nothing written (`sharpen` invokes it for a raw idea)
@@ -138,11 +138,7 @@ Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `
 
 ## Branching
 Merge-only - never squash or rebase; every slice's commits and PR stay in history.
-First learn how THIS repo names branches - `git branch -a`, and any convention in
-CONTRIBUTING / CLAUDE.md / AGENTS.md. Take the repo's branch **type** (`feat`, `fix`,
-`chore`, ...; none at all -> `feature`, git's common default) and give each feature its
-own **namespace** under it: the epic and its slices are siblings inside `<type>/<feature>/`,
-so no branch is one the others nest under (git forbids a branch `x` and one under `x/`).
+First learn how THIS repo names branches - `git branch -a`, and any convention in CONTRIBUTING / CLAUDE.md / AGENTS.md. Take the repo's branch **type** (`feat`, `fix`, `chore`, ...; none at all -> `feature`, git's common default) and give each feature its own **namespace** under it: the epic and its slices are siblings inside `<type>/<feature>/`, so no branch is one the others nest under (git forbids a branch `x` and one under `x/`).
 The tokens below are placeholders `setup` resolves, never literals to emit.
 - **base branch** (`<base>`) - the epic branch is cut from here; the repo default
 - **epic branch** (`<epic-branch>`) - one per feature: `<type>/<feature>/epic`; every slice integrates here
@@ -161,9 +157,7 @@ The tokens below are placeholders `setup` resolves, never literals to emit.
 - land the epic (a human accepted the integration PR) -> `gh pr ready <pr>`, then `gh pr merge <pr> --merge`, then clean up in this order: `git worktree remove <path>` (it holds the epic branch, so it goes first), delete `<epic-branch>`, delete any leftover slice branch under `<type>/<feature>/*`, close `#<epic>` if the merge didn't. Every delete after `git fetch origin` + `git merge-base --is-ancestor origin/<branch> origin/<destination>` - run the `land` skill rather than these by hand
 
 ## Worktrees
-**off** - `ship` works in the shared working tree by default. An explicit per-run
-request ("worktree this epic"), or the pre-flight halt's `worktree` exit, still
-isolates a single epic at the path below.
+**off** - `ship` works in the shared working tree by default. An explicit per-run request ("worktree this epic"), or the pre-flight halt's `worktree` exit, still isolates a single epic at the path below.
 - **path** - `~/.solve/worktrees/<repo>/<feature>/`, `<feature>` the same token the
   epic branch uses
 - **bootstrap** - `<command>` (omit when the ecosystem's obvious command applies -
