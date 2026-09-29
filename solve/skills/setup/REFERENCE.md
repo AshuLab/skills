@@ -1,7 +1,14 @@
 # Templates setup writes
 
-Three pieces `setup` writes into the user's repo, so an agent opening it knows this repo uses the solve skills.
-The flow (`solve-flow.md`) and the operations (`solve.md`) are separate files on purpose: skills read `solve.md` on every run for the tracker and branching commands, and shouldn't load the orientation they don't use.
+Three pieces `setup` writes into the user's repo, so an agent opening it knows this repo uses the solve skills:
+
+| Piece | Goes to | Loaded | Filled with |
+|---|---|---|---|
+| Block | the repo's `CLAUDE.md` / `AGENTS.md` (appended) | every session | verbatim |
+| Flow | `docs/agents/solve-flow.md` | on demand, by whoever needs the whole picture; no skill reads it | verbatim - refresh it by re-running `setup` |
+| Operations | `docs/agents/solve.md` | by the skills, every run | this repo's real values (step 5 of `setup`) |
+
+The flow and the operations are separate files on purpose: skills read `solve.md` on every run for the tracker and branching commands, and shouldn't load the orientation they don't use.
 
 **Naming rule:** in prose, always write "the solve skill set" / "solve skills" - never a bare "solve", which reads as the verb "to solve".
 Claude Code invokes skills as `/solve:<name>` or `/follow:<name>`. The native Codex solve plugin uses `$solve:<name>`; follow's standalone Codex skills use `$<name>`. Tracker labels such as `solve:epic` stay as is.
@@ -30,7 +37,7 @@ This repo uses the **solve** skill set - ideas ship through
 ## docs/agents/solve-flow.md
 
 A summary (not a copy of the plugin README) of how work moves through the solve skills in this repo, in flowing prose (one line per paragraph, not hard-wrapped).
-Nothing here is repo-specific except the tracker's `owner/name`; no skill reads this file - it's for the human or agent who needs the whole picture.
+Nothing here is repo-specific: write it as is. No skill reads it - it's for the human or agent who needs the whole picture. It's a copy, so it ages with the plugin; re-running `setup` refreshes it.
 
 ````markdown
 # solve skills - the flow
@@ -93,7 +100,7 @@ What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-sp
 ## docs/agents/solve.md
 
 The operations the skills resolve their verbs against, filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
-The section names below (**Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them as `solve.md` -> **Branching**, and repos set up before the split keep this exact file. Rename none.
+The section names below (**Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Rename none.
 
 ````markdown
 # solve skills - operations

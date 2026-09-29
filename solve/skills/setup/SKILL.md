@@ -51,7 +51,7 @@ There's no config file beyond what you write here.
 
 - **Find the context file** - look for both `CLAUDE.md` and `AGENTS.md`; one is often a **symlink to the other** (typically `CLAUDE.md -> AGENTS.md`). Resolve any symlink to its real target (`realpath` / `ls -la`) and append the block to that real file, not the symlink - some tools replace the link with a regular file. If either already exists (or the symlink points to one), use it; never create the second. Append essentials + a pointer.
 - If **neither** exists, ask which to create. Default to `AGENTS.md`, the provider-neutral convention, and create it with an H1 containing the repo name followed by the block.
-- Write `docs/agents/solve-flow.md`: the flow, who does what, when to use each skill - the orientation for a human or agent who needs the whole picture. No skill reads it.
+- Write `docs/agents/solve-flow.md`: the flow, who does what, when to use each skill - the orientation for a human or agent who needs the whole picture. Write the `REFERENCE.md` template as is (nothing in it is repo-specific); no skill reads it, and re-running `setup` refreshes it.
 - Write `docs/agents/solve.md`: a summary with this repo's real values. Its **Tracker operations** section is what the skills resolve their verbs against.
 - Fill its **Branching** section with the repo's real values, not the template's defaults:
   - **base branch** - the remote's default. `git symbolic-ref refs/remotes/origin/HEAD` only works if the repo was cloned; otherwise `git remote show origin` reports it, and `gh repo view --json defaultBranchRef` works on GitHub. `git remote set-head origin -a` fixes the first for later runs
