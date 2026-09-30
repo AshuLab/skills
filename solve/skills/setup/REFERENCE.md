@@ -4,7 +4,7 @@ Three pieces `setup` writes into the user's repo, so an agent opening it knows t
 
 | Piece | Goes to | Loaded | Filled with |
 |---|---|---|---|
-| Block | the repo's `CLAUDE.md` / `AGENTS.md` (appended, or replaced if already there) | every session | verbatim |
+| Block | the repo's `CLAUDE.md` / `AGENTS.md` (added or replaced per `setup` step 5) | every session | verbatim |
 | Flow | `docs/agents/solve-flow.md` | on demand, by whoever needs the whole picture; no skill reads it | the template, adapted to what the user said is particular |
 | Operations | `docs/agents/solve.md` | by the skills, every run | this repo's real values and particulars (step 5 of `setup`) |
 
@@ -15,7 +15,7 @@ Claude Code invokes skills as `/solve:<name>` or `/follow:<name>`. The native Co
 
 ## Block for the repo's CLAUDE.md / AGENTS.md
 
-Append to whichever exists, resolving symlinks first (`setup` step 5 has the rule).
+Add it to whichever exists, resolving symlinks first (`setup` step 5 has the rule).
 Keep it **minimal** - it auto-loads every session: a few short labelled lines (what it is, the tracker, one pointer per file), one line per paragraph so it matches the prose around it.
 Detail lives in `solve-flow.md` (the flow) and `solve.md` (tracker, branching, worktrees), not here.
 
@@ -96,7 +96,7 @@ What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-sp
 ## docs/agents/solve.md
 
 The operations the skills resolve their verbs against, filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
-How to fill it: learn how THIS repo names branches first (`git branch -a`, and any convention in CONTRIBUTING / CLAUDE.md / AGENTS.md) and take its branch type (`feat`, `fix`, `chore`, ...; none at all -> `feature`). Then replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<bootstrap>` (the Worktrees bootstrap, in both variants) - with real values, and the placeholder `owner/name` (the tracker repo; if the user says the tracker follows `origin`, say that instead of naming a repo), never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<NNN>`, `<slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Drop the Worktrees bootstrap bullet when the ecosystem's obvious command applies and nobody gave one (`ship` infers it from the lockfile); keep a value the existing `solve.md` or the user gives. For linked config, replace `none` with the gitignored files beyond `.env` and its variants (which `ship` links itself) that the app needs to boot, if there are any - keep the existing `solve.md`'s list or the user's.
+How to fill it: replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<bootstrap>` (the Worktrees bootstrap, in both variants) - with real values, and the placeholder `owner/name` (the tracker repo; if the user says the tracker follows `origin`, say that instead of naming a repo), never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<NNN>`, `<slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Bootstrap and linked config follow `setup` step 4: drop the bootstrap bullet when there is none to write, and replace `none` with the files it names.
 The section names below (**Tracker**, **Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Keep these names as they are.
 
 ````markdown

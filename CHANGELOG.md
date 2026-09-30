@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## solve 0.17.0
 
-- `setup`: **writes `docs/agents/solve-flow.md`**, the orientation for a person or agent reading the repo (where to enter, the flow, review, where a person is needed, when to use each skill). No skill reads it. `docs/agents/solve.md` keeps Tracker, Branching and Worktrees under the same section names, so `ship`/`land` don't load orientation they don't use and repos set up before keep working.
-- `setup`: **a repo that already uses the solve skills is set up like a new one, with what it has as context.** The old files are read first (the user's answer beats them, they beat detection, and what isn't carried over is reported), the user is asked once for anything particular, and both files are written whole from the templates. The `AGENTS.md`/`CLAUDE.md` block is replaced in place; the files are committed on the base branch if the user agrees, otherwise left for `ship` or the user.
-- `setup`: the `solve.md` template holds only content (the fill instructions moved out of the code block), the branch-type token is `<branch-type>`, the Tracker line says what `refined` means, and the templates render correctly around the nested `jq` block.
+- `setup`: **writes `docs/agents/solve-flow.md`**, the orientation for a person or agent reading the repo (where to enter, the flow, review, where a person is needed, when to use each skill). It is a copy that ages with the plugin; running `setup` again rewrites it. No skill reads it. `docs/agents/solve.md` keeps Tracker, Branching and Worktrees under the same section names, so `ship`/`land` don't load orientation they don't use.
+- `setup`: **a repo that already uses the solve skills is set up like a new one, with what it has as context.** The old files are read first, the user is asked once for anything particular, and both files are written whole from the templates. Whatever becomes a command or ref (bootstrap, destination, branch type) is confirmed first, and every input is treated as data.
+- `setup`: the files are committed on the base branch only if the user agrees, and the user is told they reach `ship` once they are on `origin/<base>`. Templates hold only content, the branch-type token is `<branch-type>`, and the Tracker line says what `refined` means.
 - `ship`: the repo-config list in *Clean the tree* includes `docs/agents/solve-flow.md`.
 
 ## solve 0.16.0
