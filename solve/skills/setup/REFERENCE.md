@@ -63,7 +63,7 @@ Two sides, which may be different people or agents:
 - reviewer - `code-review` reads the PR and returns findings (it never publishes); `code-post` delivers them as PR comments once approved
 - author - `code-resolve` judges each comment on your own PR, fixes what applies, replies
 
-Suggested loop: repeat until a review pass has no blockers, then the PR is ready for `land` (which itself only checks that the review isn't CHANGES_REQUESTED and the checks are green; on your own PR GitHub won't let you approve, so a solo review is comments only). No round limit is enforced - if it isn't converging, bring a person in.
+Suggested loop: repeat until a review pass has no blockers, then the PR is ready for `land` (`land` has its own gates - no conflicts, every slice closed, a green suite, a clean mergeable PR and a human yes - so a repo that requires reviews stops at BLOCKED until they are in; on your own PR GitHub won't let you approve, so a solo review is comments only). No round limit is enforced - if it isn't converging, bring a person in.
 
 ## Where a person is needed
 - `sharpen` - a conversation; the product calls are the user's
@@ -96,8 +96,8 @@ What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-sp
 ## docs/agents/solve.md
 
 The operations the skills resolve their verbs against, filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
-How to fill it: learn how THIS repo names branches first (`git branch -a`, and any convention in CONTRIBUTING / CLAUDE.md / AGENTS.md) and take its branch type (`feat`, `fix`, `chore`, ...; none at all -> `feature`). Then replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`) and `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) - with real values, never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Drop the Worktrees bootstrap line when the ecosystem's obvious command applies and nobody gave one (`ship` infers it from the lockfile); keep a value the existing `solve.md` or the user gives.
-The section names below (**Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Rename none.
+How to fill it: learn how THIS repo names branches first (`git branch -a`, and any convention in CONTRIBUTING / CLAUDE.md / AGENTS.md) and take its branch type (`feat`, `fix`, `chore`, ...; none at all -> `feature`). Then replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<command>` (the Worktrees bootstrap, in both variants) - with real values, never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Leave the Worktrees bootstrap out when the ecosystem's obvious command applies and nobody gave one (`ship` infers it from the lockfile); keep a value the existing `solve.md` or the user gives.
+The section names below (**Tracker**, **Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Keep these names as they are.
 
 ````markdown
 # solve skills - operations
