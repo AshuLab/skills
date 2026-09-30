@@ -5,8 +5,8 @@ Three pieces `setup` writes into the user's repo, so an agent opening it knows t
 | Piece | Goes to | Loaded | Filled with |
 |---|---|---|---|
 | Block | the repo's `CLAUDE.md` / `AGENTS.md` (appended) | every session | verbatim |
-| Flow | `docs/agents/solve-flow.md` | on demand, by whoever needs the whole picture; no skill reads it | verbatim - refresh it by re-running `setup` |
-| Operations | `docs/agents/solve.md` | by the skills, every run | this repo's real values (step 5 of `setup`) |
+| Flow | `docs/agents/solve-flow.md` | on demand, by whoever needs the whole picture; no skill reads it | the template, adapted to what the user said is particular (e.g. where artifacts live) |
+| Operations | `docs/agents/solve.md` | by the skills, every run | this repo's real values and particulars (step 5 of `setup`) |
 
 The flow and the operations are separate files on purpose: skills read `solve.md` on every run for the tracker and branching commands, and shouldn't load the orientation they don't use.
 
@@ -34,7 +34,7 @@ This repo uses the **solve** skill set - ideas ship through `sharpen -> to-spec 
 ## docs/agents/solve-flow.md
 
 A summary (not a copy of the plugin README) of how work moves through the solve skills in this repo, in flowing prose (one line per paragraph, not hard-wrapped).
-Nothing here is repo-specific: write it as is. No skill reads it - it's for the human or agent who needs the whole picture. It's a copy, so it ages with the plugin; re-running `setup` refreshes it.
+Written from this template, adapted only to what the user said is particular about the repo (for example, where artifacts live); the rest is the same in every repo. No skill reads it - it's for the human or agent who needs the whole picture. It ages with the plugin; running `setup` again rewrites it.
 
 ````markdown
 # solve skills - the flow

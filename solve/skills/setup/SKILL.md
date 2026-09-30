@@ -1,11 +1,11 @@
 ---
 name: setup
-description: Configure how the solve skill set works in this repo - GitHub Issues tracking and whether ship isolates each epic in its own git worktree so concurrent epics don't collide. Run once per repo (re-run to refresh solve-flow.md). Detects your git remote, writes docs/agents/solve.md (branching, worktrees, tracker operations) and docs/agents/solve-flow.md (how the flow works), and creates the solve labels. The repo needs a GitHub remote.
+description: Configure how the solve skill set works in this repo - GitHub Issues tracking and whether ship isolates each epic in its own git worktree so concurrent epics don't collide. Run once per repo. Detects your git remote, writes docs/agents/solve.md (branching, worktrees, tracker operations) and docs/agents/solve-flow.md (how the flow works), and creates the solve labels. The repo needs a GitHub remote.
 ---
 
 # setup - configure the repo, once
 
-Run once per repo, and again to refresh `solve-flow.md` - to create the solve labels, or set up worktree isolation so concurrent epics don't collide.
+Run once per repo - to create the solve labels, or set up worktree isolation so concurrent epics don't collide.
 No config file = github tracker inferred, single working tree, zero setup.
 Either way the repo needs a **GitHub remote**: branches are pushed, bases are read from `origin/`, and every merge is verified against the remote ref before anything is deleted.
 Every choice below: the harness's choice UI when available, prose otherwise.
@@ -16,6 +16,7 @@ Every choice below: the harness's choice UI when available, prose otherwise.
 - **`git` 2.40.0 or newer** - `land`'s conflict gate runs `git merge-tree --name-only <base> <branch>` (the two-commit form landed in 2.38, `--name-only` in 2.40). On older git it errors out and the exit-0/exit-1 contract that gate reads doesn't hold. Check `git --version`; treat an older install as unsupported rather than working around it.
 - One clear GitHub remote -> **state it and use it** ("detected `<owner/name>`, using it"). Only ask when there's a real choice: multiple remotes.
 - **A remote that isn't GitHub, no remote, or not in a repo** -> stop. Say what's missing rather than working around it.
+- **What's already there is context.** If `docs/agents/solve.md`, `docs/agents/solve-flow.md` or a `## solve skills` block exist (a repo set up before), read them: their values (base branch, destination, branch type, worktrees) are the defaults for the questions below, and any repo-specific prose is worth asking about. Then ask once whether there's anything particular the docs should reflect - a base other than the default, a template/product split, where artifacts live, notes to carry over - and take what the user gives: free text, files or links. Existing files are input, never patched: step 5 writes them whole.
 
 ## 2. GitHub prerequisites
 
@@ -35,7 +36,7 @@ gh label create solve:refined --color 1a7f37 --description "Slice fully defined,
 
 ## 4. Worktrees
 
-Two separate axes - ask both (on a re-run, offer `docs/agents/solve.md`'s current mode, path and bootstrap as the defaults, don't ask cold):
+Two separate axes - ask both (defaults from an existing `solve.md`, if there is one):
 
 **Mode** - when does `ship` create a worktree?
 - **off** (default) - `ship` works in the shared tree. Recommend it unless they routinely run epics concurrently: an automatic worktree costs a dependency install and a set of symlinks every epic. `off` does **not** mean "never" - an explicit per-run request ("worktree this epic") is still honoured, and so is the pre-flight halt's `worktree` exit; it just isn't the default.
@@ -49,10 +50,10 @@ Unless they took plain `off` *and* say they'll never request a worktree, also as
 
 There's no config file beyond what you write here.
 
-- **Find the context file** - look for both `CLAUDE.md` and `AGENTS.md`; one is often a **symlink to the other** (typically `CLAUDE.md -> AGENTS.md`). Resolve any symlink to its real target (`realpath` / `ls -la`) and append the block to that real file, not the symlink - some tools replace the link with a regular file. If either already exists (or the symlink points to one), use it; never create the second. Append essentials + a pointer - or, if a `## solve skills` section is already there, replace it in place: only the block's own paragraphs, from its heading through the pointer line, never past a comment marker or anything else that isn't the block.
+- **Find the context file** - look for both `CLAUDE.md` and `AGENTS.md`; one is often a **symlink to the other** (typically `CLAUDE.md -> AGENTS.md`). Resolve any symlink to its real target (`realpath` / `ls -la`) and append the block to that real file, not the symlink - some tools replace the link with a regular file. If either already exists (or the symlink points to one), use it; never create the second. Append essentials + a pointer - but if a `## solve skills` section is already there, replace it instead of appending: only the block's own paragraphs, from its heading through the pointer line, never past a comment marker or anything else that isn't the block.
 - If **neither** exists, ask which to create. Default to `AGENTS.md`, the provider-neutral convention, and create it with an H1 containing the repo name followed by the block.
-- Write `docs/agents/solve-flow.md`: the flow, who does what, when to use each skill - the orientation for a human or agent who needs the whole picture. Write the `REFERENCE.md` template as is (nothing in it is repo-specific); it's a verbatim copy, so overwrite it on a re-run. No skill reads it.
-- Write `docs/agents/solve.md`: a summary with this repo's real values. Its **Tracker operations** section is what the skills resolve their verbs against. On a re-run, don't regenerate it: it may carry repo-specific notes the template doesn't have. Keep the file, drop the sections that moved to `solve-flow.md` (The flow, Feeds and on-ramps, Where things live), swap the intro for the template's, and touch Branching or Worktrees only where the user changed an answer.
+- Write `docs/agents/solve-flow.md`: the flow, who does what, when to use each skill - the orientation for a human or agent who needs the whole picture. Start from the `REFERENCE.md` template and adapt it only to what the user said is particular about the repo (for instance where artifacts live); keep its sections. No skill reads it.
+- Write `docs/agents/solve.md`: a summary with this repo's real values. Its **Tracker operations** section is what the skills resolve their verbs against. Adapt content, never structure: keep the section names the skills cite (Tracker, Tracker operations, Branching, Worktrees), and put repo-specific prose inside the section it belongs to, or in a final `## Repo notes`.
 - Fill its **Branching** section with the repo's real values, not the template's defaults:
   - **base branch** - the remote's default. `git symbolic-ref refs/remotes/origin/HEAD` only works if the repo was cloned; otherwise `git remote show origin` reports it, and `gh repo view --json defaultBranchRef` works on GitHub. `git remote set-head origin -a` fixes the first for later runs
   - **branch name pattern** - the repo's branch type from `git branch -a` / CONTRIBUTING / CLAUDE.md / AGENTS.md (`feat`, `chore`, ...; none -> `feature`), namespaced per feature: epic `<type>/<feature>/epic`, slices `<type>/<feature>/<NNN-slug>` - siblings, never nested, because git won't allow both a branch `x` and a branch `x/y`

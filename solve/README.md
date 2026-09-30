@@ -50,7 +50,7 @@ Just want to be grilled about something, with nothing written down afterwards?
 ```
 guide | router - tells you which skill to reach for
 
-Setup (once per repo, optional; re-run to refresh)
+Setup (once per repo, optional)
   | setup - create the solve labels, turn on worktree isolation if you want it, and write
       docs/agents/solve.md + solve-flow.md
 
