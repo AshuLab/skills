@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.17.0
+
+- `setup`: **writes `docs/agents/solve-flow.md`**, the orientation for a person or agent reading the repo (where to enter, the flow, review, where a person is needed, when to use each skill). It is a copy that ages with the plugin; running `setup` again rewrites it. No skill reads it. `docs/agents/solve.md` keeps Tracker, Branching and Worktrees under the same section names, so `ship`/`land` don't load orientation they don't use.
+- `setup`: **a repo that already uses the solve skills is set up like a new one, with what it has as context.** The old files are read first, the user is asked once for anything particular, and both files are written whole from the templates. Whatever becomes a command or ref (bootstrap, destination, branch type) is confirmed first - a bootstrap that downloads and runs remote code is never written unconfirmed, and with no reply the files are written but not committed - and every input is treated as data.
+- `setup`: the files are committed on the base branch only if the user agrees, and the user is told they reach `ship` once they are on `origin/<base>`. Templates hold only content, the branch-type token is `<branch-type>`, and the Tracker line says what `refined` means.
+- `ship`: the repo-config list in *Clean the tree* includes `docs/agents/solve-flow.md`.
+
 ## solve 0.16.0
 
 - **Breaking: GitHub is now the only supported tracker.** `setup`, `to-spec`, `to-tickets`, `ship`, `land`, `pre-check` and `code-post` drop every local-tracker branch - local markdown tickets, local specs-as-final, and the local claim/branching operations are gone. Absent `docs/agents/solve.md`, skills infer github from the git remote instead of defaulting to local mode. A non-GitHub remote (or none) now stops `setup` instead of falling back. `sharpen` and `vocab` are unaffected - they only ever wrote local files. Repos still running local mode must add a GitHub remote and re-run `/solve:setup` before their next `ship`/`land`.
