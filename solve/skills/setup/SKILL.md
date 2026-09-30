@@ -37,7 +37,7 @@ gh label create solve:refined --color 1a7f37 --description "Slice fully defined,
 
 ## 4. Worktrees
 
-**First, anything particular?** Ask once whether the docs should reflect something about this repo - a base other than the default, a template/product split, where artifacts live, notes carried over from an older `solve.md` - and take what the user gives: free text, files or links. Step 5 adapts the templates to it.
+**First, anything particular?** Ask once whether the docs should reflect something about this repo - a base other than the default, a template/product split, notes carried over from an older `solve.md` - and take what the user gives: free text, files or links. Step 5 adapts the templates to it.
 
 Then the worktree questions. Two separate axes - ask both (defaults from an existing `solve.md`, if there is one):
 
@@ -55,7 +55,7 @@ There's no config file beyond what you write here.
 
 - **Find the context file** - look for both `CLAUDE.md` and `AGENTS.md`; one is often a **symlink to the other** (typically `CLAUDE.md -> AGENTS.md`). Resolve any symlink to its real target (`realpath` / `ls -la`) and append the block to that real file, not the symlink - some tools replace the link with a regular file. If either already exists (or the symlink points to one), use it; never create the second. Append essentials + a pointer - but if a `## solve skills` section is already there, replace it instead of appending: only the block's own paragraphs, from its heading through the pointer line, never past a comment marker or anything else that isn't the block.
 - If **neither** exists, ask which to create. Default to `AGENTS.md`, the provider-neutral convention, and create it with an H1 containing the repo name followed by the block.
-- Write `docs/agents/solve-flow.md`: the flow, who does what, when to use each skill - the orientation for a human or agent who needs the whole picture. Start from the `REFERENCE.md` template and adapt it only to what the user said is particular about the repo (for instance where artifacts live); keep its sections. No skill reads it.
+- Write `docs/agents/solve-flow.md`: the flow, who does what, when to use each skill - the orientation for a human or agent who needs the whole picture. Start from the `REFERENCE.md` template and adapt it only to what the user said is particular about the repo; keep its sections. Artifact locations (`docs/specs/`, `docs/glossary.md`, `docs/adr/`) are fixed by the skills, so don't document others. No skill reads it.
 - Write `docs/agents/solve.md`: a summary with this repo's real values. Its **Tracker operations** section is what the skills resolve their verbs against. Adapt content, never structure: keep the section names the skills cite (Tracker, Tracker operations, Branching, Worktrees), and put repo-specific prose inside the section it belongs to, or in a final `## Repo notes`.
 - Fill its **Branching** section with the repo's real values, not the template's defaults:
   - **base branch** - the remote's default. `git symbolic-ref refs/remotes/origin/HEAD` only works if the repo was cloned; otherwise `git remote show origin` reports it, and `gh repo view --json defaultBranchRef` works on GitHub. `git remote set-head origin -a` fixes the first for later runs

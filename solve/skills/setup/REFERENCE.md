@@ -5,7 +5,7 @@ Three pieces `setup` writes into the user's repo, so an agent opening it knows t
 | Piece | Goes to | Loaded | Filled with |
 |---|---|---|---|
 | Block | the repo's `CLAUDE.md` / `AGENTS.md` (appended, or replaced if already there) | every session | verbatim |
-| Flow | `docs/agents/solve-flow.md` | on demand, by whoever needs the whole picture; no skill reads it | the template, adapted to what the user said is particular (e.g. where artifacts live) |
+| Flow | `docs/agents/solve-flow.md` | on demand, by whoever needs the whole picture; no skill reads it | the template, adapted to what the user said is particular |
 | Operations | `docs/agents/solve.md` | by the skills, every run | this repo's real values and particulars (step 5 of `setup`) |
 
 The flow and the operations are separate files on purpose: skills read `solve.md` on every run for the tracker and branching commands, and shouldn't load the orientation they don't use.
@@ -34,7 +34,7 @@ This repo uses the **solve** skill set - ideas ship through `sharpen -> to-spec 
 ## docs/agents/solve-flow.md
 
 A summary (not a copy of the plugin README) of how work moves through the solve skills in this repo, in flowing prose (one line per paragraph, not hard-wrapped).
-Written from this template, adapted only to what the user said is particular about the repo (for example, where artifacts live); the rest is the same in every repo. No skill reads it - it's for the human or agent who needs the whole picture. It ages with the plugin; running `setup` again rewrites it.
+Written from this template, adapted only to what the user said is particular about the repo; the rest is the same in every repo. No skill reads it - it's for the human or agent who needs the whole picture. It ages with the plugin; running `setup` again rewrites it.
 
 ````markdown
 # solve skills - the flow
@@ -98,6 +98,7 @@ What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-sp
 ## docs/agents/solve.md
 
 The operations the skills resolve their verbs against, filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
+How to fill it: learn how THIS repo names branches first (`git branch -a`, and any convention in CONTRIBUTING / CLAUDE.md / AGENTS.md) and take its branch type (`feat`, `fix`, `chore`, ...; none at all -> `feature`). Then replace the tokens `setup` resolves - `<base>`, `<destination>`, `<type>`, `<epic-branch>` (`<type>/<feature>/epic`) and `<slice-branch>` (`<type>/<feature>/<NNN-slug>`) - with real values, never emitting them literally; the others (`<feature>`, `<NNN-slug>`, `<n>`, `<pr>`, `<epic>`, ...) stay, the skills fill them at run time. Drop the Worktrees bootstrap line when the ecosystem's obvious command applies (`ship` infers it from the lockfile).
 The section names below (**Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Rename none.
 
 ````markdown
@@ -107,8 +108,7 @@ The commands the solve skills run in this repo: tracker, branching, worktrees.
 The flow and who does what are in `solve-flow.md`.
 
 ## Tracker
-Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice)
-| `solve:refined` (fully defined, agent-ready). List them: `gh issue list --label solve:refined`.
+Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice) | `solve:refined` (fully defined, agent-ready). List them: `gh issue list --label solve:refined`.
 
 ### Tracker operations
 - publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's, if any>`
@@ -135,14 +135,13 @@ Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `
 
 ## Branching
 Merge-only - never squash or rebase; every slice's commits and PR stay in history.
-First learn how THIS repo names branches - `git branch -a`, and any convention in CONTRIBUTING / CLAUDE.md / AGENTS.md. Take the repo's branch **type** (`feat`, `fix`, `chore`, ...; none at all -> `feature`, git's common default) and give each feature its own **namespace** under it: the epic and its slices are siblings inside `<type>/<feature>/`, so no branch is one the others nest under (git forbids a branch `x` and one under `x/`).
-The tokens below are placeholders `setup` resolves, never literals to emit.
-- **base branch** (`<base>`) - the epic branch is cut from here; the repo default
-- **epic branch** (`<epic-branch>`) - one per feature: `<type>/<feature>/epic`; every slice integrates here
-- **slice branch** (`<slice-branch>`) - `<type>/<feature>/<NNN-slug>`, a sibling of the epic in the same namespace
-- **destination** (`<destination>`) - where the epic branch merges when done (default: `<base>`)
+The branch type is `<type>`. Each feature gets its own namespace under it: the epic and its slices are siblings inside `<type>/<feature>/`, so no branch is one the others nest under (git forbids a branch `x` and one under `x/`).
+- **base branch** (`<base>`) - the epic branch is cut from here
+- **epic branch** (`<epic-branch>`) - one per feature; every slice integrates here
+- **slice branch** (`<slice-branch>`) - a sibling of the epic in the same namespace (`<NNN>` the ticket number, `<slug>` from its title)
+- **destination** (`<destination>`) - where the epic branch merges when done
 
-### Branching operations (substitute the names above - don't emit them literally)
+### Branching operations
 - start the epic branch (lazy, first slice of the epic only) -> `git fetch && git switch -c <epic-branch> origin/<base> && git push -u origin <epic-branch>`
 - branch a slice, **hub** (no open blocker, or several) -> `git switch <epic-branch> && git pull && git switch -c <slice-branch> && git push -u origin <slice-branch>` - the `git pull` isn't optional: slices merge server-side, so without it you cut from an epic branch missing every slice merged so far
 - branch a slice, **stack** (exactly one open blocker) -> `git switch <blocker-branch> && git pull && git switch -c <slice-branch> && git push -u origin <slice-branch>` - its PR targets `<blocker-branch>`
@@ -155,28 +154,19 @@ The tokens below are placeholders `setup` resolves, never literals to emit.
 
 ## Worktrees
 **off** - `ship` works in the shared working tree by default. An explicit per-run request ("worktree this epic"), or the pre-flight halt's `worktree` exit, still isolates a single epic at the path below.
-- **path** - `~/.solve/worktrees/<repo>/<feature>/`, `<feature>` the same token the
-  epic branch uses
-- **bootstrap** - `<command>` (omit when the ecosystem's obvious command applies -
-  ship infers it from the lockfile)
-- **linked config** - gitignored files the app needs to boot, symlinked into the
-  worktree; name them, or "none". Never `node_modules`, build output or caches
-- **cleanup** - `ship` names the path and the `git worktree remove` in the
-  integration PR body; `land` removes it when it merges that PR
+- **path** - `~/.solve/worktrees/<repo>/<feature>/`, `<feature>` the same token the epic branch uses
+- **bootstrap** - `<command>`
+- **linked config** - gitignored files the app needs to boot, symlinked into the worktree; name them, or "none". Never `node_modules`, build output or caches
+- **cleanup** - `ship` names the path and the `git worktree remove` in the integration PR body; `land` removes it when it merges that PR
 ````
 
 The **Worktrees** section **always carries a path** - `ship` needs a known home whether it makes the worktree automatically (*on*) or only when a run asks (*off*). Write the mode picked in step 4 with this repo's real values, `<feature>` the same token the branch pattern uses. The *on* variant is identical bar the first line:
 
 ```markdown
 ## Worktrees
-**on** - each epic is drained in its own git worktree, so concurrent epics can't
-collide in one tree. `ship` derives the path (never remembers it) and reuses the
-worktree if it's already there.
-- **path** - `~/.solve/worktrees/<repo>/<feature>/`, `<feature>` the same token the
-  epic branch uses
-- **bootstrap** - `<command>` (omit when the ecosystem's obvious command applies)
-- **linked config** - gitignored files the app needs to boot, symlinked in; name
-  them, or "none". Never `node_modules`, build output or caches
-- **cleanup** - `ship` names the path and the `git worktree remove` in the
-  integration PR body; `land` removes it when it merges that PR
+**on** - each epic is drained in its own git worktree, so concurrent epics can't collide in one tree. `ship` derives the path (never remembers it) and reuses the worktree if it's already there.
+- **path** - `~/.solve/worktrees/<repo>/<feature>/`, `<feature>` the same token the epic branch uses
+- **bootstrap** - `<command>`
+- **linked config** - gitignored files the app needs to boot, symlinked in; name them, or "none". Never `node_modules`, build output or caches
+- **cleanup** - `ship` names the path and the `git worktree remove` in the integration PR body; `land` removes it when it merges that PR
 ```
