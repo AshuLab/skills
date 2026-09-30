@@ -96,7 +96,7 @@ What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-sp
 ## docs/agents/solve.md
 
 The operations the skills resolve their verbs against, filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
-How to fill it: learn how THIS repo names branches first (`git branch -a`, and any convention in CONTRIBUTING / CLAUDE.md / AGENTS.md) and take its branch type (`feat`, `fix`, `chore`, ...; none at all -> `feature`). Then replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<command>` (the Worktrees bootstrap, in both variants) - with real values, never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Leave the Worktrees bootstrap out when the ecosystem's obvious command applies and nobody gave one (`ship` infers it from the lockfile); keep a value the existing `solve.md` or the user gives.
+How to fill it: learn how THIS repo names branches first (`git branch -a`, and any convention in CONTRIBUTING / CLAUDE.md / AGENTS.md) and take its branch type (`feat`, `fix`, `chore`, ...; none at all -> `feature`). Then replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<command>` (the Worktrees bootstrap, in both variants) and `owner/name` (the tracker repo; if the user says the tracker follows `origin`, say that instead of naming a repo) - with real values, never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Leave the Worktrees bootstrap out when the ecosystem's obvious command applies and nobody gave one (`ship` infers it from the lockfile); keep a value the existing `solve.md` or the user gives.
 The section names below (**Tracker**, **Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Keep these names as they are.
 
 ````markdown
@@ -148,7 +148,7 @@ The branch type is `<branch-type>`. Each feature gets its own namespace under it
 **off** - `ship` works in the shared working tree by default. An explicit per-run request ("worktree this epic"), or the pre-flight halt's `worktree` exit, still isolates a single epic at the path below.
 - **path** - `~/.solve/worktrees/<repo>/<feature>/`, `<feature>` the same token the epic branch uses
 - **bootstrap** - `<command>`
-- **linked config** - gitignored files the app needs to boot, symlinked into the worktree; name them, or "none". Never `node_modules`, build output or caches
+- **linked config** - gitignored files beyond `.env` and its variants (which `ship` links itself) that the app needs to boot, symlinked into the worktree; name them, or "none". Never `node_modules`, build output or caches
 - **cleanup** - `ship` names the path and the `git worktree remove` in the integration PR body; `land` removes it when it merges that PR
 ````
 
@@ -159,6 +159,6 @@ The **Worktrees** section **always carries a path** - `ship` needs a known home 
 **on** - each epic is drained in its own git worktree, so concurrent epics can't collide in one tree. `ship` derives the path (never remembers it) and reuses the worktree if it's already there.
 - **path** - `~/.solve/worktrees/<repo>/<feature>/`, `<feature>` the same token the epic branch uses
 - **bootstrap** - `<command>`
-- **linked config** - gitignored files the app needs to boot, symlinked in; name them, or "none". Never `node_modules`, build output or caches
+- **linked config** - gitignored files beyond `.env` and its variants (which `ship` links itself) that the app needs to boot, symlinked in; name them, or "none". Never `node_modules`, build output or caches
 - **cleanup** - `ship` names the path and the `git worktree remove` in the integration PR body; `land` removes it when it merges that PR
 ```
