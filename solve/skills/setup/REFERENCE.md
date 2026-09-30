@@ -16,22 +16,19 @@ Claude Code invokes skills as `/solve:<name>` or `/follow:<name>`. The native Co
 ## Block for the repo's CLAUDE.md / AGENTS.md
 
 Append to whichever exists, resolving symlinks first (`setup` step 5 has the rule).
-Keep it **minimal** - it auto-loads every session: three short labelled lines, what it is, the tracker, the pointer.
+Keep it **minimal** - it auto-loads every session: a few short labelled lines (what it is, the tracker, one pointer per file), one line per paragraph so it matches the prose around it.
 Detail lives in `solve-flow.md` (the flow) and `solve.md` (tracker, branching, worktrees), not here.
 
 ```markdown
 ## solve skills
 
-This repo uses the **solve** skill set - ideas ship through
-`sharpen -> to-spec -> to-tickets -> ship -> land`, reaching for `tdd` /
-`code-review` / `code-post` / `code-resolve` when they earn it.
+This repo uses the **solve** skill set - ideas ship through `sharpen -> to-spec -> to-tickets -> ship -> land`, reaching for `tdd` / `code-review` / `code-post` / `code-resolve` when they earn it.
 
-**Tracker:** GitHub Issues via the `gh` CLI - work is labelled `solve:epic`,
-`solve:ticket`, `solve:refined`.
+**Tracker:** GitHub Issues via the `gh` CLI - work is labelled `solve:epic`, `solve:ticket`, `solve:refined`.
 
-**How it works here** - the flow, who does what, when to use each skill:
-`docs/agents/solve-flow.md`. Tracker, branching and worktree operations:
-`docs/agents/solve.md`.
+**The flow** - how work moves, who does what, when to use each skill: `docs/agents/solve-flow.md`.
+
+**Operations** - tracker, branching and worktree commands: `docs/agents/solve.md`.
 ```
 
 ## docs/agents/solve-flow.md
