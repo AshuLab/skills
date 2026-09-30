@@ -6,6 +6,7 @@ description: Configure how the solve skill set works in this repo - GitHub Issue
 # setup - configure the repo, once
 
 Run once per repo - to create the solve labels, or set up worktree isolation so concurrent epics don't collide.
+A repo that already uses the solve skills is set up like a new one: the old files are read as context (step 1), then everything is written again from the templates.
 No config file = github tracker inferred, single working tree, zero setup.
 Either way the repo needs a **GitHub remote**: branches are pushed, bases are read from `origin/`, and every merge is verified against the remote ref before anything is deleted.
 Every choice below: the harness's choice UI when available, prose otherwise.
@@ -16,7 +17,7 @@ Every choice below: the harness's choice UI when available, prose otherwise.
 - **`git` 2.40.0 or newer** - `land`'s conflict gate runs `git merge-tree --name-only <base> <branch>` (the two-commit form landed in 2.38, `--name-only` in 2.40). On older git it errors out and the exit-0/exit-1 contract that gate reads doesn't hold. Check `git --version`; treat an older install as unsupported rather than working around it.
 - One clear GitHub remote -> **state it and use it** ("detected `<owner/name>`, using it"). Only ask when there's a real choice: multiple remotes.
 - **A remote that isn't GitHub, no remote, or not in a repo** -> stop. Say what's missing rather than working around it.
-- **What's already there is context.** If `docs/agents/solve.md`, `docs/agents/solve-flow.md` or a `## solve skills` block exist (a repo set up before), read them: their values (base branch, destination, branch type, worktrees) are the defaults for the questions below, and any repo-specific prose is worth asking about. Then ask once whether there's anything particular the docs should reflect - a base other than the default, a template/product split, where artifacts live, notes to carry over - and take what the user gives: free text, files or links. Existing files are input, never patched: step 5 writes them whole.
+- **What's already there is context.** If `docs/agents/solve.md`, `docs/agents/solve-flow.md` or a `## solve skills` block exist (a repo set up before), read them: their values (base branch, destination, branch type, worktrees) are the defaults for the questions below, and any repo-specific prose is worth asking about (step 4). Existing files are input, never patched: step 5 writes them whole.
 
 ## 2. GitHub prerequisites
 
@@ -36,7 +37,9 @@ gh label create solve:refined --color 1a7f37 --description "Slice fully defined,
 
 ## 4. Worktrees
 
-Two separate axes - ask both (defaults from an existing `solve.md`, if there is one):
+**First, anything particular?** Ask once whether the docs should reflect something about this repo - a base other than the default, a template/product split, where artifacts live, notes carried over from an older `solve.md` - and take what the user gives: free text, files or links. Step 5 adapts the templates to it.
+
+Then the worktree questions. Two separate axes - ask both (defaults from an existing `solve.md`, if there is one):
 
 **Mode** - when does `ship` create a worktree?
 - **off** (default) - `ship` works in the shared tree. Recommend it unless they routinely run epics concurrently: an automatic worktree costs a dependency install and a set of symlinks every epic. `off` does **not** mean "never" - an explicit per-run request ("worktree this epic") is still honoured, and so is the pre-flight halt's `worktree` exit; it just isn't the default.
@@ -62,5 +65,4 @@ There's no config file beyond what you write here.
 
 Follow the template in `REFERENCE.md` (next to this file), resolved to this repo's real values.
 
-
-Then look at `git diff` on them and **commit the paths that changed** (the context file, `solve-flow.md`, `solve.md`); skip if none did. If the context file carries someone else's uncommitted edits, don't sweep them into this commit: ask. They're the repo's config, not anyone's feature work.
+Then look at `git diff` on those files and **commit the paths that changed** (the context file, `solve-flow.md`, `solve.md`); skip if none did. If the context file carries someone else's uncommitted edits, don't sweep them into this commit: ask. They're the repo's config, not anyone's feature work. Commit on the current branch; if it's protected or the repo requires PRs, use a branch and say so.

@@ -4,7 +4,7 @@ Three pieces `setup` writes into the user's repo, so an agent opening it knows t
 
 | Piece | Goes to | Loaded | Filled with |
 |---|---|---|---|
-| Block | the repo's `CLAUDE.md` / `AGENTS.md` (appended) | every session | verbatim |
+| Block | the repo's `CLAUDE.md` / `AGENTS.md` (appended, or replaced if already there) | every session | verbatim |
 | Flow | `docs/agents/solve-flow.md` | on demand, by whoever needs the whole picture; no skill reads it | the template, adapted to what the user said is particular (e.g. where artifacts live) |
 | Operations | `docs/agents/solve.md` | by the skills, every run | this repo's real values and particulars (step 5 of `setup`) |
 
