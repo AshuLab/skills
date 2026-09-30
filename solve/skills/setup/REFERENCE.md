@@ -123,7 +123,7 @@ Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `
            | select(([(.blockedBy.nodes // [])[] | select(.state == \"OPEN\")] | length) == 0)]
           | sort_by(.number) | .[0].number // empty"
   ```
-  Scoping to the epic isn't optional: unscoped, this spans every epic in the repo and a drain starts shipping another epic's slices into this one's branch. `--limit` matters for the same reason - the label query is server-side and defaults to 30, the epic filter runs after it. (If this install shipped the `ship` skill's `scripts/` directory, `solve-next-startable <epic>` runs exactly the above.)
+  Scoping to the epic isn't optional: unscoped, this spans every epic in the repo and a drain starts shipping another epic's slices into this one's branch. `--limit` matters for the same reason - the label query is server-side and defaults to 30, the epic filter runs after it.
 
 ## Branching
 Merge-only - never squash or rebase; every slice's commits and PR stay in history.
