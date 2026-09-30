@@ -96,7 +96,7 @@ What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-sp
 ## docs/agents/solve.md
 
 The operations the skills resolve their verbs against, filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
-How to fill it: learn how THIS repo names branches first (`git branch -a`, and any convention in CONTRIBUTING / CLAUDE.md / AGENTS.md) and take its branch type (`feat`, `fix`, `chore`, ...; none at all -> `feature`). Then replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`) and `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) - with real values, never emitting them literally; the others (`<feature>`, `<repo>`, `<NNN-slug>`, `<n>`, `<pr>`, `<epic>`, ...) stay, the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Drop the Worktrees bootstrap line when the ecosystem's obvious command applies (`ship` infers it from the lockfile).
+How to fill it: learn how THIS repo names branches first (`git branch -a`, and any convention in CONTRIBUTING / CLAUDE.md / AGENTS.md) and take its branch type (`feat`, `fix`, `chore`, ...; none at all -> `feature`). Then replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`) and `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) - with real values, never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Drop the Worktrees bootstrap line when the ecosystem's obvious command applies and nobody gave one (`ship` infers it from the lockfile); keep a value the existing `solve.md` or the user gives.
 The section names below (**Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Rename none.
 
 ````markdown
@@ -106,7 +106,7 @@ The commands the solve skills run in this repo: tracker, branching, worktrees.
 The flow and who does what are in `solve-flow.md`.
 
 ## Tracker
-Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice) | `solve:refined` (fully defined, agent-ready). List them: `gh issue list --label solve:refined`.
+Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice) | `solve:refined` (fully defined, agent-ready). `refined` means the ticket's definition is complete, not that it's unblocked - blocking is tracked separately via `blocked-by` edges. List them: `gh issue list --label solve:refined`.
 
 ### Tracker operations
 - publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's, if any>`

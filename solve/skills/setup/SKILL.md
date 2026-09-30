@@ -21,7 +21,7 @@ Every choice below: the harness's choice UI when available, prose otherwise.
 
 ## 2. GitHub prerequisites
 
-- `gh auth status` - must be logged in, with **>= triage** permission on the repo (issue dependencies require it).
+- `gh auth status` - must be logged in, with **>= triage** permission on the repo (issue dependencies require it; `gh repo view --json viewerPermission` shows it).
 - **`gh` 2.94.0 or newer** - the release that added issue types, sub-issues and relationships (`--parent`, `--blocked-by`). Check `gh --version`; treat an older install as unsupported rather than working around it.
 - **On GitHub Enterprise Server, check the server version too** - sub-issues need GHES 3.17+; *relationships* (`--blocked-by`, which the whole dependency graph rests on) need **GHES 3.19+**. Below 3.19 the failure is silent and lopsided: `--parent` works, `--blocked-by` doesn't, and slices publish carrying no blocking edges. Below 3.19 -> stop, say so.
 
@@ -39,7 +39,7 @@ gh label create solve:refined --color 1a7f37 --description "Slice fully defined,
 
 **First, anything particular?** Ask once whether the docs should reflect something about this repo - a base other than the default, a template/product split, notes carried over from an older `solve.md` - and take what the user gives: free text, files or links. Step 5 adapts the templates to it.
 
-Then the worktree questions. Two separate axes - ask both (defaults from an existing `solve.md`, if there is one):
+Then the worktree questions. Two separate axes - ask both, skipping whatever an existing `solve.md` already answers (ask only what it lacks):
 
 **Mode** - when does `ship` create a worktree?
 - **off** (default) - `ship` works in the shared tree. Recommend it unless they routinely run epics concurrently: an automatic worktree costs a dependency install and a set of symlinks every epic. `off` does **not** mean "never" - an explicit per-run request ("worktree this epic") is still honoured, and so is the pre-flight halt's `worktree` exit; it just isn't the default.
@@ -47,13 +47,13 @@ Then the worktree questions. Two separate axes - ask both (defaults from an exis
 
 **Path** - where a worktree goes *when one is created* (in `on` mode always, in `off` mode on request). Default `~/.solve/worktrees/<repo>/<feature>/`; ask if they want it elsewhere and take their path. Warn when it's inside the repo (`.worktrees/`): it needs a `.gitignore` entry, and any tool that walks the tree without honouring it - a loose jest glob, a wide `tsc` include, a watcher, a Docker build context - silently finds a second copy of the codebase and runs the suite twice. The path goes into `solve.md` in **both** modes, so `ship` never has to guess a home for the on-request case. Write it with `<repo>` and `<feature>` left as tokens: `ship` fills them on every run.
 
-Unless they took plain `off` *and* say they'll never request a worktree, also ask about **bootstrap**: a command a fresh worktree needs before it can run the app and the test suite. Leave it empty for the ecosystem's obvious one (`npm ci`, `go mod download`, ...) - `ship` infers that from the lockfile. Capture only the genuinely non-obvious: a `make setup`, a private registry that needs auth, a database that has to be seeded. Same for any gitignored file beyond `.env` the app needs to boot.
+Unless they took plain `off` *and* say they'll never request a worktree, also ask about **bootstrap**: a command a fresh worktree needs before it can run the app and the test suite. Leave it empty for the ecosystem's obvious one (`npm ci`, `go mod download`, ...) - `ship` infers that from the lockfile - but keep a value the existing `solve.md` or the user already gives, even if it's the obvious one. Capture only the genuinely non-obvious: a `make setup`, a private registry that needs auth, a database that has to be seeded. Same for any gitignored file beyond `.env` the app needs to boot.
 
 ## 5. Wire the reference
 
 There's no config file beyond what you write here.
 
-- **Find the context file** - look for both `CLAUDE.md` and `AGENTS.md`; one is often a **symlink to the other** (typically `CLAUDE.md -> AGENTS.md`). Resolve any symlink to its real target (`realpath` / `ls -la`) and append the block to that real file, not the symlink - some tools replace the link with a regular file. If either already exists (or the symlink points to one), use it; never create the second. Append essentials + a pointer - but if a `## solve skills` section is already there, replace it instead of appending: only the block's own paragraphs, from its heading through the pointer line, never past a comment marker or anything else that isn't the block.
+- **Find the context file** - look for both `CLAUDE.md` and `AGENTS.md`; one is often a **symlink to the other** (typically `CLAUDE.md -> AGENTS.md`). Resolve any symlink to its real target (`realpath` / `ls -la`) and append the block to that real file, not the symlink - some tools replace the link with a regular file. If either already exists (or the symlink points to one), use it; never create the second. Append essentials + a pointer - but if a `## solve skills` section is already there, replace it instead of appending: only the block's own paragraphs, from its heading through its last paragraph (the pointers to the `docs/agents/` files), never past a comment marker or anything else that isn't the block.
 - If **neither** exists, ask which to create. Default to `AGENTS.md`, the provider-neutral convention, and create it with an H1 containing the repo name followed by the block.
 - Write `docs/agents/solve-flow.md`: the flow, who does what, when to use each skill - the orientation for a human or agent who needs the whole picture. Start from the `REFERENCE.md` template and adapt it only to what the user said is particular about the repo; keep its sections. Artifact locations (`docs/specs/`, `docs/glossary.md`, `docs/adr/`) are fixed by the skills, so don't document others; if the user says theirs live elsewhere, tell them the skills will keep writing there. No skill reads it.
 - Write `docs/agents/solve.md`: a summary with this repo's real values. Its **Tracker operations** section is what the skills resolve their verbs against. Adapt content, never structure: keep the section names the skills cite (Tracker, Tracker operations, Branching, Worktrees), and put repo-specific prose inside the section it belongs to, or in a final `## Repo notes`.
@@ -65,4 +65,4 @@ There's no config file beyond what you write here.
 
 Follow the template in `REFERENCE.md` (next to this file), resolved to this repo's real values.
 
-Then look at `git status` and `git diff` on those files and **commit the paths that changed** (the context file, `solve-flow.md`, `solve.md`); skip if none did. If the context file carries someone else's uncommitted edits, don't sweep them into this commit: ask. They're the repo's config, not anyone's feature work. Commit on the current branch; if it's protected or the repo requires PRs, use a branch and say so.
+Then look at `git status` and `git diff` on those files and **commit the paths that changed** (the context file, `solve-flow.md`, `solve.md`), following the repo's commit convention (CONTRIBUTING, recent `git log`); skip if none did. If the context file carries someone else's uncommitted edits, don't sweep them into this commit: ask. They're the repo's config, not anyone's feature work. Commit on the current branch; if it's protected or the repo requires PRs, use a branch and say so.
