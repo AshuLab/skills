@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Adversarially reviews a pull request, local branch, supplied diff, file, or directory against three independent axes: intent, repository standards, and risk. Works on code, schemas, config, migrations, docs, specs, and prompts. Returns evidence-backed findings with severity and certainty; it never publishes them. Use for PR review, branch review, pre-PR checks, or when given a GitHub pull-request URL."
+description: "Adversarially reviews a pull request, local branch, supplied diff, file, or directory against three independent axes: intent, repository standards, and risk - plus a fourth, user experience and accessibility, when the change touches user-facing UI. Works on code, schemas, config, migrations, docs, specs, and prompts. Returns evidence-backed findings with severity and certainty; it never publishes them. Use for PR review, branch review, pre-PR checks, or when given a GitHub pull-request URL."
 ---
 
 # code-review - Adversarial Change Review
@@ -71,9 +71,9 @@ The bundle contains:
 
 **Validation state.** Record tests, build, lint, CI, mergeability, base divergence, and unresolved feedback where available. Distinguish not run, running, unavailable, and failed.
 
-## 3 - Run three independent passes
+## 3 - Run the independent passes
 
-Run Spec, Standards, and Risk as separate subagents. Can't spawn subagents? Do the three passes yourself, one at a time, with sealed notes - finish and record one axis before opening the next.
+Run Spec, Standards, and Risk as separate subagents, plus Experience when the diff changes something a person sees or operates - rendered markup, templates, components, styles, copy, or UI behaviour, recognised from the repository's own stack. No UI in the diff -> Experience does not run; that is not a degraded review. Can't spawn subagents? Do the passes yourself, one at a time, with sealed notes - finish and record one axis before opening the next.
 
 Either way each pass stays blind to the others and to the author's case: PR narrative, commit rationale, and prior approvals are claims to verify, not framing. And each works from the same full bundle, not a summary.
 
@@ -87,7 +87,7 @@ Give each pass:
 Each pass returns this envelope so synthesis can trust or reject it:
 
 ```
-Axis:                Spec | Standards | Risk
+Axis:                Spec | Standards | Risk | Experience
 Bundle received:     yes, with <contents> | missing <what>
 Baseline consulted:  <file> - <sections that bore on the diff>
 Coverage:            <the axis sweep, each item with a verdict - see below>
@@ -95,7 +95,7 @@ Foreign inputs seen: none | <name them>
 Findings:            <Finding-contract format> | none apply
 ```
 
-Coverage makes the axis's mandatory sweep visible: Risk lists every removal-inventory entry with a verdict, Spec lists every requirement (or PR claim) with its trace or gap, Standards confirms every changed unit was scanned. "None apply" with no coverage is an invalid pass.
+Coverage makes the axis's mandatory sweep visible: Risk lists every removal-inventory entry with a verdict, Spec lists every requirement (or PR claim) with its trace or gap, Standards confirms every changed unit was scanned, Experience lists every changed user-facing unit with a verdict. "None apply" with no coverage is an invalid pass.
 
 ### Spec - does it do what was asked?
 
@@ -116,11 +116,15 @@ Read [references/standards-baseline.md](references/standards-baseline.md). Find 
 
 Read [references/risk-baseline.md](references/risk-baseline.md). Trace every removal, consumer contract, behaviour change, new test, and relevant security boundary. Treat validation status as evidence, not reassurance.
 
+### Experience - can everyone use it?
+
+Runs only when the diff has user-facing UI. Read [references/experience-baseline.md](references/experience-baseline.md). Walk each changed unit as a person would - keyboard only, assistive technology, narrow screen, slow or failed data - and check accessibility and every state of the journey. The repository's design system and UI conventions stay under Standards; unsafe HTML and injection stay under Risk. A static read seldom proves a visual or assistive-tech outcome, so those findings are `probable` and name the check that confirms them.
+
 ## 4 - Synthesize the change
 
 **Validate the passes first.** Reject any envelope with a missing bundle, an unconsulted baseline, partial or missing coverage, or foreign inputs seen - re-run that pass in a clean context before continuing. A pass you cannot validate is a missing pass; say so in the report rather than synthesizing around it.
 
-With all three passes visible, inspect the change as a whole:
+With all the passes visible, inspect the change as a whole:
 
 1. Re-run the three necessity questions. Is the cause fixed end-to-end? Is deletion a better answer?
 2. Check single concern. Unrelated refactors, dependency bumps, or fixes bundled together should be split; excessive size that prevents rigorous review is itself a finding.
@@ -129,7 +133,7 @@ With all three passes visible, inspect the change as a whole:
 
 Keep axes separate. Severity sorts within an axis, never across them:
 
-- **Blocker** - must be resolved before merge: runtime failure; lost functionality with no replacement; hard requirement or documented convention violated; broken contract without migration; unrelated concerns bundled; secret exposed; or unattended reviewer feedback.
+- **Blocker** - must be resolved before merge: runtime failure; lost functionality with no replacement; hard requirement or documented convention violated; broken contract without migration; a user-facing flow some users cannot complete; unrelated concerns bundled; secret exposed; or unattended reviewer feedback.
 - **Suggestion** - consequential improvement that does not block.
 - **Nitpick** - minor detail.
 
@@ -144,7 +148,7 @@ Cut noise:
 
 ## 5 - Report
 
-Return one structured report. Keep every axis and both severity subsections; write "None" when empty.
+Return one structured report. Keep every axis that ran and both severity subsections; write "None" when empty. Omit the Experience section when the diff has no UI.
 
 ```markdown
 ## Change-level - necessity & scope
@@ -166,6 +170,12 @@ Return one structured report. Keep every axis and both severity subsections; wri
 [Findings, or `None`]
 
 ## Risk - what breaks or is missing?
+### Blockers
+[Findings, or `None`]
+### Suggestions
+[Findings, or `None`]
+
+## Experience - can everyone use it? (only when the diff has UI)
 ### Blockers
 [Findings, or `None`]
 ### Suggestions

@@ -74,7 +74,7 @@ Main flow | idea -> shipped
 Cross-cutting | invoke anytime
   | vocab - domain glossary + architecture decision records (ADRs)
   | tdd - red -> green, seams first; optional, never mandatory
-  | code-review - adversarial review on three axes: spec, standards, risk
+  | code-review - adversarial review on three axes (spec, standards, risk) plus experience (UX, accessibility) when the diff has UI
   | code-post - deliver that review: inline comments, a ticket, an ADR - once you've read it
   | code-resolve - judge, fix, and reply to reviewer comments on your PR
 
@@ -115,7 +115,7 @@ One skill doing both would have created that issue on the way out of sharpening.
 The skills describe capabilities instead of provider tool names, so each harness uses its native equivalent:
 
 - **Questions, by type.** Closed, tactical choices use the harness's choice UI when available and prose otherwise. `sharpen` always asks in prose when its read overturns the framing.
-- **Subagents.** `research` delegates to a background subagent when supported; `code-review` runs its three axes as independent passes - parallel workers when supported, sequential with sealed notes otherwise - and each pass returns an envelope synthesis validates before trusting it.
+- **Subagents.** `research` delegates to a background subagent when supported; `code-review` runs its axes (three, plus experience when the diff has UI) as independent passes - parallel workers when supported, sequential with sealed notes otherwise - and each pass returns an envelope synthesis validates before trusting it.
 - **Primary sources.** `research` uses the harness's web access to read official docs and other first-party sources directly.
 
 ## Artifacts

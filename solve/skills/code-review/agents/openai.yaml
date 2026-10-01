@@ -1,4 +1,4 @@
 interface:
   display_name: "Code Review"
-  short_description: "Adversarial review of a PR, branch, or diff on three axes"
-  default_prompt: "Use $code-review to review this change against intent, standards, and risk."
+  short_description: "Adversarial review of a PR, branch, or diff on three axes, plus UI when the change has it"
+  default_prompt: "Use $code-review to review this change against intent, standards, and risk, and for UX and accessibility when it touches UI."
