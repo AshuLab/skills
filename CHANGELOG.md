@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.18.0
+
+- `code-review`: **new conditional Experience axis (UX + accessibility).** When the diff changes something a person sees or operates - markup, templates, components, styles, copy, UI behaviour - a fourth independent pass runs against the new `references/experience-baseline.md`: accessibility (semantics, accessible names, keyboard, focus, contrast, announcements, reduced motion) and journey (loading/empty/error states, dead-end errors, destructive actions, layout breakage, layout shift, hardcoded copy). No UI in the diff -> the axis does not run and the report omits its section; that is not a degraded review.
+- `code-review`: the Experience pass returns the same envelope and is validated like the others, with its own coverage sweep (every changed user-facing unit with a verdict). Static-read findings are `probable` and name the confirming check (keyboard pass, axe, screen reader, screenshot). Design-system conventions stay under Standards, unsafe HTML under Risk. A user-facing flow some users cannot complete is a Blocker.
+
 ## solve 0.17.0
 
 - `setup`: **writes `docs/agents/solve-flow.md`**, the orientation for a person or agent reading the repo (where to enter, the flow, review, where a person is needed, when to use each skill). It is a copy that ages with the plugin; running `setup` again rewrites it. No skill reads it. `docs/agents/solve.md` keeps Tracker, Branching and Worktrees under the same section names, so `ship`/`land` don't load orientation they don't use.

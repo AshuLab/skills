@@ -4,7 +4,7 @@ Acquisition guide for a GitHub pull request. Use any available GitHub integratio
 
 ## Required evidence
 
-Collect before the three review passes:
+Collect before the review passes:
 
 - PR title, body, author, base/head refs, commits, and changed files.
 - Current diff, not an earlier patchset.
