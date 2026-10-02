@@ -10,8 +10,8 @@ Invert it.
 Almost all the effort goes into step 1.
 
 Diagnose finds and explains; it does not fix on its own.
-The code stays untouched until the diagnosis is shown and the caller approves a fix (step 4).
-The caller is whoever runs the skill - a person or an agent driving it.
+The code stays untouched until the diagnosis is shown and a person approves a fix (step 4).
+An agent running the skill hands the report to whoever invoked it; it approves a fix only if a person explicitly delegated that decision.
 
 ## 1. Build a reproduction loop
 
@@ -48,8 +48,8 @@ Show what you found, in this order:
 - the **risk** - what else the fix touches.
 
 Then wait.
-Don't edit, commit or push until the caller picks a fix.
-If nobody can answer (an unattended run), the report is the result: hand it over and stop - don't pick a fix for the caller.
+Don't edit, commit or push until a person picks a fix, or has explicitly delegated the pick.
+If nobody can answer (an unattended run), the report is the result: hand it over and stop - don't pick a fix on the person's behalf.
 If the cause isn't confirmed, say so and name what would confirm it - don't dress a guess up as a diagnosis.
 
 ## 5. Fix and lock it

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## solve 0.20.0
 
-- `diagnose`: **reports its findings and waits before fixing.** A new step 4, *Report, then stop*, shows the cause with its evidence, what was ruled out, the proposed fix (alternatives with a lean) and the risk, and edits nothing until the caller picks a fix. The caller is a person or an agent driving the skill; an unattended run hands over the report and stops. Probes used to test hypotheses are reverted, and `git status` is checked before the report. An unconfirmed cause is said to be unconfirmed. Fix-and-lock is now step 5, post-mortem step 6.
+- `diagnose`: **reports its findings and waits before fixing.** A new step 4, *Report, then stop*, shows the cause with its evidence, what was ruled out, the proposed fix (alternatives with a lean) and the risk, and edits nothing until a person picks a fix. An agent running the skill hands the report to whoever invoked it and approves only if a person explicitly delegated the pick; an unattended run hands over the report and stops. Probes used to test hypotheses are reverted, and `git status` is checked before the report. An unconfirmed cause is said to be unconfirmed. Fix-and-lock is now step 5, post-mortem step 6.
 - `setup`: the generated `solve-flow.md` lists `diagnose` among the points where a person is needed and the skills that stop and hand over.
 
 ## solve 0.19.0
