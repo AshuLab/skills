@@ -24,7 +24,7 @@ Detail lives in `solve-flow.md` (the flow) and `solve.md` (tracker, branching, w
 
 This repo uses the **solve** skill set - ideas ship through `sharpen -> to-spec -> to-tickets -> ship -> land`, reaching for `tdd` / `code-review` / `code-post` / `code-resolve` when they earn it.
 
-**Tracker:** GitHub Issues via the `gh` CLI - work is labelled `solve:epic`, `solve:ticket`, `solve:refined`.
+**Tracker:** GitHub Issues via the `gh` CLI - work is labelled `solve:epic`, `solve:ticket`, `solve:refined`, `solve:raw`.
 
 **The flow** - how work moves, who does what, when to use each skill: `docs/agents/solve-flow.md`.
 
@@ -74,7 +74,7 @@ Suggested loop: repeat until a review pass has no blockers, then the PR is ready
 - `ship` - an epic drain runs unattended and stops at the draft integration PR; it also stops on a dirty tree, a failed slice or a merge conflict
 - `setup` - a few questions, optional
 
-When nobody can answer: `code-post`, `code-resolve`, `land` and `diagnose` stop and hand over (or show) what they prepared instead of acting; `sharpen`, `to-spec` and `to-tickets` wait for the answer. An agent running unattended stops at those points - it doesn't answer for the person.
+When nobody can answer: `code-post`, `code-resolve`, `file-issue`, `land` and `diagnose` stop and hand over (or show) what they prepared instead of acting; `sharpen`, `to-spec` and `to-tickets` wait for the answer. An agent running unattended stops at those points - it doesn't answer for the person.
 
 ## Reach for these any time
 - the follow skill `pushback` - stress-test an idea, plan or decision, nothing written (`sharpen` invokes it for a raw idea)
