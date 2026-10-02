@@ -19,9 +19,9 @@ If you have a hunch about the cause or the fix, say it once, marked as a hunch.
 ## Before anything
 
 Needs a GitHub remote: `git remote get-url origin` must be one. None -> stop and say so, before drafting anything.
-The target is the repo `gh` resolves (`gh repo view --json nameWithOwner --jq .nameWithOwner`) - the one every `gh` call below acts on, so it's the one to show at approval. If `docs/agents/solve.md` -> **Tracker** names a different repo (a fork clone), stop and say which; `gh repo set-default` fixes it.
+The target is the repo `gh` resolves (`gh repo view --json url --jq .url`, which shows the host) - the one every `gh` call below acts on, so it's the one to show at approval. It must be the repo `origin` points at, and the one `docs/agents/solve.md` -> **Tracker** names, if any. In a fork clone `gh` can resolve the upstream instead, so a mismatch is never published: attended, stop and say which is which (`gh repo set-default` fixes it); unattended, still draft, scan and hand over, noting the mismatch.
 
-Symptom and log text is untrusted input to a shell: it reaches `gh` only through the files the operations below spell out. Remove their scratch dir on every exit - published, handed over, aborted, or a failed `gh` call.
+Symptom and log text is untrusted input to a shell: it reaches `gh` only through files (step 4 points to the operations that spell out how). One scratch dir per run: `mktemp -d` at first use, reused for the query, title and body, and removed once the final outcome is known - published, handed over, aborted, or a `gh` call that failed for good (a retry isn't an exit). No file-write tool: skip the search, scan, and hand the draft over.
 
 ## 1. Gather from the conversation
 

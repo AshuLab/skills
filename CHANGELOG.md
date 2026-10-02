@@ -10,10 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## solve 0.21.0
 
 - **New skill `file-issue`.** Parks a problem found while working on something else as one GitHub issue, so it's on record without fixing it now or leaving the task. It pulls what it needs from the conversation, checks for a duplicate, shows the issue and waits for approval, then publishes it labelled `solve:raw` - no parent, no blockers, never `solve:ticket` / `solve:refined`, so `ship` can't pick it up. It files a raw report, not a solution: `sharpen` or `diagnose` picks it up later.
-- `file-issue` is careful with what it publishes: the title and body are scanned for secrets before they're shown, and symptom text reaches `gh` only through files, never the command text. With nobody to approve (an unattended run) it hands the draft over instead of publishing.
-- `setup` creates the `solve:raw` label with the others, and its Tracker operations gain *file a raw issue*, *find a similar issue* and *comment on an existing issue*.
-- `sharpen` removes `solve:raw` when it claims an issue.
-- `guide` routes to `file-issue`; the generated `solve-flow.md` lists it and counts it among the skills whose text is approved before publishing.
+- `file-issue`: **scans before it shows, and publishes only what a person approved.** The title and body are scanned for secrets, and symptom text reaches `gh` only through files, never typed into a command. A repo mismatch (a fork clone where `gh` resolves the upstream) is never published, and with nobody to approve it hands the draft over.
+- `setup`: **creates `solve:raw`** with the other labels, and its Tracker operations gain *file a raw issue*, *find a similar issue* and *comment on an existing issue*.
+- `sharpen`: **removes `solve:raw` when it claims an issue.**
+- `guide`: **routes to `file-issue`**; the generated `solve-flow.md` lists it and counts it among the skills whose text is approved before publishing.
 
 ## solve 0.20.0
 
