@@ -98,7 +98,7 @@ What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-sp
 ## docs/agents/solve.md
 
 The operations the skills resolve their verbs against, filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
-How to fill it: replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<bootstrap>` (the Worktrees bootstrap, in both variants) - with real values, and the placeholder `owner/name` (the tracker repo; if the user says the tracker follows `origin`, say that instead of naming a repo), never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<NNN>`, `<slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Bootstrap and linked config follow `setup` step 4: drop the bootstrap bullet when there is none to write, and replace `none` with the files it names.
+How to fill it: replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<bootstrap>` (the Worktrees bootstrap, in both variants) - with real values, and the placeholder `owner/name` (the tracker repo; if the user says the tracker follows `origin`, say that instead of naming a repo), never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<NNN>`, `<slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, `<dir>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Bootstrap and linked config follow `setup` step 4: drop the bootstrap bullet when there is none to write, and replace `none` with the files it names.
 The section names below (**Tracker**, **Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Keep these names as they are.
 
 ````markdown
@@ -113,11 +113,14 @@ Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `
 ### Tracker operations
 - publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's, if any>`
   - `--parent` is the sub-issue link, `--blocked-by` the real dependency
-- file a raw issue (found along the way, not yet sharpened) -> `gh issue create -R <owner/repo> --title "$(cat <dir>/title)" --body-file <dir>/body --label solve:raw`
-  - `<dir>` is a `mktemp -d` directory; write `title` and `body` into it with a file-write tool, never through the shell (a heredoc breaks on a line equal to its delimiter), and reuse its literal path in every call - shell variables don't persist between calls
+- file a raw issue (found along the way, not yet sharpened) -> `gh issue create --title "$(cat "<dir>/title")" --body-file "<dir>/body" --label solve:raw`
+  - `<dir>` is a `mktemp -d` directory. Write `title` and `body` into it with a file-write tool, never through the shell - no `echo`, `printf` or heredoc: a line equal to a heredoc's delimiter ends it and the rest runs - and reuse its literal path, quoted, in every call (shell variables don't persist between calls). `gh` reads the text from the files, so it's never part of the command text
+  - no file-write tool -> don't file; hand the draft over
   - no `--parent`, `--blocked-by` or milestone
-- find a similar issue -> `gh issue list -R <owner/repo> --state all --search "$(cat <dir>/query)"` (`query` is plain keywords, no `key:value` qualifiers)
-- comment on an existing issue -> `gh issue comment <n> -R <owner/repo> --body-file <dir>/body`
+  - if it fails because `solve:raw` doesn't exist (the repo never ran `setup`): `gh label create solve:raw --color d4c5f9 --description "Found along the way, not yet sharpened"` (no `--force`), then retry
+  - remove `<dir>` on every exit, a failed `gh` call included
+- find a similar issue -> `gh issue list --state all --search "$(cat "<dir>/query")"` - `query` is 2-3 plain keywords written the same way, no `key:value` qualifiers like `is:` or `repo:`
+- comment on an existing issue -> `gh issue comment <n> --body-file "<dir>/body"` - `<n>` digits only, from the match you were shown
 - claim -> `gh issue edit <n> --add-assignee @me` (leave `solve:refined` as is)
 - close the loop -> `gh pr create` with `Closes #<n>`; merging the slice + closing the issue is under **Branching** (the merge into the epic branch won't auto-close it)
 - find a slice's epic -> `gh issue view <n> --json parent --jq .parent.number` (and `.parent.title` for the `<feature>` token)
