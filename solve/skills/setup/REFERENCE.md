@@ -69,11 +69,12 @@ Suggested loop: repeat until a review pass has no blockers, then the PR is ready
 - `sharpen` - a conversation; the product calls are the user's
 - `to-spec` - the open questions that are about what the product should do, and the milestone
 - `to-tickets`, `code-post`, `code-resolve` - the text is approved before it's published
+- `diagnose` - the diagnosis is shown and the caller picks a fix before any code changes
 - `land` - a person read the integration PR and accepts it
 - `ship` - an epic drain runs unattended and stops at the draft integration PR; it also stops on a dirty tree, a failed slice or a merge conflict
 - `setup` - a few questions, optional
 
-When nobody can answer: `code-post`, `code-resolve` and `land` stop and hand over (or show) what they prepared instead of acting; `sharpen`, `to-spec` and `to-tickets` wait for the answer. An agent running unattended stops at those points - it doesn't answer for the person.
+When nobody can answer: `code-post`, `code-resolve`, `land` and `diagnose` stop and hand over (or show) what they prepared instead of acting; `sharpen`, `to-spec` and `to-tickets` wait for the answer. An agent running unattended stops at those points - it doesn't answer for the person.
 
 ## Reach for these any time
 - the follow skill `pushback` - stress-test an idea, plan or decision, nothing written (`sharpen` invokes it for a raw idea)

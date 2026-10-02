@@ -10,7 +10,8 @@ Invert it.
 Almost all the effort goes into step 1.
 
 Diagnose finds and explains; it does not fix on its own.
-The code stays untouched until the diagnosis is shown and you approve a fix (step 4).
+The code stays untouched until the diagnosis is shown and the caller approves a fix (step 4).
+The caller is whoever runs the skill - a person or an agent driving it.
 
 ## 1. Build a reproduction loop
 
@@ -22,7 +23,7 @@ A loop that:
 
 Without this you're guessing blind.
 If a human must click to reproduce, script everything around the manual step.
-The repro script lives in `$TMPDIR`, not the repo - if it's worth keeping, step 4 turns it into a regression test.
+The repro script lives in `$TMPDIR`, not the repo - if it's worth keeping, step 5 turns it into a regression test.
 
 ## 2. Localize
 
@@ -38,6 +39,8 @@ Nothing that stays in the code is a fix yet.
 
 ## 4. Report, then stop
 
+Before reporting, check `git status` - no probe should be left behind.
+
 Show what you found, in this order:
 - the **cause** - one or two sentences, and the evidence that confirms it (what the loop showed),
 - what you **ruled out**, briefly,
@@ -45,7 +48,8 @@ Show what you found, in this order:
 - the **risk** - what else the fix touches.
 
 Then wait.
-Don't edit, commit or push until the user picks a fix.
+Don't edit, commit or push until the caller picks a fix.
+If nobody can answer (an unattended run), the report is the result: hand it over and stop - don't pick a fix for the caller.
 If the cause isn't confirmed, say so and name what would confirm it - don't dress a guess up as a diagnosis.
 
 ## 5. Fix and lock it
