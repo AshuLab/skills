@@ -9,6 +9,10 @@ The instinct is to guess a cause and try a fix.
 Invert it.
 Almost all the effort goes into step 1.
 
+Diagnose finds and explains; it does not fix on its own.
+The code stays untouched until the diagnosis is shown and a person approves a fix (step 4).
+An agent running the skill hands the report to whoever invoked it; it approves a fix only if a person explicitly delegated that decision.
+
 ## 1. Build a reproduction loop
 
 A loop that:
@@ -19,7 +23,7 @@ A loop that:
 
 Without this you're guessing blind.
 If a human must click to reproduce, script everything around the manual step.
-The repro script lives in `$TMPDIR`, not the repo - if it's worth keeping, step 4 turns it into a regression test.
+The repro script lives in `$TMPDIR`, not the repo - if it's worth keeping, step 5 turns it into a regression test.
 
 ## 2. Localize
 
@@ -30,12 +34,29 @@ Narrow until the cause is cornered.
 
 Now hypotheses are cheap: each one is confirmed or killed in seconds against the loop.
 One change at a time.
+Probes (logging, a temporary tweak to test a hypothesis) are fine - revert each one before moving on.
+Nothing that stays in the code is a fix yet.
 
-## 4. Fix and lock it
+## 4. Report, then stop
 
-Turn the reproduction into a regression test via `tdd` - the red becomes green and stays green.
+Before reporting, check `git status` - no probe should be left behind.
 
-## 5. Short post-mortem
+Show what you found, in this order:
+- the **cause** - one or two sentences, and the evidence that confirms it (what the loop showed),
+- what you **ruled out**, briefly,
+- the **fix** - what to change and where; if there are real alternatives, give them with a lean,
+- the **risk** - what else the fix touches.
+
+Then wait.
+Don't edit, commit or push until a person picks a fix, or has explicitly delegated the pick.
+If nobody can answer (an unattended run), the report is the result: hand it over and stop - don't pick a fix on the person's behalf.
+If the cause isn't confirmed, say so and name what would confirm it - don't dress a guess up as a diagnosis.
+
+## 5. Fix and lock it
+
+Once approved, turn the reproduction into a regression test via `tdd` - the red becomes green and stays green.
+
+## 6. Short post-mortem
 
 Why didn't an existing test catch this?
 If the answer is "there was no seam to test it" - no place in the code to isolate and exercise the behavior - that's a design gap worth fixing, not just a bug to close.
