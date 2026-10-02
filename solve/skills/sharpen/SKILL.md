@@ -29,7 +29,7 @@ Two searches, one answer -
 
 Already there -> stop.
 Don't sharpen a solved problem; the real issue is discoverability, or a gap in the existing thing (sharpen *that*).
-Not there -> continue, and if it's a GitHub issue, **claim it now** - `gh issue edit <n> --add-assignee @me` - so nobody picks up the same one. Note that issue as the brief's source when you write it up (see *Leave the brief*), which is what has `to-spec` mature it into the epic instead of opening a second one.
+Not there -> continue, and if it's a GitHub issue, **claim it now** - `gh issue edit <n> --add-assignee @me`, plus `--remove-label solve:raw` if it carries that label (it's no longer waiting) - so nobody picks up the same one. Note that issue as the brief's source when you write it up (see *Leave the brief*), which is what has `to-spec` mature it into the epic instead of opening a second one.
 
 ## Grill it first if it's raw, then keep the trail
 

@@ -24,7 +24,7 @@ Detail lives in `solve-flow.md` (the flow) and `solve.md` (tracker, branching, w
 
 This repo uses the **solve** skill set - ideas ship through `sharpen -> to-spec -> to-tickets -> ship -> land`, reaching for `tdd` / `code-review` / `code-post` / `code-resolve` when they earn it.
 
-**Tracker:** GitHub Issues via the `gh` CLI - work is labelled `solve:epic`, `solve:ticket`, `solve:refined`.
+**Tracker:** GitHub Issues via the `gh` CLI - work is labelled `solve:epic`, `solve:ticket`, `solve:refined`, `solve:raw`.
 
 **The flow** - how work moves, who does what, when to use each skill: `docs/agents/solve-flow.md`.
 
@@ -68,13 +68,13 @@ Suggested loop: repeat until a review pass has no blockers, then the PR is ready
 ## Where a person is needed
 - `sharpen` - a conversation; the product calls are the user's
 - `to-spec` - the open questions that are about what the product should do, and the milestone
-- `to-tickets`, `code-post`, `code-resolve` - the text is approved before it's published
+- `to-tickets`, `code-post`, `code-resolve`, `file-issue` - the text is approved before it's published
 - `diagnose` - the diagnosis is shown and a person picks a fix before any code changes
 - `land` - a person read the integration PR and accepts it
 - `ship` - an epic drain runs unattended and stops at the draft integration PR; it also stops on a dirty tree, a failed slice or a merge conflict
 - `setup` - a few questions, optional
 
-When nobody can answer: `code-post`, `code-resolve`, `land` and `diagnose` stop and hand over (or show) what they prepared instead of acting; `sharpen`, `to-spec` and `to-tickets` wait for the answer. An agent running unattended stops at those points - it doesn't answer for the person.
+When nobody can answer: `code-post`, `code-resolve`, `file-issue`, `land` and `diagnose` stop and hand over (or show) what they prepared instead of acting; `sharpen`, `to-spec` and `to-tickets` wait for the answer. An agent running unattended stops at those points - it doesn't answer for the person.
 
 ## Reach for these any time
 - the follow skill `pushback` - stress-test an idea, plan or decision, nothing written (`sharpen` invokes it for a raw idea)
@@ -83,6 +83,7 @@ When nobody can answer: `code-post`, `code-resolve`, `land` and `diagnose` stop 
 - `vocab` - pin down a term or record a hard-to-reverse decision (glossary + ADRs)
 - `tdd` - the behavior is clear and a seam exists; also turns a `diagnose`-reproduced bug into a regression test
 - `pre-check` - revalidate a spec or ticket that sat a while or came from outside, before it advances
+- `file-issue` - you ran into something that isn't this task's job; write it up as one GitHub issue (labelled `solve:raw`) and keep working
 - `guide` - not sure which skill fits; it points, it doesn't do the work
 
 ## Where things live
@@ -97,7 +98,7 @@ What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-sp
 ## docs/agents/solve.md
 
 The operations the skills resolve their verbs against, filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
-How to fill it: replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<bootstrap>` (the Worktrees bootstrap, in both variants) - with real values, and the placeholder `owner/name` (the tracker repo; if the user says the tracker follows `origin`, say that instead of naming a repo), never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<NNN>`, `<slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Bootstrap and linked config follow `setup` step 4: drop the bootstrap bullet when there is none to write, and replace `none` with the files it names.
+How to fill it: replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<bootstrap>` (the Worktrees bootstrap, in both variants) - with real values, and the placeholder `owner/name` (the tracker repo; if the user says the tracker follows `origin`, say that instead of naming a repo), never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<NNN>`, `<slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, `<dir>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Bootstrap and linked config follow `setup` step 4: drop the bootstrap bullet when there is none to write, and replace `none` with the files it names.
 The section names below (**Tracker**, **Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Keep these names as they are.
 
 ````markdown
@@ -107,11 +108,16 @@ The commands the solve skills run in this repo: tracker, branching, worktrees.
 The flow and who does what are in `solve-flow.md`.
 
 ## Tracker
-Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice) | `solve:refined` (fully defined, agent-ready). `refined` means the ticket's definition is complete, not that it's unblocked - blocking is tracked separately via `blocked-by` edges. List them: `gh issue list --label solve:refined`.
+Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice) | `solve:refined` (fully defined, agent-ready) | `solve:raw` (found along the way, not yet sharpened). `refined` means the ticket's definition is complete, not that it's unblocked - blocking is tracked separately via `blocked-by` edges. List them: `gh issue list --label solve:refined`.
 
 ### Tracker operations
 - publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's, if any>`
   - `--parent` is the sub-issue link, `--blocked-by` the real dependency
+- file a raw issue (found along the way, not yet sharpened) -> `gh issue create --title "$(cat "<dir>/title")" --body-file "<dir>/body" --label solve:raw`
+  - `<dir>` is the run's scratch dir (`mktemp -d`, owned by the skill). Write `title` and `body` into it with a file-write tool, never through the shell - no `echo`, `printf` or heredoc: a line equal to a heredoc's delimiter ends it and the rest runs - and reuse its literal path, quoted, in every call (shell variables don't persist between calls). `gh` reads the text from the files, so it's never typed into the command
+  - if it fails because `solve:raw` doesn't exist (the repo never ran `setup`): `gh label create solve:raw --color d4c5f9 --description "Found along the way, not yet sharpened"` (no `--force`), then retry
+- find a similar issue -> `gh issue list --state all --search "$(cat "<dir>/query")"` - `query` is 2-3 plain keywords written the same way, no `key:value` qualifiers like `is:` or `repo:`
+- comment on an existing issue -> `gh issue comment <n> --body-file "<dir>/body"` - `<n>` digits only, from the match you were shown; `body` is written the same way
 - claim -> `gh issue edit <n> --add-assignee @me` (leave `solve:refined` as is)
 - close the loop -> `gh pr create` with `Closes #<n>`; merging the slice + closing the issue is under **Branching** (the merge into the epic branch won't auto-close it)
 - find a slice's epic -> `gh issue view <n> --json parent --jq .parent.number` (and `.parent.title` for the `<feature>` token)

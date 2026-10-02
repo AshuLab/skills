@@ -37,6 +37,7 @@ Each step consumes what the last one left, so they run in order:
 - Drive a change test-first at a seam -> `tdd`.
 - Review a diff or a PR against standards + the spec -> `code-review`. Read it and want it posted - inline comments, a ticket, an ADR -> `code-post`.
 - Judge, fix, and reply to reviewer comments on your own PR -> `code-resolve`.
+- Ran into something while working on something else, and want it on record without fixing it now -> `file-issue`. One GitHub issue, approved before it's published; pick it up later with `sharpen` or `diagnose`.
 
 ## The shape
 
@@ -48,6 +49,7 @@ feeds     research, prototype, follow:pushback  (into the thinking, upstream)
 support   tdd, code-review, code-post, code-resolve  (on the code, when they earn it)
 gate      pre-check  (revalidate a stale or handed-down artifact before ship)
 on-ramp   diagnose  (enter from a bug, not an idea)
+parking   file-issue  (a finding that isn't this task's job; it waits as an issue)
 setup     once per repo (safe to run again), for a GitHub tracker or worktree isolation (optional)
 base      vocab  (glossary + ADRs, drawn on throughout)
 ```

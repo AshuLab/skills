@@ -84,6 +84,10 @@ Feed the thinking | evidence for sharpen
 
 On-ramps | you don't always start from a new idea
   | diagnose - hard bug / performance regression
+
+Parking | found along the way, not for now
+  | file-issue - write it up as one GitHub issue (approved first) and keep working;
+      sharpen or diagnose picks it up later
 ```
 
 ## The main flow, in one line
@@ -135,6 +139,7 @@ Epics and tickets are GitHub Issues, not files:
 - `to-spec` publishes the PRD as an epic issue (`solve:epic`).
 - `to-tickets` publishes each slice as a sub-issue of the epic (`solve:ticket` + `solve:refined`), with real `blocked-by` dependencies - native GitHub Issues features via `gh`, no Projects v2 needed.
 - `ship` integrates each slice into the feature's **epic branch** - off that branch, or off its blocker when it has one (a stack) - **merge-only** (never squash or rebase). Each slice gets its own PR with `Closes #<n>`; once every slice is done, one integration PR (epic -> destination) with `Closes #<epic>` for a human to review. Bases and names follow the repo's convention, captured by `setup`.
+- `file-issue` publishes a raw issue (`solve:raw`) - a finding parked for later, not a ticket; `sharpen` picks it up.
 - `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
 
 A **GitHub remote is required**: branches get pushed, bases resolve from `origin/`, issues and PRs live in that repo, and no branch is ever deleted without checking the merge against its remote ref first.
@@ -163,9 +168,10 @@ Also:
 | research     | feed          | you / sharpen           |
 | prototype    | feed          | you / sharpen           |
 | diagnose     | on-ramp       | you                     |
+| file-issue   | parking       | you                     |
 | guide        | router        | you                     |
 
-All 16 skills drafted (the grill, `pushback`, moved out to the `follow` set).
+All 17 skills drafted (the grill, `pushback`, moved out to the `follow` set).
 The thinking chain (sharpen -> to-spec -> to-tickets) was dogfooded against real repos - a full run predating the github-only change, plus `setup` and sharpen -> to-spec against a GitHub repo - with the refinements folded back in.
 One caveat on that: `sharpen` has been restructured since - the grilling moved out to `follow:pushback`, which `sharpen` now invokes - so it's newer than the run that validated it.
-Still unproven: the execution skills (ship, land, tdd, code-review, code-post, code-resolve - they only exercise with real code), plus diagnose, prototype, pre-check and guide.
+Still unproven: the execution skills (ship, land, tdd, code-review, code-post, code-resolve - they only exercise with real code), plus diagnose, file-issue, prototype, pre-check and guide.
