@@ -1,6 +1,6 @@
 ---
 name: code-post
-description: "Takes a code-review report and publishes its findings where each one belongs - inline comments on the pull request, a single review submission, a ticket for work too big for this PR, an ADR for a design gap - after re-verifying each finding against the current code and getting approval on the exact text. The counterpart to code-review, which deliberately never publishes. Use when a review has been read and its findings should reach the author, or to post a review produced earlier or by someone else."
+description: "Takes a code-review report and publishes its findings where each one belongs - inline comments on the pull request, a single review submission, a ticket for work too big for this PR, an ADR for a design gap - after re-verifying each finding against the current code and getting approval on the exact text. The counterpart to code-review, which deliberately never publishes. Use when a review has been read and its findings should reach the author, to post a review produced earlier or by someone else, or to close and reply to threads after a re-review."
 ---
 
 # code-post - Deliver a Review Where It Belongs
@@ -64,6 +64,7 @@ Each comment is the finding, not a retelling of it. Keep `code-review`'s shape: 
 - No preamble, no "great work overall", no restating the diff back.
 - A suggested-change block only where the fix is genuinely a one-line substitution verified against current code.
 - Inherit language and tone from the session; the report and the comments should read as one voice.
+- Open every Blocker comment with `**Blocker:**`. The author's `code-resolve` reads it to know the thread is the reviewer's to close.
 
 ## 4 - Show the delivery and wait
 
@@ -101,3 +102,20 @@ Only once approved, and in this order:
 Use whatever GitHub integration, API, or CLI is available. If the submission fails partway, report what succeeded and what did not; never assume success.
 
 Then stop. Replying to whatever the author answers is `code-resolve`'s job, from the other side.
+
+## Delivering a re-review
+
+When the source is a `code-review` re-review, there is no new review to submit - the delivery is thread actions. Same contract: re-verify each verdict against the current code, show the exact text, wait for approval.
+
+```markdown
+## Close (N)
+- `file:line` (@reviewer) - Fixed in {commit}
+
+## Reply and keep open (N)
+- `file:line` - "{exact reply text}"
+
+## New findings
+[Delivered as a normal review, following steps 2-5, or `None`]
+```
+
+After approval: post the replies, resolve the threads under *Close*, then submit any new findings as one review. Report what landed. Only the reviewer who raised a thread closes a Blocker - never close another reviewer's.

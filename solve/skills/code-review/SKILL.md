@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Adversarially reviews a pull request, local branch, supplied diff, file, or directory against three independent axes: intent, repository standards, and risk - plus a fourth, user experience and accessibility, when the change touches user-facing UI. Works on code, schemas, config, migrations, docs, specs, and prompts. Returns evidence-backed findings with severity and certainty; it never publishes them. Use for PR review, branch review, pre-PR checks, or when given a GitHub pull-request URL."
+description: "Adversarially reviews a pull request, local branch, supplied diff, file, or directory against three independent axes: intent, repository standards, and risk - plus a fourth, user experience and accessibility, when the change touches user-facing UI. Works on code, schemas, config, migrations, docs, specs, and prompts. Returns evidence-backed findings with severity and certainty; it never publishes them. Run again on a PR with open threads and new commits, it re-reviews instead - verifying each thread against the fixes. Use for PR review, branch review, pre-PR checks, re-review after fixes, or when given a GitHub pull-request URL."
 ---
 
 # code-review - Adversarial Change Review
@@ -49,6 +49,29 @@ Load exactly one acquisition guide:
 - Supplied diff -> no acquisition guide; build the review bundle from what the caller supplied.
 
 The guides describe required information. Their commands are examples, not part of this skill's contract; use any available capability that retrieves equivalent evidence.
+
+## Re-review
+
+A pull request that already carries open threads from an earlier pass - yours or anyone's - and has new commits since is a re-review, not a fresh review. Say so, and run this instead of steps 2-5:
+
+- For each open thread, read the author's reply and the commits since, against the **current** code. Verdict: **Fixed** (verified) | **Not fixed** | **Reply accepted** (the author's reasoning holds) | **Reply rejected** (one line why).
+- Fixed or Reply accepted -> propose closing the thread. Not fixed or Reply rejected -> propose a reply, and keep it open.
+- Fixes can introduce defects: run the Risk pass over the new commits only, not the whole change. Findings there are new, with the usual contract.
+- Still never publish. `code-post` closes, reopens, and replies with approval.
+
+```markdown
+## Re-review
+- `file:line` (@reviewer) - **Fixed** -> close
+- `file:line` (@reviewer) - **Not fixed**: {one line} -> keep open
+
+## New in the fixes
+[Risk findings on the new commits, or `None`]
+
+## Verdict
+[**Ready** | **Not ready** - threads still open.]
+```
+
+Threads the author left open for a different reviewer are not yours to judge - list them and skip.
 
 ## 2 - Build the review bundle
 
