@@ -18,8 +18,9 @@ Rules that bind every comment:
 3. Certainty and verdict are separate. `verified`: you read the current code, or ran something, and confirmed it. `probable`: state the assumption and what would confirm it.
 4. Judge against the **current** code, not the diff snapshot the reviewer saw. A comment can be stale in either direction - already fixed, or newly wrong again after a later commit.
 5. If evidence is unavailable, do not fabricate a reply or a fix. Say what's missing and leave that thread untouched.
-6. On a re-run against the same PR, don't redo work already delivered. If a thread already carries a reply written by this flow and is marked resolved, just confirm the current code still matches what that reply claimed - no new fix or reply unless the code drifted since.
+6. On a re-run against the same PR, don't redo work already delivered. If a thread already carries a reply written by this flow and is marked resolved, just confirm the current code still matches what that reply claimed - no new fix or reply unless the code drifted since. If it is still open, awaiting its reviewer (rule 8), leave it alone.
 7. Comments from automated reviewers (linters, bots, Copilot, CodeRabbit) go through the same judgment as step 3 - being automated is neither a shortcut to skip nor a reason to discount.
+8. The one who raised a thread closes it when it was a Blocker. You close Suggestions and Nitpicks once replied; a Blocker stays open with its reply until its reviewer has seen the fix. Severity comes from the comment (`code-post` prefixes Blockers); if the comment doesn't say, treat a comment that asks for a change before merge as a Blocker.
 
 ## 1 - Resolve the target
 
@@ -94,11 +95,13 @@ Present one consolidated package, never act before this is approved:
   Verdict: Valid | Already resolved
   Fix: [diff, or `None needed`]
   Reply: "{short reply text}"
+  Thread: resolve | leave open for {author}
 
 ## Not applicable
 - **{author}** - `file:line`
   Comment: "{quoted comment}"
   Reply: "{short reply text}"
+  Thread: leave open for {author}
 
 ## Needs your input
 - **{author}** - `file:line`
@@ -116,6 +119,6 @@ Only once approved:
 2. **Commit the approved fixes.** Before choosing a message format, check the repository's own conventions - `CONTRIBUTING.md`, `CODING_STANDARDS.md`, a commit template, or documented examples in recent history. Follow those. Absent any documented convention, use one commit for the approved batch, with a message that summarizes which review feedback it addresses (author or theme, not a dump of every quoted comment); never amend an existing commit - always a new one.
 3. **Push the commit to the PR's branch.** A fix that never reaches the remote is invisible to the reviewer - resolving a thread without pushing first would misrepresent the PR's actual state.
 4. **Post each approved reply** to its thread.
-5. **Mark each addressed thread** (Valid or Already resolved, once its reply is posted) as resolved on GitHub.
+5. **Mark resolved only the threads batched as `resolve`** - Suggestions and Nitpicks (Valid or Already resolved), once their reply is posted. Blockers and every Not applicable reply stay open for the reviewer; say so in the closing report so the caller knows who is next.
 
 Use any available GitHub integration, API, or CLI for posting replies and resolving threads - the evidence and the outcome matter, not the transport. If a step fails partway (e.g., reply posts but thread resolution fails), report exactly what succeeded and what didn't; do not assume success.

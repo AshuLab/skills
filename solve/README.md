@@ -74,9 +74,9 @@ Main flow | idea -> shipped
 Cross-cutting | invoke anytime
   | vocab - domain glossary + architecture decision records (ADRs)
   | tdd - red -> green, seams first; optional, never mandatory
-  | code-review - adversarial review on three axes (spec, standards, risk) plus experience (UX, accessibility) when the diff has UI
-  | code-post - deliver that review: inline comments, a ticket, an ADR - once you've read it
-  | code-resolve - judge, fix, and reply to reviewer comments on your PR
+  | code-review - adversarial review on three axes (spec, standards, risk) plus experience (UX, accessibility) when the diff has UI; re-reviews open threads against the fixes
+  | code-post - deliver that review: inline comments, a ticket, an ADR, or thread closes after a re-review - once you've read it
+  | code-resolve - judge, fix, and reply to reviewer comments on your PR; closes Suggestions and Nitpicks, leaves Blockers for their reviewer
 
 Feed the thinking | evidence for sharpen
   | research - primary sources, in the background
