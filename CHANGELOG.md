@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.20.0
+
+- `diagnose`: **reports its findings and waits before fixing.** A new step 4, *Report, then stop*, shows the cause with its evidence, what was ruled out, the proposed fix (alternatives with a lean) and the risk, and edits nothing until the caller picks a fix. The caller is a person or an agent driving the skill; an unattended run hands over the report and stops. Probes used to test hypotheses are reverted, and `git status` is checked before the report. An unconfirmed cause is said to be unconfirmed. Fix-and-lock is now step 5, post-mortem step 6.
+- `setup`: the generated `solve-flow.md` lists `diagnose` among the points where a person is needed and the skills that stop and hand over.
+
+## solve 0.19.0
+
+- `code-review`: **re-review mode.** A PR with open threads and new commits since is re-reviewed instead of reviewed fresh - each thread gets a verdict (Fixed / Not fixed / Reply accepted / Reply rejected) against the current code, plus a Risk pass over the new commits only. Still never publishes; threads left open for another reviewer are listed and skipped.
+- `code-post`: **delivers a re-review** as thread actions - close, reply and keep open, plus any new findings as a normal review - after re-verifying and approval. Blocker comments open with `**Blocker:**`, so the author's flow knows the thread is the reviewer's to close.
+- `code-resolve`: **the reviewer closes Blockers.** The author resolves only Suggestions and Nitpicks once replied; a Blocker stays open with its reply until its reviewer has seen the fix, and the closing report says who is next.
+
 ## solve 0.18.0
 
 - `code-review`: **new conditional Experience axis (UX + accessibility).** When the diff changes something a person sees or operates - markup, templates, components, styles, copy, UI behaviour - a fourth independent pass runs against the new `references/experience-baseline.md`: accessibility (semantics, accessible names, keyboard, focus, contrast, announcements, reduced motion) and journey (loading/empty/error states, dead-end errors, destructive actions, layout breakage, layout shift, hardcoded copy). No UI in the diff -> the axis does not run and the report omits its section; that is not a degraded review.
