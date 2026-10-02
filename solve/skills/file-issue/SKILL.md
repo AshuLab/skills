@@ -35,7 +35,7 @@ Never put secrets, tokens or customer data in the body - the issue is outward-fa
 ## 2. Check it isn't already filed
 
 `gh issue list --state open --search "<2-3 keywords from the symptom>"`.
-A close match -> show it and offer a comment on that issue instead of a duplicate; the user decides.
+A close match -> show it and offer a comment on that issue instead of a duplicate; the caller decides.
 
 ## 3. Draft and show
 
@@ -62,7 +62,7 @@ Write the prose as flowing lines - one line per paragraph, not hard-wrapped to a
 Write it in the language the repo's existing issues use.
 Skip a section that has nothing to say instead of padding it.
 
-Show the title and body and wait for the go-ahead - publishing is outward-facing, and you may want to reword it.
+Show the title and body and wait for the go-ahead - publishing is outward-facing, and the caller may want to reword it.
 Adjust from the reply; never publish off a first draft.
 
 ## 4. Publish
@@ -70,15 +70,16 @@ Adjust from the reply; never publish off a first draft.
 Read `docs/agents/solve.md` -> **Tracker** for the repo. **No such file** means the repo never ran `setup`: infer `owner/repo` from the git remote and carry on - say so once, don't stop, don't write a config file. No GitHub remote -> stop and say so.
 
 ```
-gh label create solve:parked --color d4c5f9 --description "Found along the way, not for now" --force
-gh issue create --title "<title>" --body-file <draft> --label solve:parked
+gh issue create --title "<title>" --body-file <draft> --label solve:raw
 ```
 
+The label comes from `setup`. If the repo never ran it and the label is missing, create it first (`gh label create solve:raw --color d4c5f9 --description "Found along the way, not yet sharpened" --force`).
+
 Write the draft to `$TMPDIR`, not the repo.
-No `--parent`, no `--blocked-by`, no milestone: a parked issue belongs to no epic until someone sharpens it.
+No `--parent`, no `--blocked-by`, no milestone: a raw issue belongs to no epic until someone sharpens it.
 Return the issue URL and go back to the task - one line, then continue what you were doing.
 
 ## Next step
 
 Whenever someone picks it up: `sharpen <issue>` if what to do about it is still open, or `diagnose` if it's a bug and the cause isn't known.
-List what's parked with `gh issue list --label solve:parked`.
+List what's waiting with `gh issue list --label solve:raw`.

@@ -83,7 +83,7 @@ When nobody can answer: `code-post`, `code-resolve`, `land` and `diagnose` stop 
 - `vocab` - pin down a term or record a hard-to-reverse decision (glossary + ADRs)
 - `tdd` - the behavior is clear and a seam exists; also turns a `diagnose`-reproduced bug into a regression test
 - `pre-check` - revalidate a spec or ticket that sat a while or came from outside, before it advances
-- `file-issue` - you ran into something that isn't this task's job; write it up as one GitHub issue (labelled `solve:parked`) and keep working
+- `file-issue` - you ran into something that isn't this task's job; write it up as one GitHub issue (labelled `solve:raw`) and keep working
 - `guide` - not sure which skill fits; it points, it doesn't do the work
 
 ## Where things live
@@ -108,7 +108,7 @@ The commands the solve skills run in this repo: tracker, branching, worktrees.
 The flow and who does what are in `solve-flow.md`.
 
 ## Tracker
-Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice) | `solve:refined` (fully defined, agent-ready). `refined` means the ticket's definition is complete, not that it's unblocked - blocking is tracked separately via `blocked-by` edges. List them: `gh issue list --label solve:refined`.
+Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice) | `solve:refined` (fully defined, agent-ready) | `solve:raw` (found along the way, not yet sharpened). `refined` means the ticket's definition is complete, not that it's unblocked - blocking is tracked separately via `blocked-by` edges. List them: `gh issue list --label solve:refined`.
 
 ### Tracker operations
 - publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's, if any>`
