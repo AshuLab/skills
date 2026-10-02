@@ -115,8 +115,6 @@ Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `
   - `--parent` is the sub-issue link, `--blocked-by` the real dependency
 - file a raw issue (found along the way, not yet sharpened) -> `gh issue create --title "$(cat "<dir>/title")" --body-file "<dir>/body" --label solve:raw`
   - `<dir>` is the run's scratch dir (`mktemp -d`, owned by the skill). Write `title` and `body` into it with a file-write tool, never through the shell - no `echo`, `printf` or heredoc: a line equal to a heredoc's delimiter ends it and the rest runs - and reuse its literal path, quoted, in every call (shell variables don't persist between calls). `gh` reads the text from the files, so it's never typed into the command
-  - no file-write tool -> don't file; hand the draft over
-  - no `--parent`, `--blocked-by` or milestone
   - if it fails because `solve:raw` doesn't exist (the repo never ran `setup`): `gh label create solve:raw --color d4c5f9 --description "Found along the way, not yet sharpened"` (no `--force`), then retry
 - find a similar issue -> `gh issue list --state all --search "$(cat "<dir>/query")"` - `query` is 2-3 plain keywords written the same way, no `key:value` qualifiers like `is:` or `repo:`
 - comment on an existing issue -> `gh issue comment <n> --body-file "<dir>/body"` - `<n>` digits only, from the match you were shown; `body` is written the same way
