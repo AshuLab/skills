@@ -113,6 +113,7 @@ Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `
 ### Tracker operations
 - publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's, if any>`
   - `--parent` is the sub-issue link, `--blocked-by` the real dependency
+- file a raw issue (found along the way, not yet sharpened) -> `gh issue create --title "$title" --body-file <file> --label solve:raw` - no `--parent`, `--blocked-by` or milestone; set `$title` through a single-quoted heredoc, never interpolated into the command line
 - claim -> `gh issue edit <n> --add-assignee @me` (leave `solve:refined` as is)
 - close the loop -> `gh pr create` with `Closes #<n>`; merging the slice + closing the issue is under **Branching** (the merge into the epic branch won't auto-close it)
 - find a slice's epic -> `gh issue view <n> --json parent --jq .parent.number` (and `.parent.title` for the `<feature>` token)
