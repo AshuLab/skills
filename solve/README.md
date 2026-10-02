@@ -139,6 +139,7 @@ Epics and tickets are GitHub Issues, not files:
 - `to-spec` publishes the PRD as an epic issue (`solve:epic`).
 - `to-tickets` publishes each slice as a sub-issue of the epic (`solve:ticket` + `solve:refined`), with real `blocked-by` dependencies - native GitHub Issues features via `gh`, no Projects v2 needed.
 - `ship` integrates each slice into the feature's **epic branch** - off that branch, or off its blocker when it has one (a stack) - **merge-only** (never squash or rebase). Each slice gets its own PR with `Closes #<n>`; once every slice is done, one integration PR (epic -> destination) with `Closes #<epic>` for a human to review. Bases and names follow the repo's convention, captured by `setup`.
+- `file-issue` publishes a raw issue (`solve:raw`) - a finding parked for later, not a ticket; `sharpen` picks it up.
 - `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
 
 A **GitHub remote is required**: branches get pushed, bases resolve from `origin/`, issues and PRs live in that repo, and no branch is ever deleted without checking the merge against its remote ref first.

@@ -113,7 +113,11 @@ Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `
 ### Tracker operations
 - publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's, if any>`
   - `--parent` is the sub-issue link, `--blocked-by` the real dependency
-- file a raw issue (found along the way, not yet sharpened) -> `gh issue create --title "$title" --body-file <file> --label solve:raw` - no `--parent`, `--blocked-by` or milestone; set `$title` through a single-quoted heredoc, never interpolated into the command line
+- file a raw issue (found along the way, not yet sharpened) -> `gh issue create -R <owner/repo> --title "$(cat <dir>/title)" --body-file <dir>/body --label solve:raw`
+  - `<dir>` is a `mktemp -d` directory; write `title` and `body` into it with a file-write tool, never through the shell (a heredoc breaks on a line equal to its delimiter), and reuse its literal path in every call - shell variables don't persist between calls
+  - no `--parent`, `--blocked-by` or milestone
+- find a similar issue -> `gh issue list -R <owner/repo> --state all --search "$(cat <dir>/query)"` (`query` is plain keywords, no `key:value` qualifiers)
+- comment on an existing issue -> `gh issue comment <n> -R <owner/repo> --body-file <dir>/body`
 - claim -> `gh issue edit <n> --add-assignee @me` (leave `solve:refined` as is)
 - close the loop -> `gh pr create` with `Closes #<n>`; merging the slice + closing the issue is under **Branching** (the merge into the epic branch won't auto-close it)
 - find a slice's epic -> `gh issue view <n> --json parent --jq .parent.number` (and `.parent.title` for the `<feature>` token)
