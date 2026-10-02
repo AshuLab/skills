@@ -9,6 +9,9 @@ The instinct is to guess a cause and try a fix.
 Invert it.
 Almost all the effort goes into step 1.
 
+Diagnose finds and explains; it does not fix on its own.
+The code stays untouched until the diagnosis is shown and you approve a fix (step 4).
+
 ## 1. Build a reproduction loop
 
 A loop that:
@@ -30,12 +33,26 @@ Narrow until the cause is cornered.
 
 Now hypotheses are cheap: each one is confirmed or killed in seconds against the loop.
 One change at a time.
+Probes (logging, a temporary tweak to test a hypothesis) are fine - revert each one before moving on.
+Nothing that stays in the code is a fix yet.
 
-## 4. Fix and lock it
+## 4. Report, then stop
 
-Turn the reproduction into a regression test via `tdd` - the red becomes green and stays green.
+Show what you found, in this order:
+- the **cause** - one or two sentences, and the evidence that confirms it (what the loop showed),
+- what you **ruled out**, briefly,
+- the **fix** - what to change and where; if there are real alternatives, give them with a lean,
+- the **risk** - what else the fix touches.
 
-## 5. Short post-mortem
+Then wait.
+Don't edit, commit or push until the user picks a fix.
+If the cause isn't confirmed, say so and name what would confirm it - don't dress a guess up as a diagnosis.
+
+## 5. Fix and lock it
+
+Once approved, turn the reproduction into a regression test via `tdd` - the red becomes green and stays green.
+
+## 6. Short post-mortem
 
 Why didn't an existing test catch this?
 If the answer is "there was no seam to test it" - no place in the code to isolate and exercise the behavior - that's a design gap worth fixing, not just a bug to close.
