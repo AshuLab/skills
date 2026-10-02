@@ -1,0 +1,4 @@
+interface:
+  display_name: "File Issue"
+  short_description: "Park a finding as a GitHub issue and keep working"
+  default_prompt: "Use $file-issue to write up the problem we just ran into as a GitHub issue, so we can come back to it later."

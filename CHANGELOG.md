@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.21.0
+
+- **New skill `file-issue`.** Parks a problem found while working on something else as one GitHub issue, so it's on record without fixing it now or leaving the task. It pulls what it needs from the conversation, checks for a duplicate, shows the issue and waits for approval, then publishes it labelled `solve:parked` (created on first use) - no parent, no blockers, never `solve:ticket` / `solve:refined`, so `ship` can't pick it up. It files a raw report, not a solution: `sharpen` or `diagnose` picks it up later.
+- `guide` routes to `file-issue`; the generated `solve-flow.md` lists it and counts it among the skills whose text is approved before publishing.
+
 ## solve 0.20.0
 
 - `diagnose`: **reports its findings and waits before fixing.** A new step 4, *Report, then stop*, shows the cause with its evidence, what was ruled out, the proposed fix (alternatives with a lean) and the risk, and edits nothing until a person picks a fix. An agent running the skill hands the report to whoever invoked it and approves only if a person explicitly delegated the pick; an unattended run hands over the report and stops. Probes used to test hypotheses are reverted, and `git status` is checked before the report. An unconfirmed cause is said to be unconfirmed. Fix-and-lock is now step 5, post-mortem step 6.

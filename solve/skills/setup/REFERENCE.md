@@ -68,7 +68,7 @@ Suggested loop: repeat until a review pass has no blockers, then the PR is ready
 ## Where a person is needed
 - `sharpen` - a conversation; the product calls are the user's
 - `to-spec` - the open questions that are about what the product should do, and the milestone
-- `to-tickets`, `code-post`, `code-resolve` - the text is approved before it's published
+- `to-tickets`, `code-post`, `code-resolve`, `file-issue` - the text is approved before it's published
 - `diagnose` - the diagnosis is shown and a person picks a fix before any code changes
 - `land` - a person read the integration PR and accepts it
 - `ship` - an epic drain runs unattended and stops at the draft integration PR; it also stops on a dirty tree, a failed slice or a merge conflict
@@ -83,6 +83,7 @@ When nobody can answer: `code-post`, `code-resolve`, `land` and `diagnose` stop 
 - `vocab` - pin down a term or record a hard-to-reverse decision (glossary + ADRs)
 - `tdd` - the behavior is clear and a seam exists; also turns a `diagnose`-reproduced bug into a regression test
 - `pre-check` - revalidate a spec or ticket that sat a while or came from outside, before it advances
+- `file-issue` - you ran into something that isn't this task's job; write it up as one GitHub issue (labelled `solve:parked`) and keep working
 - `guide` - not sure which skill fits; it points, it doesn't do the work
 
 ## Where things live

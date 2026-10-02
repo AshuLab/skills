@@ -84,6 +84,10 @@ Feed the thinking | evidence for sharpen
 
 On-ramps | you don't always start from a new idea
   | diagnose - hard bug / performance regression
+
+Parking | found along the way, not for now
+  | file-issue - write it up as one GitHub issue (approved first) and keep working;
+      sharpen or diagnose picks it up later
 ```
 
 ## The main flow, in one line
@@ -163,9 +167,10 @@ Also:
 | research     | feed          | you / sharpen           |
 | prototype    | feed          | you / sharpen           |
 | diagnose     | on-ramp       | you                     |
+| file-issue   | parking       | you                     |
 | guide        | router        | you                     |
 
-All 16 skills drafted (the grill, `pushback`, moved out to the `follow` set).
+All 17 skills drafted (the grill, `pushback`, moved out to the `follow` set).
 The thinking chain (sharpen -> to-spec -> to-tickets) was dogfooded against real repos - a full run predating the github-only change, plus `setup` and sharpen -> to-spec against a GitHub repo - with the refinements folded back in.
 One caveat on that: `sharpen` has been restructured since - the grilling moved out to `follow:pushback`, which `sharpen` now invokes - so it's newer than the run that validated it.
-Still unproven: the execution skills (ship, land, tdd, code-review, code-post, code-resolve - they only exercise with real code), plus diagnose, prototype, pre-check and guide.
+Still unproven: the execution skills (ship, land, tdd, code-review, code-post, code-resolve - they only exercise with real code), plus diagnose, file-issue, prototype, pre-check and guide.
