@@ -21,4 +21,5 @@ When adding a new plugin: create `<plugin>/.claude-plugin/plugin.json`, `<plugin
 plugins table.
 
 Keep a plugin's `version` in `.claude-plugin/plugin.json` in sync with what actually shipped -
-Claude Code uses it to decide when installed users see an update.
+Claude Code uses it to decide when installed users see an update. Bump `.codex-plugin/plugin.json`
+to the same number in the same commit - it carries a `version` too and drifts otherwise.
