@@ -52,8 +52,40 @@ Failing here because the branch is checked out at a path you *didn't* derive is 
 **From here, every command runs inside `<path>`** - pass the path per command (`git -C <path> ...`, the install's own prefix flag) or chain it in the same invocation (`cd <path> && ...`). Never assume a bare `cd` survives to the next command - many runtimes reset the working directory between them, landing the install in the shared tree while every slice in the epic fails its done.
 Git only blocks the shared tree while the worktree holds that exact branch - for most of a drain the worktree sits on a slice branch, so the shared tree silently takes the epic branch.
 
-Once it's up, **record it on the epic issue** - path and machine, in one comment: `gh issue comment <epic> --body "worktree: <path> on <machine>"`. Always `--body`; without it `gh` opens an interactive prompt that hangs a drain with no output. (*find a slice's epic* in `docs/agents/solve.md` -> **Tracker operations**.)
+Once it's up, **record it on the epic issue** with *The record comment* below (the epic variant). (*find a slice's epic* in `docs/agents/solve.md` -> **Tracker operations**.)
 It's the only record spanning the worktree's whole life - a halted drain never opens the integration PR - and the only cross-machine one: a failing `git worktree add` sees only *this* machine.
+
+## The record comment
+
+One comment on the epic issue per worktree path, so a halted drain still leaves a trace of where each worktree lives - and on which machine, which a failing `git worktree add` can't see. Write the text into the run's scratch dir (`mktemp -d`) with a file-write tool, never through the shell, and post it with `gh issue comment <epic> --body-file "<dir>/body"` - `gh` without `--body` or `--body-file` opens an interactive prompt that hangs a drain with no output.
+
+Fill every `<token>` with its real value. The footer stays informational - no cleanup steps: who removes the worktree is `land`'s business and can change, while a posted comment can't. `<user>` is `whoami`, `<host>` is `hostname`, `<os> <arch>` is `uname -sm` - a bare hostname repeats across people and machines.
+
+Epic worktree:
+
+```markdown
+**Epic worktree**
+
+- **Machine:** `<user>@<host>` (<os> <arch>)
+- **Path:** `<path>`
+- **Branch:** `<epic-branch>`
+- **Base:** `<base>`
+
+Created by [`solve:ship`](https://github.com/AshuLab/skills/blob/main/solve/skills/ship/WORKTREES.md) for this epic.
+```
+
+Lane worktree (the first time the lane path is created; a reused lane needs no second comment):
+
+```markdown
+**Lane <N> worktree**
+
+- **Machine:** `<user>@<host>` (<os> <arch>)
+- **Path:** `<lane-path>`
+- **Epic branch:** `<epic-branch>`
+- **First slice:** #<n> (`<member-slice-branch>`)
+
+Created by [`solve:ship`](https://github.com/AshuLab/skills/blob/main/solve/skills/ship/WORKTREES.md) to build slices in parallel. The lane is reused between rounds, so it may be on another slice now: `git -C <lane-path> branch --show-current`.
+```
 
 ## Lane worktrees, for a parallel batch
 
@@ -75,7 +107,7 @@ git worktree add -b <member-slice-branch> <lane-path> origin/<epic-branch>
 git -C <lane-path> push -u origin <member-slice-branch>
 ```
 
-Once it's up, record it the same way *Creating a worktree* above records the epic worktree - `gh issue comment <epic> --body "lane: <lane-path> on <machine>"` - once per lane path, the first time it's created; a reused lane needs no second comment, its path's already on record. Without this, a batch that halts leaves lane worktrees with no trace beyond `git worktree list` on the machine that created them - exactly the cross-machine gap *Cleanup*'s two-places claim below depends on not existing.
+Once it's up, record it with *The record comment* above (the lane variant) - once per lane path, the first time it's created. Without this, a batch that halts leaves lane worktrees with no trace beyond `git worktree list` on the machine that created them - exactly the cross-machine gap *Cleanup*'s two-places claim below depends on not existing.
 
 **Reusing a lane** (the path already exists, parked from an earlier occupant): no `worktree add` - the worktree is already there, just move it onto the new member's branch:
 

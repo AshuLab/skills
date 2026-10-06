@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.22.0
+
+- `ship`: **worktree record comments are readable and say where they came from.** The comment `ship` leaves on the epic issue for each worktree (the epic's and every lane's) is now a short labelled list - machine as `user@host (os arch)` so two machines with the same hostname can't be confused, path, branch, and for a lane the first slice it served - with a footer linking back to `solve:ship`. The footer is informational only: no cleanup steps, since who removes the worktree is `land`'s business and a posted comment can't follow it if that changes. Both comments are posted with `--body-file`, and the format lives once in `WORKTREES.md` -> *The record comment*.
+
 ## solve 0.21.0
 
 - `file-issue`: **new skill.** Parks a problem found while working on something else as one GitHub issue, so it's on record without fixing it now or leaving the task. It pulls what it needs from the conversation, checks for a duplicate, shows the issue and waits for approval, then publishes it labelled `solve:raw` - no parent, no blockers, never `solve:ticket` / `solve:refined`, so `ship` can't pick it up. It files a raw report, not a solution: `sharpen` or `diagnose` picks it up later.
