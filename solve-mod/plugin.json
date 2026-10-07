@@ -1,0 +1,5 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "solve-mod",
+  "description": "A live pane for the solve flow in Claude Code: where each brief and epic stands from sharpen to land."
+}

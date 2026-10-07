@@ -10,6 +10,7 @@ Claude Code:
 /plugin marketplace add AshuLab/skills
 /plugin install solve@ashulab
 /plugin install follow@ashulab
+/plugin install solve-mod@ashulab   # optional: a live pane for the solve flow, Claude Code only
 ```
 
 Codex native plugins, from this checkout:
@@ -43,6 +44,7 @@ Pick the skills you want when the installer prompts you. Claude Code invokes the
 |---|---|
 | **[solve](./solve)** | Idea -> shipped, in phases with clear boundaries: `sharpen -> to-spec -> to-tickets -> ship -> land`, plus `tdd` / `code-review` / `code-post` / `code-resolve` as discipline tools, `research` / `prototype` to feed the thinking, `diagnose` as an on-ramp for bugs, and `file-issue` to park a finding for later. |
 | **[follow](./follow)** | Make something legible, not build it: `plain` re-says the last message at a level you can follow, `brief` cuts a long doc/issue/URL down to what it actually wants, `zoom-out` shows the shape of the whole conversation, `recap` packages it for the agent that picks it up next. |
+| **[solve-mod](./solve-mod)** | A live pane for the solve flow, as a Claude Code mod rather than skills: `/solve-pane` shows where each brief and epic stands from `sharpen` to `land` - the route, the slices and their PRs, what went quiet, what to run next. Read-only, and Claude Code only. |
 
 See each plugin's README for its design principles and skill map.
 
