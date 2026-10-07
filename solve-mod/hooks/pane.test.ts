@@ -13,9 +13,9 @@ const FLOW = {
 } as const
 
 const PANE = {
-  plugin: 'solve-claude-mod',
+  plugin: 'solve-mod',
   component: 'Pane',
-  requestId: 'solve-flow',
+  requestId: 'solve-pane',
   viewport: { columns: 100, rows: 30 },
   props: {
     title: 'solve flow',
@@ -78,7 +78,7 @@ const stubs = (on: On, surfaces: RenderSurface[], w: World) => {
   on('fs.list', () => ({ value: [{ name: 'idea.md', kind: 'file', size: 1, mtimeMs: NOW - 2 * 3_600_000, isLink: false }] }))
   on('fs.read', () => ({ value: BRIEF_TEXT }))
   on('ui.open', () => ({ value: { isPlaced: true } }))
-  on('ui.panes', () => ({ value: [{ id: 'solve-flow', title: 'solve flow', isShown: true, isFocused: false, isPlaced: true }] }))
+  on('ui.panes', () => ({ value: [{ id: 'solve-pane', title: 'solve flow', isShown: true, isFocused: false, isPlaced: true }] }))
   on('ui.toast', ($, e) => {
     toasts.push(e.text)
     return { value: undefined }

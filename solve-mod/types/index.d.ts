@@ -63,6 +63,6 @@ export type Flow = {
 declare module 'claude-code' {
   interface PluginState {
     // Which flow is in focus: `epic:41` or `brief:idea`.
-    'solve-claude-mod': { flow: Flow | undefined; selected: string | undefined }
+    'solve-mod': { flow: Flow | undefined; selected: string | undefined }
   }
 }

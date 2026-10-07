@@ -23,8 +23,8 @@
       "keywords": ["conversation", "recap", "summary", "handoff", "communication"]
     },
     {
-      "name": "solve-claude-mod",
-      "source": "./solve-claude-mod",
+      "name": "solve-mod",
+      "source": "./solve-mod",
       "description": "A live pane for the solve flow in Claude Code: where each brief and epic stands, sharpen to land. Claude Code only.",
       "category": "engineering",
       "keywords": ["mod", "pane", "status", "progress", "solve", "claude-code"]

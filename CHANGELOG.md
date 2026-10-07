@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## solve-claude-mod 0.1.0
+## solve-mod 0.1.0
 
 - **New plugin: a live pane for the solve flow, as a Claude Code mod.** `/solve-pane` opens a pane that follows one epic at a time (the one being drained, else the one touched last) as a rail from `sharpen` to `land`: a header with how long it has been open, a bar and a count of its slices and a red line for any that went quiet; a station per step with the slices under `ship`, each with its PR; and a footer that puts the next command in the prompt without sending it, refreshes on demand and says when the data is from. Before an epic exists, a brief in `docs/specs/` gets the same rail with its open questions and the ADRs and glossary edits still uncommitted.
 - **It only reads.** `gh issue list`, `gh pr list`, `gh api .../timeline` for the claim time of a claimed slice, `git status` on `docs/adr` and `docs/glossary.md`, and the files in `docs/specs/`. A slice claimed with no activity for 3 hours is flagged as stalled, a toast says when a slice closes or the integration PR opens, and a failed refresh keeps the last data on screen.

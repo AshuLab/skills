@@ -1,4 +1,4 @@
-# solve-claude-mod
+# solve-mod
 
 A **mod** for Claude Code: a live pane that shows where each idea and epic of the [solve](../solve) flow stands, from `sharpen` to `land`, and what to run next.
 It only reads. It never edits an issue, a PR or a file, and it never sends a prompt for you.
@@ -11,12 +11,12 @@ Needs Claude Code **2.1.287 or later** (built and tested on 2.1.292), `gh` logge
 
 ```
 /plugin marketplace add AshuLab/skills
-/plugin install solve-claude-mod@ashulab
+/plugin install solve-mod@ashulab
 ```
 
 Then run `/solve-pane` in a repo that uses solve.
 
-A mod is code that runs with your permissions. To see what this one does before loading it: `claude plugin validate ./solve-claude-mod` lists every event it hooks and every call it makes.
+A mod is code that runs with your permissions. To see what this one does before loading it: `claude plugin validate ./solve-mod` lists every event it hooks and every call it makes.
 
 ## What you see
 
@@ -88,16 +88,15 @@ It refreshes every 60 seconds once you have run `/solve-pane` in the session, an
 - **There is nothing to show while you are still talking an idea through.** Until `sharpen` writes the brief there is no file and no issue.
 - **The ADR count is for the whole repo.** Two briefs open at once show the same pending set, because git does not say which brief an ADR belongs to.
 - **Checked against a fake `gh`, not yet against a real epic drained end to end.** The tests cover the logic and the drawing on the terminal and the desktop; the shapes `gh` returns were checked against this repo's own issues and PRs.
-- The validator warns that the name reads as one of Anthropic's own. It is a warning, not an error.
 
 ## Working on it
 
 ```
-claude --plugin-dir ./solve-claude-mod     # loads it, reloads on save
-claude plugin validate ./solve-claude-mod
-claude plugin test ./solve-claude-mod
+claude --plugin-dir ./solve-mod     # loads it, reloads on save
+claude plugin validate ./solve-mod
+claude plugin test ./solve-mod
 ```
 
-Develop against the directory, not an installed copy: Claude Code caches an installed plugin by version, so bump `version` in `.claude-plugin/plugin.json` for an edit to reach installed users. Claude Code writes `.claude-plugin/types/` and a `tsconfig.json` next to a mod it loads (git ignores them); `tsc -p ./solve-claude-mod` type-checks against them.
+Develop against the directory, not an installed copy: Claude Code caches an installed plugin by version, so bump `version` in `.claude-plugin/plugin.json` for an edit to reach installed users. Claude Code writes `.claude-plugin/types/` and a `tsconfig.json` next to a mod it loads (git ignores them); `tsc -p ./solve-mod` type-checks against them.
 
 The logic that decides what to show (stage, stalled, counts, the route, what changed) is plain functions in `hooks/flow.ts`, with its tests beside it. `hooks/register.tsx` only fetches and draws.

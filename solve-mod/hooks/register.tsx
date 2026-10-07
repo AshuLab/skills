@@ -8,13 +8,13 @@ import {
   segments, tabMark,
 } from './flow'
 
-const PANE = 'solve-flow'
+const PANE = 'solve-pane'
 const REFRESH_MS = 60_000
 const MAX_TOASTS = 3
 // Wide enough for "PR #1234 ●".
 const PR_COLUMN = 11
-const flow = atom({ plugin: 'solve-claude-mod', key: 'flow' } as const, undefined)
-const selected = atom({ plugin: 'solve-claude-mod', key: 'selected' } as const, undefined)
+const flow = atom({ plugin: 'solve-mod', key: 'flow' } as const, undefined)
+const selected = atom({ plugin: 'solve-mod', key: 'selected' } as const, undefined)
 
 type GhIssue = {
   number: number
