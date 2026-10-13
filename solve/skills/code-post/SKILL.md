@@ -5,7 +5,7 @@ description: "Takes a code-review report and publishes its findings where each o
 
 # code-post - Deliver a Review Where It Belongs
 
-`code-review` finds and reports; it never publishes. `code-post` runs once a person has read that report and decided it should go out.
+`code-review` finds and reports; it never publishes. `code-post` runs once the caller has read that report and decided it should go out.
 
 **Being invoked is the go-ahead to deliver the review the caller read.** `code-post` posts it straight away, as written. It stops and shows the exact package first only when the delivery would differ from that review (step 4 lists when), or when the caller asks to see it first. Post nothing that fails re-verification.
 
@@ -15,7 +15,7 @@ Rules that bind every finding:
 
 1. **Re-verify before publishing.** Read the current code at each `file:line`, not the state the review saw. Already fixed -> drop it: it goes in *Dropped* when the package is shown (step 4 stops for this, since the Verdict no longer matches), never to the author. Never post a finding you have not re-confirmed.
 2. **Certainty travels with the finding.** Post a `probable` finding with its assumption and what would confirm it. Never launder `probable` into a flat assertion by dropping the hedge.
-3. **The stance is the human's, not yours.** Default to a plain comment; never select approve or request-changes on your own - offer it in the stop package or in the report after posting.
+3. **The stance is the caller's, not yours.** Default to a plain comment; never select approve or request-changes on your own - offer it in the stop package or in the report after posting.
 4. **One submission, not many.** Inline comments go out as a single review.
 5. **Never post the same thing twice.** Check existing comments first - yours from a previous run, or another reviewer who already said it.
 6. **Carry the positives.** `code-review`'s *Solid* section goes in the review body.
