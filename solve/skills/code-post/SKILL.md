@@ -7,7 +7,7 @@ description: "Takes a code-review report and publishes its findings where each o
 
 `code-review` finds and reports; it never publishes. `code-post` runs once a person has read that report and decided it should go out.
 
-**Being invoked is not that decision applied blindly.** The caller wants the review delivered; they have not agreed to every comment's wording, destination, or stance. Post nothing before the approval step, and nothing that fails re-verification.
+**Being invoked is not that decision applied blindly.** The caller wants the review delivered; they have not agreed to every comment's wording, destination, or stance. Post nothing before the approval step, and nothing that fails re-verification. The one exception is [Direct mode](#direct-mode), which the caller must ask for in the request itself.
 
 ## Publishing contract
 
@@ -38,6 +38,8 @@ Resolve inputs semantically; slash commands or tool names are client-specific.
 
 State both before doing anything. If the PR's head has moved since the review ran, say so here.
 
+**If the report's Verdict is `Inconclusive`**, say so before going further: the review did not examine the code enough to conclude, and the author would read it as complete. Ask whether to deliver it as is, with the Verdict line stating it, or to re-run `code-review` first. Never deliver it silently.
+
 **If the pull request is the caller's own**, say so and offer the alternatives: apply the fixes directly, or keep the report as notes. Deliver only if they still want it.
 
 ## 2 - Route each finding
@@ -45,9 +47,10 @@ State both before doing anything. If the PR's head has moved since the review ra
 Every finding gets exactly one destination. Decide per finding, not per axis.
 
 - **Inline comment** - a concrete `file:line` **that appears in the diff**. GitHub anchors only to changed lines; a finding on untouched code goes to the body, however valid.
-- **Review body** - change-level findings (necessity, scope, bundling), anything whose line is outside the diff, and the *Solid* lines. This is also where the verdict's reasoning goes.
+- **Review body** - change-level findings (necessity, scope, bundling), anything whose line is outside the diff, and the *Solid* lines. The report's Verdict line closes the body, verbatim.
 - **A ticket** - a real blocker too large for this pull request, or one that reveals missing work. Publish it through the repository's tracker operations and reference it from the review body, never inline in full.
 - **An ADR or glossary entry** - a design gap or terminology clash, not a defect in this diff. Hand it to `vocab` (this set's glossary and ADR skill) or write it where the repo keeps those; reference it from the body.
+- **Not posted** - the report's Coverage block and any note about the reviewer's own run. It is evidence for whoever read the review, not for the author.
 - **Dropped** - already fixed since the review ran (contract rule 1), already said by someone else (rule 5), or a nitpick the caller chose not to send.
 
 Severity decides volume:
@@ -58,7 +61,7 @@ Severity decides volume:
 
 ## 3 - Draft the comments
 
-Each comment is the finding, not a retelling of it. Keep `code-review`'s shape: the defect, its consequence, the smallest concrete fix.
+Each comment is the finding, not a retelling of it. Keep `code-review`'s shape: the defect, its consequence, the smallest concrete fix, each on its own paragraph so GitHub does not run them together.
 
 - Address the code, never the author. "This drops the guard on X" - not "you forgot".
 - No preamble, no "great work overall", no restating the diff back.
@@ -72,21 +75,27 @@ Present the whole delivery before any of it exists on the platform:
 
 ```markdown
 ## Review body
-[The text that will open the review: verdict reasoning, change-level findings, Solid, grouped nitpicks]
+
+[The review body: change-level findings, Solid, grouped nitpicks, and the report's Verdict line verbatim]
 
 ## Inline comments (N)
+
 - `file:line` - _(verified | probable)_
+
   "{exact comment text}"
 
 ## Elsewhere
+
 - Ticket: "{title}" - {why it isn't a PR comment}
 - ADR / glossary: {what, via vocab}
 
 ## Dropped (N)
+
 - `file:line` - already fixed in {commit} | already raised by {author} | nitpick, on request
 
 ## Stance
-Plain comment. [Approve | Request changes] is yours to choose - say so and it changes.
+
+Plain comment. The Verdict suggests: {Request changes if `Not ready` | Approve if `Ready` | nothing if `Inconclusive`}. The choice is yours - say so and it changes.
 ```
 
 Ask for approval. The caller can approve everything, cut or reword individual comments, or change the stance. Apply only what is approved - and if this run has no way to get an answer back, hand over the package rather than posting it.
@@ -103,19 +112,39 @@ Use whatever GitHub integration, API, or CLI is available. If the submission fai
 
 Then stop. Replying to whatever the author answers is `code-resolve`'s job, from the other side.
 
+## Direct mode
+
+The caller can skip the wait by saying so in the request ("post it straight away", "no preview"). That is their approval for exactly this delivery, given up front; it does not carry to the next one. It applies to a new review submission, not to a re-review's thread actions.
+
+Run steps 1-3 as usual and build the same package, then post it as step 5 describes if and only if all of these hold:
+
+- Every finding re-verified as written. Nothing dropped because the code changed.
+- The PR's head has not moved since the review ran.
+- The stance is a plain comment: the request did not name approve or request-changes.
+- No ticket or ADR to create.
+- The PR is not the caller's own.
+- The Verdict is not `Inconclusive`.
+
+If any condition fails, show the package as in step 4, say which condition failed, and wait. After posting, the step 5 report carries the exact text that went out.
+
 ## Delivering a re-review
 
 When the source is a `code-review` re-review, there is no new review to submit - the delivery is thread actions. Same contract: re-verify each verdict against the current code, show the exact text, wait for approval.
 
 ```markdown
 ## Close (N)
+
 - `file:line` (@reviewer) - Fixed in {commit}
 
 ## Reply and keep open (N)
+
 - `file:line` - "{exact reply text}"
 
 ## New findings
+
 [Delivered as a normal review, following steps 2-5, or `None`]
 ```
+
+The re-review's own Verdict line is not posted; the delivery is the thread actions above.
 
 After approval: post the replies, resolve the threads under *Close*, then submit any new findings as one review. Report what landed. Only the reviewer who raised a thread closes a Blocker - never close another reviewer's.

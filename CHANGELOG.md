@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.24.0
+
+- `code-post`: **direct mode.** Saying so in the request ("post it straight away") skips the preview-and-wait for that one delivery. It still re-verifies every finding and posts only if nothing was dropped because the code changed, the head has not moved, the stance is a plain comment, there is no ticket or ADR to create, the PR is not the caller's own and the Verdict is not `Inconclusive`; otherwise it falls back to the normal approval step and says which condition failed. Applies to a new review, not to a re-review's thread actions.
+- `code-post`: **aligned with the new `code-review` report.** An `Inconclusive` Verdict is flagged before delivery instead of being published as a complete review. The Verdict line closes the review body verbatim and suggests a stance (Request changes / Approve / none) that stays the caller's to choose. The Coverage block is never posted. Templates and comments keep blocks on separate lines so GitHub does not run them together.
+
+## solve 0.23.0
+
+- `code-review`: **findings-first report.** Axes with no findings collapse into one line, each finding is at most three lines on separate paragraphs, nitpicks are one line each, and the evidence moves to a Coverage block after a `---`. Headings stay literal whatever the session language.
+- `code-review`: **the Verdict judges the code only.** Three states, one fixed line each: `Ready`, `Not ready`, `Inconclusive`. It is the count of the Blockers already written, and is written last. CI that did not run, skipped previews and external services are Suggestions and never move it. `Ready` carries no conditions. The re-review Verdict follows the same rule.
+
 ## solve 0.22.0
 
 - `ship`: **worktree record comments are readable and say where they came from.** The comment `ship` leaves on the epic issue for each worktree (the epic's and every lane's) is now a short labelled list - machine as `user@host (os arch)` so two machines with the same hostname can't be confused, path, branch, and for a lane the first slice it served - with a footer linking back to `solve:ship`. The footer is informational only: no cleanup steps, since who removes the worktree is `land`'s business and a posted comment can't follow it if that changes. Both comments are posted with `--body-file`, and the format lives once in `WORKTREES.md` -> *The record comment*.
