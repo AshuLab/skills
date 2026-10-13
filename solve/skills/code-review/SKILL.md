@@ -68,7 +68,7 @@ A pull request that already carries open threads from an earlier pass - yours or
 [Risk findings on the new commits, or `None`]
 
 ## Verdict
-[**Ready** | **Not ready** - threads still open.]
+[**Ready** - no thread left open and no new Blockers in the fixes. | **Not ready** - <N> threads still open / <N> new Blockers in the fixes.]
 ```
 
 Threads the author left open for a different reviewer are not yours to judge - list them and skip.
@@ -156,73 +156,85 @@ With all the passes visible, inspect the change as a whole:
 
 Keep axes separate. Severity sorts within an axis, never across them:
 
-- **Blocker** - must be resolved before merge: runtime failure; lost functionality with no replacement; hard requirement or documented convention violated; broken contract without migration; a user-facing flow some users cannot complete; unrelated concerns bundled; secret exposed; or unattended reviewer feedback.
-- **Suggestion** - consequential improvement that does not block.
+- **Blocker** - must be resolved before merge: runtime failure; lost functionality with no replacement; hard requirement or documented convention violated by the code itself (not by pipeline or process state); broken contract without migration; a user-facing flow some users cannot complete; unrelated concerns bundled; secret exposed; or unattended reviewer feedback.
+- **Suggestion** - consequential improvement that does not block. Also where observations about things outside the code go: CI that did not run, a skipped deploy preview, an unreachable external service, a manual check nobody did. They are reported, never blocking.
 - **Nitpick** - minor detail.
 
 Cut noise:
 
 - Blockers have no ceiling.
 - Keep at most three suggestions per axis; merge or drop weaker ones.
-- Group all nitpicks once.
+- Group all nitpicks once, one line each.
 - One repeated pattern becomes one finding with every relevant location.
 - Delete findings justified only by "best practice" without a concrete consequence here.
 - Add one or two lines on what is solid and should not change.
 
 ## 5 - Report
 
-Return one structured report. Keep every axis that ran and both severity subsections; write "None" when empty. Omit the Experience section when the diff has no UI.
+Return one structured report: findings first, evidence after, verdict last. Keep the headings below literal, whatever language the session uses. Write each axis that has findings with only its non-empty subsections; every axis with none collapses into the single `Spec / Risk / ...` line. Omit Experience when the diff has no UI.
 
 ```markdown
 ## Change-level - necessity & scope
-### Blockers
-[Findings, or `None`]
-### Suggestions
-[Findings, or `None`]
 
-## Spec - does it do what was asked?
 ### Blockers
-[Findings, or `None`]
-### Suggestions
-[Findings, or `None`]
 
-## Standards - does it fit this repository?
-### Blockers
-[Findings, or `None`]
-### Suggestions
-[Findings, or `None`]
+[Findings]
 
-## Risk - what breaks or is missing?
-### Blockers
-[Findings, or `None`]
 ### Suggestions
-[Findings, or `None`]
 
-## Experience - can everyone use it? (only when the diff has UI)
-### Blockers
-[Findings, or `None`]
-### Suggestions
-[Findings, or `None`]
+[Findings]
+
+[Repeat the same block for each of: "Spec - does it do what was asked?", "Standards - does it fit this repository?", "Risk - what breaks or is missing?", "Experience - can everyone use it?" (only when the diff has UI). Only axes that have findings get a block.]
+
+## [Every axis with no findings, joined by " / ", e.g. "Spec / Risk"]
+
+No findings (detail in Coverage).
 
 ## Nitpicks
-[Findings, or `None`]
+
+- `file:line` - one line each, or `None`
 
 ## Solid
+
 - [One or two specific things worth preserving.]
 
+---
+
+## Coverage
+
+**Verified:** [what you ran or checked yourself and its result, e.g. tests, type-check, lint]
+
+**Change-level / Spec / Standards / Risk / Experience:** [one line per axis that ran: what the sweep covered and the verdict]
+
 ## Verdict
-[**Ready** | **Not ready** - blocker count and axes. First action: action.]
+
+[One of the three lines below, exactly. Fill the angle brackets.]
+
+- `**Not ready** - <N> blockers (<Axis N, ...>; <M> probable). Fix first: <title of the first blocker>.`
+- `**Inconclusive** - 0 blockers found, not verified: <what could not be examined>. Next: <how to close it>.`
+- `**Ready** - 0 blockers, <S> suggestions.`
+
 Coverage: [**full**, or what was degraded - axis skipped or claims-only, weak spec source, tests not run, no repo access.]
 ```
 
-Present each finding in up to three lines:
+Present each finding in at most three lines, each separated by a blank line so none run together:
 
 ```markdown
 - **Defect** - `file:line` _(verified)_
+
   Consequence: what breaks or degrades.
+
   Fix: smallest concrete change.
 ```
 
-For probable findings, replace the consequence with `Assumption: what must be true` and add `Confirm with: check or evidence needed`. Do not repeat the axis or severity inside the finding text; its section and subsection already encode them.
+Evidence that something is fine (commands you ran, items swept) is never part of a finding; it goes under Coverage. For probable findings, replace the consequence with `Assumption: what must be true` and add `Confirm with: check or evidence needed`, each on its own paragraph. Do not repeat the axis or severity inside the finding text; its section and subsection already encode them. The Verdict is written last, and it is the count of the Blockers already written above it - never before them, never different from them.
+
+The Verdict judges the quality of the code, nothing else:
+
+- **Not ready** - at least one Blocker, `verified` or `probable`.
+- **Inconclusive** - no Blockers, but the code could not be examined enough to say: a pass is missing or invalid, no repository access, a weak spec source that leaves requirements untraceable. Missing CI, unrun tests the reviewer did not need, or external services do not make a review inconclusive.
+- **Ready** - no Blockers and the code was fully examined.
+
+Suggestions and Nitpicks never change the Verdict. CI state and other external factors never change it either; they appear only as Suggestions. `Ready` carries no conditions: if something must happen before merge because of the code, it is a Blocker and the Verdict is `Not ready`; if not, it is not in the Verdict.
 
 Then stop. Publishing the report - inline PR comments, a ticket, an ADR - is `code-post`'s job, once a person has read it. If the caller instead asks for fixes, change only what they select; do not commit or push unless explicitly requested.
