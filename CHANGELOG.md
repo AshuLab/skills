@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## solve 0.24.0
 
-- `code-post`: **direct mode.** Saying so in the request ("post it straight away") skips the preview-and-wait for that one delivery. It still re-verifies every finding and posts only if nothing was dropped because the code changed, the head has not moved, the stance is a plain comment, there is no ticket or ADR to create, the PR is not the caller's own and the Verdict is not `Inconclusive`; otherwise it falls back to the normal approval step and says which condition failed. Applies to a new review, not to a re-review's thread actions.
+- `code-post`: **posts straight away by default.** Invoking it is the go-ahead to deliver the review the caller read, so it re-verifies and posts without a preview. It stops, shows the exact package and waits only when the delivery would differ from that review - a finding no longer holds as written, the PR's head moved, a ticket or ADR would be created - or when the caller asks to see it first. Step 1 still stops for the caller's own PR and for an `Inconclusive` Verdict. The stance stays a plain comment unless the request names one. After posting, the report carries the text that went out. Re-review thread actions follow the same rule.
 - `code-post`: **aligned with the new `code-review` report.** An `Inconclusive` Verdict is flagged before delivery instead of being published as a complete review. The Verdict line closes the review body verbatim and suggests a stance (Request changes / Approve / none) that stays the caller's to choose. The Coverage block is never posted. Templates and comments keep blocks on separate lines so GitHub does not run them together.
 
 ## solve 0.23.0

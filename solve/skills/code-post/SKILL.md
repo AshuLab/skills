@@ -1,21 +1,21 @@
 ---
 name: code-post
-description: "Takes a code-review report and publishes its findings where each one belongs - inline comments on the pull request, a single review submission, a ticket for work too big for this PR, an ADR for a design gap - after re-verifying each finding against the current code and getting approval on the exact text. The counterpart to code-review, which deliberately never publishes. Use when a review has been read and its findings should reach the author, to post a review produced earlier or by someone else, or to close and reply to threads after a re-review."
+description: "Takes a code-review report and publishes its findings where each one belongs - inline comments on the pull request, a single review submission, a ticket for work too big for this PR, an ADR for a design gap - after re-verifying each finding against the current code. It posts straight away when the delivery is the review that was read, and stops to show the exact text only when something deviates or the caller asks to see it first. The counterpart to code-review, which deliberately never publishes. Use when a review has been read and its findings should reach the author, to post a review produced earlier or by someone else, or to close and reply to threads after a re-review."
 ---
 
 # code-post - Deliver a Review Where It Belongs
 
 `code-review` finds and reports; it never publishes. `code-post` runs once a person has read that report and decided it should go out.
 
-**Being invoked is not that decision applied blindly.** The caller wants the review delivered; they have not agreed to every comment's wording, destination, or stance. Post nothing before the approval step, and nothing that fails re-verification. The one exception is [Direct mode](#direct-mode), which the caller must ask for in the request itself.
+**Being invoked is the go-ahead to deliver the review the caller read.** `code-post` posts it straight away, as written. It stops and shows the exact package first only when the delivery would differ from that review (step 4 lists when), or when the caller asks to see it first. Post nothing that fails re-verification.
 
 ## Publishing contract
 
 Rules that bind every finding:
 
-1. **Re-verify before publishing.** Read the current code at each `file:line`, not the state the review saw. Already fixed -> drop it: it goes in *Dropped* at the approval step, never to the author. Never post a finding you have not re-confirmed.
+1. **Re-verify before publishing.** Read the current code at each `file:line`, not the state the review saw. Already fixed -> drop it: it goes in *Dropped* when the package is shown (step 4 stops for this, since the Verdict no longer matches), never to the author. Never post a finding you have not re-confirmed.
 2. **Certainty travels with the finding.** Post a `probable` finding with its assumption and what would confirm it. Never launder `probable` into a flat assertion by dropping the hedge.
-3. **The stance is the human's, not yours.** Default to a plain comment; never select approve or request-changes on your own - offer it at the approval step.
+3. **The stance is the human's, not yours.** Default to a plain comment; never select approve or request-changes on your own - offer it in the stop package or in the report after posting.
 4. **One submission, not many.** Inline comments go out as a single review.
 5. **Never post the same thing twice.** Check existing comments first - yours from a previous run, or another reviewer who already said it.
 6. **Carry the positives.** `code-review`'s *Solid* section goes in the review body.
@@ -69,9 +69,20 @@ Each comment is the finding, not a retelling of it. Keep `code-review`'s shape: 
 - Inherit language and tone from the session; the report and the comments should read as one voice.
 - Open every Blocker comment with `**Blocker:**`. The author's `code-resolve` reads it to know the thread is the reviewer's to close.
 
-## 4 - Show the delivery and wait
+## 4 - Post, or stop and show
 
-Present the whole delivery before any of it exists on the platform:
+Build the package below. Then **post it straight away** (step 5) when it is the review the caller read, delivered as written.
+
+**Stop and show it instead, and wait for approval,** when any of these holds:
+
+- A finding no longer re-verifies as written: fixed, moved, or changed since the review ran.
+- The PR's head has moved since the review ran.
+- A ticket or ADR would be created. Those are artifacts beyond the review itself.
+- The caller asked to see it first ("show me first", "preview").
+
+Step 1 already stops for the caller's own PR and for an `Inconclusive` Verdict. The stance is a plain comment unless the request names approve or request-changes; it is never inferred from the Verdict.
+
+When you stop, present the whole delivery before any of it exists on the platform:
 
 ```markdown
 ## Review body
@@ -98,38 +109,23 @@ Present the whole delivery before any of it exists on the platform:
 Plain comment. The Verdict suggests: {Request changes if `Not ready` | Approve if `Ready` | nothing if `Inconclusive`}. The choice is yours - say so and it changes.
 ```
 
-Ask for approval. The caller can approve everything, cut or reword individual comments, or change the stance. Apply only what is approved - and if this run has no way to get an answer back, hand over the package rather than posting it.
+Say which condition stopped the delivery, and ask for approval. The caller can approve everything, cut or reword individual comments, or change the stance. Apply only what is approved - and if this run has no way to get an answer back, hand over the package rather than posting it.
 
-## 5 - After approval
+## 5 - Post
 
-Only once approved, and in this order:
+Straight away, or once approved after a stop, in this order:
 
 1. **Submit the review** - body plus every inline comment, as one submission, with the approved stance.
 2. **Create the tickets and hand off the ADRs**, then edit the review body's references to point at the real handles if they were placeholders.
-3. **Report exactly what landed** - what posted, what failed, what was dropped and why. If a comment fails to anchor because its line moved, name it; never relocate it to the body silently.
+3. **Report exactly what landed** - the text that went out, what posted, what failed, what was dropped and why. If the Verdict suggested a stance other than the plain comment you used, say so; the caller can submit it as a follow-up review. If a comment fails to anchor because its line moved, name it; never relocate it to the body silently.
 
 Use whatever GitHub integration, API, or CLI is available. If the submission fails partway, report what succeeded and what did not; never assume success.
 
 Then stop. Replying to whatever the author answers is `code-resolve`'s job, from the other side.
 
-## Direct mode
-
-The caller can skip the wait by saying so in the request ("post it straight away", "no preview"). That is their approval for exactly this delivery, given up front; it does not carry to the next one. It applies to a new review submission, not to a re-review's thread actions.
-
-Run steps 1-3 as usual and build the same package, then post it as step 5 describes if and only if all of these hold:
-
-- Every finding re-verified as written. Nothing dropped because the code changed.
-- The PR's head has not moved since the review ran.
-- The stance is a plain comment: the request did not name approve or request-changes.
-- No ticket or ADR to create.
-- The PR is not the caller's own.
-- The Verdict is not `Inconclusive`.
-
-If any condition fails, show the package as in step 4, say which condition failed, and wait. After posting, the step 5 report carries the exact text that went out.
-
 ## Delivering a re-review
 
-When the source is a `code-review` re-review, there is no new review to submit - the delivery is thread actions. Same contract: re-verify each verdict against the current code, show the exact text, wait for approval.
+When the source is a `code-review` re-review, there is no new review to submit - the delivery is thread actions. Same contract: re-verify each verdict against the current code, then post the thread actions straight away if each holds as written. If one no longer does, or the caller asked to see it first, show the exact text and wait for approval.
 
 ```markdown
 ## Close (N)
@@ -147,4 +143,4 @@ When the source is a `code-review` re-review, there is no new review to submit -
 
 The re-review's own Verdict line is not posted; the delivery is the thread actions above.
 
-After approval: post the replies, resolve the threads under *Close*, then submit any new findings as one review. Report what landed. Only the reviewer who raised a thread closes a Blocker - never close another reviewer's.
+Then post the replies, resolve the threads under *Close*, then submit any new findings as one review. Report what landed. Only the reviewer who raised a thread closes a Blocker - never close another reviewer's.
