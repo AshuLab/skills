@@ -29,7 +29,7 @@ The operations in step 4 spell out how to write and read them.
 
 ## When it can't publish
 
-No GitHub remote, a repo mismatch, no file-write tool (or a refused write), a failed `gh` call, or nobody to approve (an unattended run) - the draft is the result.
+No GitHub remote, a repo mismatch, no file-write tool (or a refused write), a failed `gh` call, or nobody to approve (an unattended run, unless a skill that carries the caller's go-ahead invoked it - see step 3) - the draft is the result.
 Publish nothing and carry on with the task.
 
 - Skip the search when the cause is the remote, the repo or the write tool: it would run against the wrong repo, or leak keywords.
@@ -96,6 +96,7 @@ Quoted output goes in a fenced block, with a fence longer than any run of backti
 Show the target repo, the title (a new issue only) and the body, and wait for the go-ahead - publishing is outward-facing, and the caller may want to reword it.
 Adjust from the reply; never publish off a first draft.
 An agent running the skill hands the draft to whoever invoked it; it approves only if a person explicitly delegated that.
+Invoked by another skill that already carries the caller's go-ahead - `code-resolve` - it scans the draft and publishes without waiting.
 
 ## 4. Publish
 

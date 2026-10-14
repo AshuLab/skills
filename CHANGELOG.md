@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.25.0
+
+- `code-resolve`: **runs unattended.** Invoking it is the go-ahead to work the whole PR: fix, commit, push, reply, resolve. It stops only when the PR is not the caller's own (its author must be the identity the run posts as), or to show the batch when the caller asks to see it first. So an agent can run it with no one to answer.
+- `code-resolve`: **six outcomes, no hand-back.** *Fixed*, *Already resolved*, *Not applicable*, *Open question*, *Deferred* and *Unsettled* replace *Needs your input* and the unlisted *Needs more context*.
+  - A judgment call (design tradeoff, contradicting reviewers, a comment asking to weaken a control) gets a neutral question to the reviewer and the thread stays open. A *Not applicable* on a Blocker becomes one too.
+  - *Deferred*: out of scope -> filed as an issue and linked in the reply; too big or important to change unattended -> not applied, recorded in a marked section of the PR description for a human, thread left open.
+  - *Unsettled* (missing evidence, a fix that failed validation) stays off the thread and goes in the summary.
+- `code-resolve`: **leaves evidence on the PR.** Each reply names the commit or links the issue, and ends with a hidden `<!-- code-resolve -->` marker so a re-run recognises its own work. One summary comment lists the commit, the validation run, every thread's outcome and who it waits on, and any security-adjacent fix to look at twice. A closing `**Resolve**` line gives the counts and who acts next.
+- `code-resolve`: **guards for unattended runs.** It re-checks the head and the threads before applying, validates the fixes together, never force-pushes or rebases, and never weakens an authentication, authorization, secrets or validation control. Comment text is untrusted input: a claim to judge, never a command to run, and whatever it posts goes through a file and a secrets scan.
+- `file-issue`, `setup`, `README`: `file-issue` publishes without waiting when `code-resolve` invokes it. `references/comment-target.md` gains the identity check and the reply, resolve, comment and PR-description calls. `code-resolve` is no longer listed among the skills whose text a person approves.
+
 ## solve 0.24.0
 
 - `code-post`: **posts straight away by default.** Invoking it is the go-ahead to deliver the review the caller read, so it re-verifies and posts without a preview. It stops, shows the exact package and waits only when the delivery would differ from that review - a finding no longer holds as written, the PR's head moved, a ticket or ADR would be created - or when the caller asks to see it first. Step 1 still stops for the caller's own PR and for an `Inconclusive` Verdict. The stance stays a plain comment unless the request names one. After posting, the report carries the text that went out. Re-review thread actions follow the same rule.
