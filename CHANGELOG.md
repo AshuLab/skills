@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.25.0
+
+- `code-resolve`: **runs unattended.** Invoking it is the go-ahead to work the whole PR - it fixes, commits, pushes, replies and resolves without waiting for approval, so an agent can run it with no one to answer. It stops to show the batch only when the caller asks to see it first, and stops outright when the PR is not the caller's own.
+- `code-resolve`: **five outcomes instead of a human hand-back.** *Fixed*, *Already resolved*, *Not applicable*, *Open question* and *Unsettled*. A judgment call (design tradeoff, contradicting reviewers, a comment asking to weaken a control) is no longer parked for a person: it gets a neutral reply that states the tension and asks the reviewer, and the thread stays open. What only the caller can unblock (missing evidence, a fix that failed validation) is not posted to the reviewer; it goes in the summary and the report.
+- `code-resolve`: **leaves evidence on the PR.** Each reply names the commit; one PR-level summary comment lists the commit, the validation run and every thread's outcome, who each open thread waits on, and any security-adjacent fix to look at twice. A closing `**Resolve**` line gives the counts and who acts next.
+- `code-resolve`: **re-checks the head and the threads before applying**, never force-pushes or rebases, and never weakens an authentication, authorization, secrets or validation control to satisfy a comment. Fixes are validated together, not only one by one.
+- `setup`, `README`: `code-resolve` no longer listed among the skills whose text a person approves.
+
 ## solve 0.24.0
 
 - `code-post`: **posts straight away by default.** Invoking it is the go-ahead to deliver the review the caller read, so it re-verifies and posts without a preview. It stops, shows the exact package and waits only when the delivery would differ from that review - a finding no longer holds as written, the PR's head moved, a ticket or ADR would be created - or when the caller asks to see it first. Step 1 still stops for the caller's own PR and for an `Inconclusive` Verdict. The stance stays a plain comment unless the request names one. After posting, the report carries the text that went out. Re-review thread actions follow the same rule.

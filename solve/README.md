@@ -76,7 +76,7 @@ Cross-cutting | invoke anytime
   | tdd - red -> green, seams first; optional, never mandatory
   | code-review - adversarial review on three axes (spec, standards, risk) plus experience (UX, accessibility) when the diff has UI; re-reviews open threads against the fixes
   | code-post - deliver that review: inline comments, a ticket, an ADR, or thread closes after a re-review - once you've read it
-  | code-resolve - judge, fix, and reply to reviewer comments on your PR; closes Suggestions and Nitpicks, leaves Blockers for their reviewer
+  | code-resolve - judge, fix, and reply to reviewer comments on your PR, unattended, with a summary left on the PR; closes Suggestions and Nitpicks, leaves Blockers and open questions for their reviewer
 
 Feed the thinking | evidence for sharpen
   | research - primary sources, in the background
