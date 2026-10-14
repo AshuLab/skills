@@ -68,7 +68,7 @@ Suggested loop: repeat until a review pass has no blockers, then the PR is ready
 ## Where a person is needed
 - `sharpen` - a conversation; the product calls are the user's
 - `to-spec` - the open questions that are about what the product should do, and the milestone
-- `to-tickets`, `code-post`, `file-issue` - the text is approved before it's published
+- `to-tickets`, `code-post`, `file-issue` - the text is approved before it's published (`file-issue` publishes without waiting when `code-resolve` invokes it)
 - `diagnose` - the diagnosis is shown and a person picks a fix before any code changes
 - `land` - a person read the integration PR and accepts it
 - `ship` - an epic drain runs unattended and stops at the draft integration PR; it also stops on a dirty tree, a failed slice or a merge conflict
