@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.24.0
+
+- `code-post`: **posts straight away by default.** Invoking it is the go-ahead to deliver the review the caller read, so it re-verifies and posts without a preview. It stops, shows the exact package and waits only when the delivery would differ from that review - a finding no longer holds as written, the PR's head moved, a ticket or ADR would be created - or when the caller asks to see it first. Step 1 still stops for the caller's own PR and for an `Inconclusive` Verdict. The stance stays a plain comment unless the request names one. After posting, the report carries the text that went out. Re-review thread actions follow the same rule.
+- `code-post`, `code-review`: **"caller" for whoever invokes a skill** - a person, or an agent acting for one - instead of "person" / "human" where the role is the invoker. The convention is written once in the README's design principles; "user-facing" keeps meaning the product's end users.
+- `code-post`: **aligned with the new `code-review` report.** An `Inconclusive` Verdict is flagged before delivery instead of being published as a complete review. The Verdict line closes the review body verbatim and suggests a stance (Request changes / Approve / none) that stays the caller's to choose. The Coverage block is never posted. Templates and comments keep blocks on separate lines so GitHub does not run them together.
+
+## solve 0.23.0
+
+- `code-review`: **findings-first report.** Axes with no findings collapse into one line, each finding is at most three lines on separate paragraphs, nitpicks are one line each, and the evidence moves to a Coverage block after a `---`. Headings stay literal whatever the session language.
+- `code-review`: **the Verdict judges the code only.** Three states, one fixed line each: `Ready`, `Not ready`, `Inconclusive`. It is the count of the Blockers already written, and is written last. CI that did not run, skipped previews and external services are Suggestions and never move it. `Ready` carries no conditions. The Blocker definition covers requirements the code itself violates, not pipeline or process state. The re-review Verdict follows the same rule.
+
 ## solve 0.22.0
 
 - `ship`: **worktree record comments are readable and say where they came from.** The comment `ship` leaves on the epic issue for each worktree (the epic's and every lane's) is now a short labelled list - machine as `user@host (os arch)` so two machines with the same hostname can't be confused, path, branch, and for a lane the first slice it served - with a footer linking back to `solve:ship`. The footer is informational only: no cleanup steps, since who removes the worktree is `land`'s business and a posted comment can't follow it if that changes. Both comments are posted with `--body-file`, and the format lives once in `WORKTREES.md` -> *The record comment*.

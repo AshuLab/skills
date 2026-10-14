@@ -237,4 +237,4 @@ The Verdict judges the quality of the code, nothing else:
 
 Suggestions and Nitpicks never change the Verdict. CI state and other external factors never change it either; they appear only as Suggestions. `Ready` carries no conditions: if something must happen before merge because of the code, it is a Blocker and the Verdict is `Not ready`; if not, it is not in the Verdict.
 
-Then stop. Publishing the report - inline PR comments, a ticket, an ADR - is `code-post`'s job, once a person has read it. If the caller instead asks for fixes, change only what they select; do not commit or push unless explicitly requested.
+Then stop. Publishing the report - inline PR comments, a ticket, an ADR - is `code-post`'s job, once the caller has read it. If the caller instead asks for fixes, change only what they select; do not commit or push unless explicitly requested.

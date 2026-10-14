@@ -111,6 +111,7 @@ One skill doing both would have created that issue on the way out of sharpening.
 - **Composition over monolith.** `sharpen` doesn't invent ADRs; it calls `vocab`. It doesn't own the grill either - that's `follow:pushback`, which `sharpen` invokes when the idea is raw; `sharpen` frames whatever it settled with the reality-check, the trail and the brief. Skills compose instead of duplicating.
 - **Optional by design.** `pre-check`, `tdd`, `code-review`, `code-post`, and `code-resolve` are invoked when they earn it, never forced as pipeline steps.
 - **State lives in artifacts, not in the conversation.** Glossary, ADRs, specs and tickets are files (or issues). That's why the flow survives across sessions.
+- **Written for a caller, not a user.** The *caller* is whoever invokes a skill: a person, or an agent acting for one. Skills say "caller" for that role, keep "user-facing" for the product's end users, and name a person only where accountability matters - an explicit delegation, a decision that must stay human. A skill never assumes someone is there to answer: when it can't get an answer back, it hands over the package or the report and stops.
 - **Primary sources.** Decisions rest on official docs, source code and specs - not on memory.
 - **Reality-check before sharpening.** A cheap look - at the code *and* the docs/specs - comes first; don't sharpen something already built or already written.
 
