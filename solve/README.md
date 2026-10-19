@@ -76,7 +76,7 @@ Cross-cutting | invoke anytime
   | tdd - red -> green, seams first; optional, never mandatory
   | code-review - adversarial review on three axes (spec, standards, risk) plus experience (UX, accessibility) when the diff has UI; re-reviews open threads against the fixes
   | code-post - deliver that review: inline comments, a ticket, an ADR, or thread closes after a re-review - once you've read it
-  | code-resolve - judge, fix, and reply to reviewer comments on your PR; closes Suggestions and Nitpicks, leaves Blockers for their reviewer
+  | code-resolve - judge, fix, and reply to reviewer comments on your PR, unattended, with a summary left on the PR; closes Suggestions and Nitpicks, leaves Blockers and open questions for their reviewer
 
 Feed the thinking | evidence for sharpen
   | research - primary sources, in the background
@@ -147,7 +147,7 @@ A **GitHub remote is required**: branches get pushed, bases resolve from `origin
 
 Also:
 - **Worktree isolation is on-demand.** By default `ship` works in the shared tree, but any epic can be isolated in its own git worktree (`~/.solve/worktrees/<repo>/<feature>/` by default) on request - and `ship`'s start-of-run pre-flight offers exactly that when it finds a dirty shared tree. Flip `setup` to `on` and every epic gets one automatically, so two can drain at once without colliding. The location is declared once in `docs/agents/solve.md`, never decided per run - `ship` derives the path from it and reuses the worktree if it's already there. It never removes one: it doesn't merge the integration PR, so it can't know when the branch is safe to drop - instead it names the path and the `git worktree remove` in that PR's body, for `land`, which removes it after the merge.
-- `code-review`, `code-resolve`, and `diagnose` don't persist a file - their output is thinking or feedback, not an artifact. `code-post` is what turns a review's findings into PR comments, a ticket or an ADR when they deserve one. A diagnosis that surfaces a design gap becomes an ADR or a ticket via `vocab`.
+- `code-review` and `diagnose` don't persist a file - their output is thinking or feedback, not an artifact. `code-resolve` writes to the PR itself: replies, a summary comment, a section of the description, and an issue when a comment is out of scope. `code-post` is what turns a review's findings into PR comments, a ticket or an ADR when they deserve one. A diagnosis that surfaces a design gap becomes an ADR or a ticket via `vocab`.
 - **Agent scratch** - repro scripts, intermediate output, HTML reports, throwaway drafts - goes to `$TMPDIR`, never the repo. A repro script worth keeping becomes a regression test, not a loose file.
 
 ## Skills

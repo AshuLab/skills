@@ -37,7 +37,7 @@ Each step consumes what the last one left, so they run in order:
 - Drive a change test-first at a seam -> `tdd`.
 - Review a diff or a PR against standards + the spec -> `code-review`. Read it and want it posted - inline comments, a ticket, an ADR -> `code-post`.
 - Judge, fix, and reply to reviewer comments on your own PR -> `code-resolve`.
-- Ran into something while working on something else, and want it on record without fixing it now -> `file-issue`. One GitHub issue, approved before it's published; pick it up later with `sharpen` or `diagnose`.
+- Ran into something while working on something else, and want it on record without fixing it now -> `file-issue`. One GitHub issue, approved before it's published (unless `code-resolve` invokes it); pick it up later with `sharpen` or `diagnose`.
 
 ## The shape
 
