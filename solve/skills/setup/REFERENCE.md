@@ -24,7 +24,7 @@ Detail lives in `solve-flow.md` (the flow) and `solve.md` (tracker, branching, w
 
 This repo uses the **solve** skill set - ideas ship through `sharpen -> to-spec -> to-tickets -> ship -> land`, reaching for `tdd` / `code-review` / `code-post` / `code-resolve` when they earn it.
 
-**Tracker:** GitHub Issues via the `gh` CLI - work is labelled `solve:epic`, `solve:ticket`, `solve:refined`, `solve:raw`.
+**Tracker:** GitHub Issues via the `gh` CLI - work is labelled `solve:epic`, `solve:ticket`, `solve:refined`, `solve:raw`, `solve:epic:ready`.
 
 **The flow** - how work moves, who does what, when to use each skill: `docs/agents/solve-flow.md`.
 
@@ -108,7 +108,7 @@ The commands the solve skills run in this repo: tracker, branching, worktrees.
 The flow and who does what are in `solve-flow.md`.
 
 ## Tracker
-Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice) | `solve:refined` (fully defined, agent-ready) | `solve:raw` (found along the way, not yet sharpened). `refined` means the ticket's definition is complete, not that it's unblocked - blocking is tracked separately via `blocked-by` edges. List them: `gh issue list --label solve:refined`.
+Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `solve:epic` (PRD) | `solve:ticket` (slice) | `solve:refined` (fully defined, agent-ready) | `solve:raw` (found along the way, not yet sharpened) | `solve:epic:ready` (on the epic: tickets defined, design artifacts pushed, ready to run). `refined` means the ticket's definition is complete, not that it's unblocked - blocking is tracked separately via `blocked-by` edges. List them: `gh issue list --label solve:refined`.
 
 ### Tracker operations
 - publish a slice -> `gh issue create --title "<title>" --body-file <ticket> --label solve:ticket,solve:refined --parent <epic> --blocked-by <n,n> --milestone <epic's, if any>`
