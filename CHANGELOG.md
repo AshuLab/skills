@@ -71,6 +71,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `setup`: the files are committed on the base branch only if the user agrees, and the user is told they reach `ship` once they are on `origin/<base>`. Templates hold only content, the branch-type token is `<branch-type>`, and the Tracker line says what `refined` means.
 - `ship`: the repo-config list in *Clean the tree* includes `docs/agents/solve-flow.md`.
 
+## follow 0.4.4
+
+- `recap`: the temp-directory copy gets a uniform name, `recap-<repo-slug>-<YYYYMMDDTHHMMSS>.md`, in whatever the OS temp directory resolves to on that machine, so it stays identifiable among unrelated temp files. It still never goes into the workspace.
+
 ## solve 0.16.0
 
 - **Breaking: GitHub is now the only supported tracker.** `setup`, `to-spec`, `to-tickets`, `ship`, `land`, `pre-check` and `code-post` drop every local-tracker branch - local markdown tickets, local specs-as-final, and the local claim/branching operations are gone. Absent `docs/agents/solve.md`, skills infer github from the git remote instead of defaulting to local mode. A non-GitHub remote (or none) now stops `setup` instead of falling back. `sharpen` and `vocab` are unaffected - they only ever wrote local files. Repos still running local mode must add a GitHub remote and re-run `/solve:setup` before their next `ship`/`land`.
