@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## solve 0.26.0
 
-- `to-tickets`: **ends with the epic hand-off.** After the slices are published it cuts the epic branch, commits the design artifacts (spec, ADRs, glossary edits) as its first commit, pushes it, switches the tree back to the branch it started on, and labels the epic `solve:epic:ready`. An orchestrator on another clone finds the artifacts on the remote. Re-running is safe: an existing branch with the artifacts gets no second commit, and any other state stops and says so.
+- `to-tickets`: **ends with the epic hand-off.** After the slices are published it cuts the epic branch, commits the design artifacts (spec, ADRs, glossary edits) as its first commit, pushes it, switches the tree back to the branch it started on, and labels the epic `solve:epic:ready`. An orchestrator on another clone finds the artifacts on the remote. Re-running is safe: an existing branch with the artifacts gets no second commit, the one resumable state (branch cut, commit never landed) continues, and any other state stops and says so.
 - `setup`: **creates `solve:epic:ready`** with the other labels. It is the one label `to-tickets` never creates lazily: a missing one is reported with a pointer to `/solve:setup`. The other epic state labels (`running`, `needs-human`, `ready-for-test`) belong to the orchestrator that runs the epic.
 - `ship`: **a finished hand-off is the normal case.** It reuses the epic branch the hand-off pushed instead of committing the artifacts itself; *Clean the tree* stays as the fallback when there was none.
 - `README`: the flow places the hand-off as `to-tickets`' last step and documents the four epic state labels and who sets each.

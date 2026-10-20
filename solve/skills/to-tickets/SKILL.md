@@ -98,7 +98,7 @@ Re-running is safe, and each case is decided before touching anything:
 
 - **Branch absent** -> steps 3-7.
 - **Branch present with the artifacts** (every artifact is already on it unchanged, or none is loose and it carries artifact paths beyond `origin/<base>`) -> no commit, nothing duplicated; go to step 7.
-- **Branch present at `origin/<base>`'s tip with the artifacts still loose** (an earlier run died between steps 3 and 4: the branch was cut and pushed, the commit never landed) -> switch to it, the artifacts ride across, and continue at step 4.
+- **Branch present with no commits of its own** (its tip is `origin/<base>`'s tip or an ancestor of it) **and the artifacts still loose** (an earlier run died between steps 3 and 4: the branch was cut and pushed, the commit never landed) -> switch to it if the tree isn't on it already, and continue at step 4. If the tree already is on it, the branch you started on is `<base>` (the dead run's starting branch is unknowable): step 6 returns there, so the epic branch is never left checked out.
 - **Branch present without them** (its tip is past `origin/<base>` and lacks the artifacts), or **the artifacts already on `origin/<base>`** -> stop, say which, change nothing, and wait. Never switch an existing branch with changes that don't belong there, and never skip silently.
 - **No artifacts loose and no branch** -> nothing to hand off; say so and stop.
 
