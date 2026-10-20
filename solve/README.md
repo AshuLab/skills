@@ -33,10 +33,10 @@ The examples below use Claude Code's `/solve:<name>` syntax. The native Codex pl
 
 Restart the session so the skills load, then:
 
-1. **`/solve:setup`** - optional: creates the `solve:*` labels up front and lets you turn on worktree isolation so concurrent epics don't collide in one working tree. Skip it and the labels get created lazily on first use, in a single working tree, no config to maintain. Run it and it also writes `docs/agents/solve.md` (tracker, branching, worktrees) and `docs/agents/solve-flow.md` (the flow). Either way the repo needs a GitHub remote.
+1. **`/solve:setup`** - optional: creates the `solve:*` labels up front and lets you turn on worktree isolation so concurrent epics don't collide in one working tree. Skip it and the labels get created lazily on first use, in a single working tree, no config to maintain - except `solve:epic:ready`, which is never created lazily: `to-tickets` reports it missing and points you back at `/solve:setup`. Run it and it also writes `docs/agents/solve.md` (tracker, branching, worktrees) and `docs/agents/solve-flow.md` (the flow). Either way the repo needs a GitHub remote.
 2. **`/solve:sharpen <your idea>`** - it checks the thing isn't already built, captures the thinking as it settles, and leaves a brief at `docs/specs/<feature>.md`. A raw idea gets grilled first - `sharpen` invokes `/follow:pushback` for that (install `follow`, or it walks the questions itself).
 3. **`/solve:to-spec`** - turns that brief into a PRD, deciding where each story gets tested, and publishes it as the epic issue.
-4. **`/solve:to-tickets`** - cuts the PRD into vertical slices, each with a definition of done and its blocking edges.
+4. **`/solve:to-tickets`** - cuts the PRD into vertical slices, each with a definition of done and its blocking edges. Its last step is the **hand-off**: it puts the epic branch on the remote with the design artifacts as its first commit, switches the tree back to where it was, and marks the epic `solve:epic:ready`.
 5. **`/solve:ship <ticket>`** - claims it, builds it, closes the loop. Hand it the **epic** instead and it drains every slice in dependency order, unattended.
 6. **`/solve:land <epic>`** - after *you* read the integration PR and accept it: merges it and closes out everything the drain left open (epic branch, worktree, epic issue). `ship` deliberately stops short of this; `land` is where a person says go.
 
@@ -60,7 +60,8 @@ Main flow | idea -> shipped
       (invokes `follow:pushback` to grill a raw idea first)
     | to-spec - formalize into a PRD, a product requirements document, published as
       the epic issue - no new interview; its real call is where each story gets tested
-    | to-tickets - vertical slices + blocking edges + a definition of done
+    | to-tickets - vertical slices + blocking edges + a definition of done; last, the
+      hand-off: epic branch on the remote with the design artifacts, epic marked ready
     | ship - carry a ticket to done (claim, build, close the loop), or drain a whole epic
     | land - you've read the integration PR and accept it: merge it and close out the
       epic branch, its worktree, the epic issue. The one step a human starts.
@@ -92,7 +93,7 @@ Parking | found along the way, not for now
 
 ## The main flow, in one line
 
-You take the idea to a brief that holds up (`sharpen` - which invokes `follow:pushback` to grill a raw idea first) -> you formalize it into a PRD and pin down where each story gets tested (`to-spec`, which never re-interviews you) -> you break it into vertical, agent-ready tickets (`to-tickets`) -> you carry each ticket to done (`ship`): claim it, build the middle freely - the model codes well, or hand it to a specialized skill - and close the loop with a PR -> you read the integration PR and accept it (`land`), which merges it and closes out the epic.
+You take the idea to a brief that holds up (`sharpen` - which invokes `follow:pushback` to grill a raw idea first) -> you formalize it into a PRD and pin down where each story gets tested (`to-spec`, which never re-interviews you) -> you break it into vertical, agent-ready tickets and hand the epic off (`to-tickets`: the epic branch with the design artifacts goes to the remote and the epic is marked ready) -> you carry each ticket to done (`ship`): claim it, build the middle freely - the model codes well, or hand it to a specialized skill - and close the loop with a PR -> you read the integration PR and accept it (`land`), which merges it and closes out the epic.
 Reach for `tdd`, `code-review`, or `code-resolve` when they earn it.
 
 Each boundary is a **guard**: it forces you to close the previous phase before moving on.
@@ -140,6 +141,8 @@ Epics and tickets are GitHub Issues, not files:
 - `to-spec` publishes the PRD as an epic issue (`solve:epic`).
 - `to-tickets` publishes each slice as a sub-issue of the epic (`solve:ticket` + `solve:refined`), with real `blocked-by` dependencies - native GitHub Issues features via `gh`, no Projects v2 needed.
 - `ship` integrates each slice into the feature's **epic branch** - off that branch, or off its blocker when it has one (a stack) - **merge-only** (never squash or rebase). Each slice gets its own PR with `Closes #<n>`; once every slice is done, one integration PR (epic -> destination) with `Closes #<epic>` for a human to review. Bases and names follow the repo's convention, captured by `setup`.
+- `to-tickets` ends with the **hand-off**: it cuts the epic branch, commits the design artifacts (spec, ADRs, glossary edits) as its first commit, pushes it, switches back to the branch you were on, and labels the epic `solve:epic:ready`. Something that runs the epic from another clone finds the artifacts on the remote.
+- Four labels track an epic's state, and each has one owner. Solve sets `solve:epic:ready` (end of `to-tickets`; `setup` creates it). The external orchestrator that reads `ready` and runs the epic sets, and creates if missing, the other three: `solve:epic:running`, `solve:epic:needs-human` and `solve:epic:ready-for-test`.
 - `file-issue` publishes a raw issue (`solve:raw`) - a finding parked for later, not a ticket; `sharpen` picks it up.
 - `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
 

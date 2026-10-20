@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.26.0
+
+- `to-tickets`: **ends with the epic hand-off.** After the slices are published it cuts the epic branch, commits the design artifacts (spec, ADRs, glossary edits) as its first commit, pushes it, switches the tree back to the branch it started on, and labels the epic `solve:epic:ready`. An orchestrator on another clone finds the artifacts on the remote. Re-running is safe: an existing branch with the artifacts gets no second commit, the one resumable state (branch cut, commit never landed) continues, and any other state stops and says so.
+- `setup`: **creates `solve:epic:ready`** with the other labels. It is the one label `to-tickets` never creates lazily: a missing one is reported with a pointer to `/solve:setup`. The other epic state labels (`running`, `needs-human`, `ready-for-test`) belong to the orchestrator that runs the epic.
+- `ship`: **a finished hand-off is the normal case.** It reuses the epic branch the hand-off pushed instead of committing the artifacts itself; *Clean the tree* stays as the fallback when there was none.
+- `README`: the flow places the hand-off as `to-tickets`' last step and documents the four epic state labels and who sets each.
+
 ## solve 0.25.0
 
 - `code-resolve`: **runs unattended.** Invoking it is the go-ahead to work the whole PR: fix, commit, push, reply, resolve. It stops only when the PR is not the caller's own (its author must be the identity the run posts as), or to show the batch when the caller asks to see it first. So an agent can run it with no one to answer.
@@ -63,6 +70,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `setup`: **a repo that already uses the solve skills is set up like a new one, with what it has as context.** The old files are read first, the user is asked once for anything particular, and both files are written whole from the templates. Whatever becomes a command or ref (bootstrap, destination, branch type) is confirmed first - a bootstrap that downloads and runs remote code is never written unconfirmed, and with no reply the files are written but not committed - and every input is treated as data.
 - `setup`: the files are committed on the base branch only if the user agrees, and the user is told they reach `ship` once they are on `origin/<base>`. Templates hold only content, the branch-type token is `<branch-type>`, and the Tracker line says what `refined` means.
 - `ship`: the repo-config list in *Clean the tree* includes `docs/agents/solve-flow.md`.
+
+## follow 0.4.4
+
+- `recap`: the temp-directory copy gets a uniform name, `recap-<repo-slug>-<YYYYMMDDTHHMMSS>.md`, in whatever the OS temp directory resolves to on that machine, so it stays identifiable among unrelated temp files. It still never goes into the workspace.
 
 ## solve 0.16.0
 

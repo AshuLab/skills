@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Break a spec (or a plan) into vertical, agent-ready slices - small tickets an agent can pick up one at a time, each with a definition of done. Use it once you have a spec and want to split the work. Publishes each slice as a GitHub sub-issue with real dependency edges.
+description: Break a spec (or a plan) into vertical, agent-ready slices - small tickets an agent can pick up one at a time, each with a definition of done. Use it once you have a spec and want to split the work. Publishes each slice as a GitHub sub-issue with real dependency edges, then hands the epic's design artifacts off to the remote and marks the epic ready.
 ---
 
 # to-tickets - break a spec into vertical, agent-ready slices
@@ -81,6 +81,26 @@ Throttle the loop - creating issues too fast trips rate limiting.
 
 Every slice gets `solve:ticket` + `solve:refined` at publish - **blocked or not**.
 `refined` means the definition is complete, not that the slice is unblocked; blocking lives in the `blocked-by` edges, a separate signal.
+
+## Hand off the epic
+
+The last step, run in this same tree and session: the design artifacts (spec, ADRs, glossary edits) are untracked files that exist only where `sharpen`, `to-spec` and `vocab` wrote them, and the remote is the only place an orchestrator on another clone can read them. The happy path has no confirmation gate - those files were already approved at `to-spec` and above; only a deviation (below) stops and waits.
+
+1. **Find the artifacts** with the classification in `ship`'s *Clean the tree, cut the epic branch* - its *epic-level design artifacts* case (spec, ADRs, glossary edits); reference it, don't restate it or invent another. The repo's own config (`AGENTS.md` / `CLAUDE.md`, `docs/agents/solve.md`, `docs/agents/solve-flow.md`) is that section's other case: not an artifact here, it stays loose. Note the branch you are on.
+2. **Resolve `<feature>` once**: slugify this epic issue's title exactly as `ship`'s *Build it* does. `<epic-branch>` is then the exact name `docs/agents/solve.md` -> **Branching** gives for that `<feature>`, never a pattern match over the remote's branches: another epic's branch must not read as this one's. Never re-slugify.
+3. **Cut the branch** with the **start the epic branch** operation from `docs/agents/solve.md` -> **Branching** (**no such file** -> `setup/REFERENCE.md`'s **Branching operations**, same one-line note as for tracker operations), not a `git switch -c` of your own. The artifacts ride across the switch.
+4. **Commit by path**: `git add -- <artifact paths>`, then `git commit -m "<feature>: design artifacts" -- <artifact paths>` - nothing else loose comes along, and this is the branch's first commit. Then `git push`.
+5. **Verify the push**: `git ls-remote origin <epic-branch>` returns the commit you just made (`git rev-parse HEAD`). Until it does, nothing below happens.
+6. **Switch back** to the branch you started on. The epic branch is never left checked out (`ship` may need it for the epic's worktree, and git refuses a second checkout), and the artifacts are no longer loose in the tree.
+7. **Mark it ready**: if the epic issue is still open, `gh issue edit <epic> --add-label solve:epic:ready` (harmless to repeat). A missing label is reported with a pointer to `/solve:setup` - never created here; the branch is already pushed.
+
+Re-running is safe, and each case is decided before touching anything:
+
+- **Branch absent** -> steps 3-7.
+- **Branch present with the artifacts** (every artifact is already on it unchanged, or none is loose and it carries artifact paths beyond `origin/<base>`) -> no commit, nothing duplicated; go to step 7.
+- **Branch present with no commits of its own** (its tip is `origin/<base>`'s tip or an ancestor of it) **and the artifacts still loose** (an earlier run died between steps 3 and 4: the branch was cut and pushed, the commit never landed) -> switch to it if the tree isn't on it already, and continue at step 4. If the tree already is on it, the branch you started on is `<base>` (the dead run's starting branch is unknowable): step 6 returns there, so the epic branch is never left checked out.
+- **Branch present without them** (its tip is past `origin/<base>` and lacks the artifacts), or **the artifacts already on `origin/<base>`** -> stop, say which, change nothing, and wait. Never switch an existing branch with changes that don't belong there, and never skip silently.
+- **No artifacts loose and no branch** -> nothing to hand off; say so and stop.
 
 ## Next step
 

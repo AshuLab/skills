@@ -17,3 +17,12 @@ _Avoid_: "the orchestrator", "ship itself".
 
 **Lane worktree** - one of up to 3 fixed worktree slots a parallel batch dispatches into, matching the concurrency cap. A lane outlives any one occupant: freed (detached at the epic branch's tip, not removed) when its occupant merges, reused by whichever slice the next round dispatches into it.
 _Avoid_: "per-slice worktree", "batch worktree".
+
+**Design artifacts** - the files `sharpen`, `to-spec` and `vocab` leave for an epic: the spec in `docs/specs/`, ADRs in `docs/adr/`, glossary edits. They belong to the epic, so they live on the epic branch as its first commit, never on the base branch.
+_Avoid_: "hand-off artifacts", "spec files".
+
+**Hand-off** - the last step of `to-tickets`: cut the epic branch, commit the design artifacts as its first commit, push, verify, and set `solve:epic:ready`. It exists so the artifacts reach the remote, the only place an orchestrator on another clone or machine can read them.
+_Avoid_: "publish step", "epic sync".
+
+**Epic ready** - the `solve:epic:ready` label, set by the hand-off when tickets are defined and the design artifacts are verified on the remote. Read by whatever runs the epic; Solve itself only sets it.
+_Avoid_: "epic refined", "epic startable".
