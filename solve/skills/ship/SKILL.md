@@ -116,7 +116,7 @@ If there's distance - time passed, or the ticket isn't fresh from your own `to-t
 ## Build it
 
 **The integration model is fixed even where the names aren't.**
-Every feature gets one **epic branch**, cut from the repo's base branch the first time a slice of that epic ships, reused after - lazily: not there yet, create it with **start the epic branch** (push included); otherwise switch to it. *Clean the tree* may already have cut it to carry design artifacts, or the hand-off already did.
+Every feature gets one **epic branch**, cut from the repo's base branch the first time a slice of that epic ships, reused after - lazily: `git fetch`, then look for `origin/<epic-branch>`. Not there, create it with **start the epic branch** (push included); there (the hand-off or an earlier run cut it, maybe from another clone), switch to it. *Clean the tree* may already have cut it to carry design artifacts, or the hand-off already did.
 The slice's own branch comes off one of two places, and the `blocked-by` graph decides:
 - **no open blocker, or several** -> off the **epic branch** (the hub).
 - **exactly one open blocker** -> off **that blocker's branch** (the stack), so you build on its code instead of waiting for it to land; its PR targets the blocker for now, and retargets when the blocker closes (*Close the loop*).
