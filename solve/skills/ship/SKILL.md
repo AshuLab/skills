@@ -63,7 +63,7 @@ A slice that is ready to merge:
 }
 ```
 
-A slice that stopped, with the `reason` and a `note`:
+A slice that stopped, with the `reason`:
 
 ```
 {
@@ -75,8 +75,7 @@ A slice that stopped, with the `reason` and a `note`:
     "Export button downloads the current view as CSV": true,
     "Empty views download a header-only file": false
   },
-  "reason": "The empty-view case fails: the export endpoint returns 500 when there are no rows. Fix it or relax that box.",
-  "note": "The repo arrived broken: the lint step already failed on main before this slice."
+  "reason": "The empty-view case fails: the export endpoint returns 500 when there are no rows. Fix it or relax that box."
 }
 ```
 
