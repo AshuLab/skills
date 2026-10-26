@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.26.1
+
+- `ship`: **the close-out report example is valid JSON.** *Delegate the build* shows two concrete examples, `ready-to-merge` and `stopped` with a `reason`, instead of a pseudo-JSON template with `<placeholders>`, `|` and `?` markers, plus a line saying the report is a single JSON object and nothing else. Build subagents copy what they are shown, so the report no longer arrives as invalid JSON. The key set and how the draining agent reads the report are unchanged.
+
 ## solve 0.26.0
 
 - `to-tickets`: **ends with the epic hand-off.** After the slices are published it cuts the epic branch, commits the design artifacts (spec, ADRs, glossary edits) as its first commit, pushes it, switches the tree back to the branch it started on, and labels the epic `solve:epic:ready`. An orchestrator on another clone finds the artifacts on the remote. Re-running is safe: an existing branch with the artifacts gets no second commit, the one resumable state (branch cut, commit never landed) continues, and any other state stops and says so.
