@@ -48,17 +48,38 @@ Check what you were handed:
 This holds for every slice, one ticket or a whole drain: the subagent claims the slice, builds it, commits, pushes and opens the PR (steps 1-3), then stops - it never merges, never closes the issue, never deletes a branch.
 The subagent hands back only a close-out report - the draining agent reads that, never the subagent's own transcript or tool history, and acts on it to run *Close the loop*'s steps 4-6 (merge, close the issue, delete the branch):
 
+A slice that is ready to merge:
+
 ```
 {
-  slice: <ticket handle>,
-  outcome: "ready-to-merge" | "stopped",
-  branch: <pushed slice branch name>,
-  pr: <PR reference>,
-  definitionOfDone: { <box>: boolean, ... },
-  reason?: <string, present when outcome is "stopped" - what would close it>,
-  note?: <string, present whenever there's something to surface regardless of outcome - e.g. *Close the loop*'s "the repo arrived broken, not your slice's fault" case, which still needs to reach a human between drains>
+  "slice": "#351",
+  "outcome": "ready-to-merge",
+  "branch": "feature/export-csv/351-export-button",
+  "pr": "https://github.com/acme/app/pull/360",
+  "definitionOfDone": {
+    "Export button downloads the current view as CSV": true,
+    "Empty views download a header-only file": true
+  }
 }
 ```
+
+A slice that stopped, with the `reason`:
+
+```
+{
+  "slice": "#351",
+  "outcome": "stopped",
+  "branch": "feature/export-csv/351-export-button",
+  "pr": "https://github.com/acme/app/pull/360",
+  "definitionOfDone": {
+    "Export button downloads the current view as CSV": true,
+    "Empty views download a header-only file": false
+  },
+  "reason": "The empty-view case fails: the export endpoint returns 500 when there are no rows. Fix it or relax that box."
+}
+```
+
+The report is a single JSON object and nothing else. `reason` appears only when `outcome` is `"stopped"` - what would close it; `note` appears whenever there is something to surface, whatever the outcome - e.g. *Close the loop*'s "the repo arrived broken, not your slice's fault" case, which still needs to reach a human between drains.
 
 `outcome: "stopped"` is the subagent's report of *Close the loop*'s stop condition - the draining agent doesn't re-verify the definition of done itself, it halts on the report and reads `reason` for what would close it.
 `note`, when present, always reaches a human - surface it verbatim in this slice's own report, or, inside a batch, appended to the consolidated line (*Draining an epic*), regardless of `outcome`. Nothing else in *Close the loop* or *Draining an epic* relays it.
