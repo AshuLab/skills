@@ -121,7 +121,7 @@ Straight away, or once approved after a stop, in this order:
 3. **Submit the review** - body plus every inline comment, as one submission, with the approved stance.
 4. **Report exactly what landed** - the text that went out, what posted, what failed, what was dropped and why. If the Verdict suggested a stance other than the plain comment you used, say so; the caller can submit it as a follow-up review. If a comment fails to anchor because its line moved, name it; never relocate it to the body silently.
 
-Use whatever GitHub integration, API, or CLI is available. If the submission fails partway, report what succeeded and what did not; never assume success.
+Use whatever GitHub integration, API, or CLI is available. If the submission fails partway, report what succeeded and what did not - including the tickets and ADR hand-offs already created, by handle, so an orphan is easy to find; never assume success.
 
 Then stop. Replying to whatever the author answers is `code-resolve`'s job, from the other side.
 
@@ -144,5 +144,7 @@ When the source is a `code-review` re-review, there is no new review to submit -
 ```
 
 The re-review's own Verdict line is not posted; the delivery is the thread actions above.
+
+Step 5's scan covers the replies too: a `@word` outside code in a reply that does not come from the re-review report is a deviation, stop and show the exact text.
 
 Then post the replies, resolve the threads under *Close*, then submit any new findings as one review. Report what landed. Only the reviewer who raised a thread closes a Blocker - never close another reviewer's.
