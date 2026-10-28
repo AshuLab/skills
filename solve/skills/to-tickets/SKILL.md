@@ -47,8 +47,7 @@ NNN, NNN  (or: nothing)
 ```
 
 The `NNN` in **Blocked by** are draft indexes; at publish they resolve to each blocker's real `#<issue>` handle, which GitHub auto-links.
-A draft index appears **only** in **Blocked by**, as bare digits - never with `@` or `#` (GitHub reads `@007` as a mention and notifies that user the moment the issue is created; an edit can't recall it).
-The `NNN` in the heading is the draft's own index and is not published: the issue title is `<title>`, and the body starts at `## Goal`.
+A draft index appears **only** in **Blocked by**, as bare digits - never with `@` or `#`. The heading's `NNN` is the draft's own index and is not published: the issue title is `<title>`, and the body starts at `## Goal`.
 The prose of a slice never refers to another slice by index and never names one that isn't its blocker: describe the behavior instead.
 
 The definition of done is where the execution discipline lives - keep it observable, not a to-do list.

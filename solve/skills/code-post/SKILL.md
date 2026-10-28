@@ -79,7 +79,6 @@ Build the package below. Then **post it straight away** (step 5) when it is the 
 - The PR's head has moved since the review ran.
 - A ticket or ADR would be created. Those are artifacts beyond the review itself.
 - The caller asked to see it first ("show me first", "preview").
-- The outgoing text holds a `@word` outside code that does not come from the report (step 5 scans for it).
 
 Step 1 already stops for the caller's own PR and for an `Inconclusive` Verdict. The stance is a plain comment unless the request names approve or request-changes; it is never inferred from the Verdict.
 
@@ -116,12 +115,11 @@ Say which condition stopped the delivery, and ask for approval. The caller can a
 
 Straight away, or once approved after a stop, in this order:
 
-1. **Scan the outgoing text** - review body, every inline comment and the ticket text, before anything is created. A `@word` outside code that does not come from the review report that was read is a deviation: stop and show the exact text, as in step 4. Mentions the report itself carries are deliberate and go out; the scan never rewrites.
-2. **Create the tickets and hand off the ADRs** first, so the review body carries their real handles from the start - no placeholder is ever published, and the body is never edited afterwards. If a ticket fails to create, the review still goes out without that reference and the failure is reported: the review is the deliverable, a side artifact does not hold it hostage.
-3. **Submit the review** - body plus every inline comment, as one submission, with the approved stance.
-4. **Report exactly what landed** - the text that went out, what posted, what failed, what was dropped and why. If the Verdict suggested a stance other than the plain comment you used, say so; the caller can submit it as a follow-up review. If a comment fails to anchor because its line moved, name it; never relocate it to the body silently.
+1. **Create the tickets and hand off the ADRs** first, so the review body carries their real handles from the start - no placeholder is ever published, and the body is never edited afterwards. Wrap any `@word` or `#digits` outside code in a ticket's text in backticks, as `file-issue` does: tickets never mention people. If a ticket fails to create, the review still goes out without that reference and the failure is reported: the review is the deliverable, a side artifact does not hold it hostage.
+2. **Submit the review** - body plus every inline comment, as one submission, with the approved stance.
+3. **Report exactly what landed** - the text that went out, what posted, what failed, what was dropped and why. If the Verdict suggested a stance other than the plain comment you used, say so; the caller can submit it as a follow-up review. If a comment fails to anchor because its line moved, name it; never relocate it to the body silently.
 
-Use whatever GitHub integration, API, or CLI is available. If the submission fails partway, report what succeeded and what did not - including the tickets and ADR hand-offs already created, by handle, so an orphan is easy to find; never assume success.
+Use whatever GitHub integration, API, or CLI is available. If the submission fails partway, report what succeeded and what did not; never assume success.
 
 Then stop. Replying to whatever the author answers is `code-resolve`'s job, from the other side.
 
@@ -144,7 +142,5 @@ When the source is a `code-review` re-review, there is no new review to submit -
 ```
 
 The re-review's own Verdict line is not posted; the delivery is the thread actions above.
-
-Step 5's scan covers the replies too: a `@word` outside code in a reply that does not come from the re-review report is a deviation, stop and show the exact text.
 
 Then post the replies, resolve the threads under *Close*, then submit any new findings as one review. Report what landed. Only the reviewer who raised a thread closes a Blocker - never close another reviewer's.
