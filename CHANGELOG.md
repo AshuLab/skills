@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.26.2
+
+- `to-tickets`: **a published slice can no longer notify or link to anything unintended.** A draft index appears only in `Blocked by`, as bare digits; prose describes other slices by behavior. Publish rewrites only that line to `#<issue>` and wraps any other `@word` or `#digits` outside code in backticks. Closes a case where an invented `@`-shaped placeholder tagged a real GitHub user.
+- `code-post`: **the review goes out with real ticket handles from the start.** Tickets and ADR hand-offs are created before the review is submitted, so no placeholder is published and the later edit is gone. A failed ticket drops its reference and is reported.
+
 ## solve 0.26.1
 
 - `ship`: **the close-out report example is valid JSON.** *Delegate the build* shows two concrete examples, `ready-to-merge` and `stopped` with a `reason`, instead of a pseudo-JSON template with `<placeholders>`, `|` and `?` markers, plus a line saying the report is a single JSON object and nothing else. Build subagents copy what they are shown, so the report no longer arrives as invalid JSON. The key set and how the draining agent reads the report are unchanged.

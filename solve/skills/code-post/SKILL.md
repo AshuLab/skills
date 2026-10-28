@@ -115,8 +115,8 @@ Say which condition stopped the delivery, and ask for approval. The caller can a
 
 Straight away, or once approved after a stop, in this order:
 
-1. **Submit the review** - body plus every inline comment, as one submission, with the approved stance.
-2. **Create the tickets and hand off the ADRs**, then edit the review body's references to point at the real handles if they were placeholders.
+1. **Create the tickets and hand off the ADRs** first, so the review body carries their real handles from the start - no placeholder is ever published, and the body is never edited afterwards. If a ticket fails to create, the review still goes out without that reference and the failure is reported: the review is the deliverable, a side artifact does not hold it hostage.
+2. **Submit the review** - body plus every inline comment, as one submission, with the approved stance.
 3. **Report exactly what landed** - the text that went out, what posted, what failed, what was dropped and why. If the Verdict suggested a stance other than the plain comment you used, say so; the caller can submit it as a follow-up review. If a comment fails to anchor because its line moved, name it; never relocate it to the body silently.
 
 Use whatever GitHub integration, API, or CLI is available. If the submission fails partway, report what succeeded and what did not; never assume success.

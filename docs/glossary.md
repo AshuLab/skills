@@ -26,3 +26,6 @@ _Avoid_: "publish step", "epic sync".
 
 **Epic ready** - the `solve:epic:ready` label, set by the hand-off when tickets are defined and the design artifacts are verified on the remote. Read by whatever runs the epic; Solve itself only sets it.
 _Avoid_: "epic refined", "epic startable".
+
+**Draft index** - the `NNN` a `to-tickets` draft uses to point at a slice before it has a real issue number. It appears only in a slice's `Blocked by`, as bare digits (never with `@` or `#`), and is swapped for the blocker's `#<issue>` handle at publish. Prose never refers to a slice by index.
+_Avoid_: "placeholder", "marker", "draft reference".
