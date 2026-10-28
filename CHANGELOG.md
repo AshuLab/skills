@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## solve 0.26.2
 
 - `to-tickets`: **a published slice can no longer notify or link to anything unintended.** A draft index appears only in a slice's `Blocked by`, as bare digits with no `@` and no `#`; the prose describes other slices by behavior and names only its blockers. At publish only the `Blocked by` line is rewritten to each blocker's `#<issue>` handle, so there is no marker to resolve and no second pass. Before a body is sent, any other `@word` or `#digits` outside code is wrapped in backticks, the rule `file-issue` already applies. This closes a case where an invented `@`-shaped placeholder tagged a real GitHub user at creation.
+- `code-post`: **the review goes out with real ticket handles from the start.** Tickets and ADR hand-offs are created before the review is submitted, so no placeholder reference is published and the step that edited the review body afterwards is gone. If a ticket fails to create, the review still goes out without that reference and the failure is reported. A `@word` outside code in the outgoing text that does not come from the review report that was read counts as a deviation: `code-post` stops and shows the exact text instead of rewriting it, since a review can mention people on purpose.
 
 ## solve 0.26.1
 
