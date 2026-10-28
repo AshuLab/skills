@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.26.2
+
+- `to-tickets`: **a published slice can no longer notify or link to anything unintended.** A draft index appears only in a slice's `Blocked by`, as bare digits with no `@` and no `#`; the prose describes other slices by behavior and names only its blockers. At publish only the `Blocked by` line is rewritten to each blocker's `#<issue>` handle, so there is no marker to resolve and no second pass. Before a body is sent, any other `@word` or `#digits` outside code is wrapped in backticks, the rule `file-issue` already applies. This closes a case where an invented `@`-shaped placeholder tagged a real GitHub user at creation.
+
 ## solve 0.26.1
 
 - `ship`: **the close-out report example is valid JSON.** *Delegate the build* shows two concrete examples, `ready-to-merge` and `stopped` with a `reason`, instead of a pseudo-JSON template with `<placeholders>`, `|` and `?` markers, plus a line saying the report is a single JSON object and nothing else. Build subagents copy what they are shown, so the report no longer arrives as invalid JSON. The key set and how the draining agent reads the report are unchanged.

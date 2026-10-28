@@ -47,6 +47,8 @@ NNN, NNN  (or: nothing)
 ```
 
 The `NNN` in **Blocked by** are draft indexes; at publish they resolve to each blocker's real `#<issue>` handle, which GitHub auto-links.
+A draft index appears **only** in **Blocked by**, as bare digits - never with `@` or `#` (GitHub reads `@007` as a mention and notifies that user the moment the issue is created; an edit can't recall it).
+The prose of a slice never refers to another slice by index and never names one that isn't its blocker: describe the behavior instead.
 
 The definition of done is where the execution discipline lives - keep it observable, not a to-do list.
 **Every box has to be tickable by someone who didn't write it.** The test is yours while drafting, not a field in the ticket: for each box name to yourself the command that proves it or the thing you'd look at, and if you can't name one, the box is prose and doesn't belong.
@@ -75,7 +77,8 @@ Read the epic's milestone **before creating anything** (`gh issue view <epic> --
 Labels don't inherit - each slice gets only its own `solve:` labels (below).
 No milestone on the epic -> nothing to carry, nothing to ask.
 
-Then publish each slice as a sub-issue, in **topological order** (blocker before blocked) - which is what makes the cross-references resolvable: a slice's blockers already exist by the time it's created, so before creating it, swap each draft index (`001`) in the body for the blocker's real `#<issue number>` handle, which GitHub auto-links, alongside the native `--blocked-by` edge.
+Then publish each slice as a sub-issue, in **topological order** (blocker before blocked) - which is what makes the cross-references resolvable: a slice's blockers already exist by the time it's created, so before creating it, rewrite each draft index (`001`) on its `Blocked by` line - and only that line - to the blocker's real `#<issue number>` handle, which GitHub auto-links, alongside the native `--blocked-by` edge. There is no marker to resolve and no second pass over published slices.
+Then, before the body is sent, wrap in backticks any `@word` and any `#digits` outside a code fence or inline code that isn't one of those blocker handles: unwrapped, they notify people and add backlinks, and a sent body can't take that back. Tickets never mention people, so nothing legitimate is lost.
 The concrete operation is in `docs/agents/solve.md` -> **Tracker operations** (*publish a slice*); run it per slice. **No such file** means the repo never ran `setup`: infer `owner/repo` from the git remote and use `setup/REFERENCE.md`'s **Tracker operations** -> *publish a slice*. Say so once and carry on - don't stop, and don't write a config file.
 Throttle the loop - creating issues too fast trips rate limiting.
 
