@@ -19,16 +19,15 @@ Two rules, applied where the bodies are written, with no new marker syntax. Both
 
 **`code-post`, order.** Step 5 flips: tickets and ADR hand-offs are created first, then the review is submitted with their real handles already in the body. No placeholder exists, so the "edit the review body's references" step is deleted. If a ticket fails to create, the review still goes out without that reference and the failure is reported, because the review is the deliverable and a side artifact must not hold it hostage.
 
-**`code-post`, ticket text.** A review can mention people on purpose, and it is posted as written, so it is not scanned: text that is not in the report already counts as a deviation. Ticket text is the only thing `code-post` writes itself, and tickets never mention people, so any `@word` or `#digits` outside code in it is wrapped in backticks, as `file-issue` does.
 
-What lost. The issue's `{{001}}` marker and its second `gh issue edit` pass per slice: once prose may not name non-blockers, forward references cannot occur, and blocker references already live in `Blocked by` as digits, so there is no marker to resolve and no second pass. For `code-post`, keeping the order and inventing a safe marker for the review body would be more machinery for the same result as creating the tickets first. A stop-and-show scan on the review lost too: a review is posted as written, so stray text is already a deviation, and a scan would only block legitimate mentions.
+What lost. The issue's `{{001}}` marker and its second `gh issue edit` pass per slice: once prose may not name non-blockers, forward references cannot occur, and blocker references already live in `Blocked by` as digits, so there is no marker to resolve and no second pass. For `code-post`, keeping the order and inventing a safe marker for the review body would be more machinery for the same result as creating the tickets first. A `@word` scan on `code-post` lost too: a review is posted as written, so stray text is already a deviation, and nothing shows its tickets mention anyone.
 
 The change ships as a patch bump of `solve` to 0.26.2, in both `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json`, with `to-tickets` and `code-post` entries under a new `## solve 0.26.2` heading in `CHANGELOG.md`.
 
 ## Scope
 
 1. As the agent running `to-tickets`, I draft with draft indexes only in `Blocked by` as bare digits, describe other slices by behavior and name only blockers in prose, rewrite only the `Blocked by` line to `#<issue>` at publish, and wrap any other `@word` or `#digits` outside code in backticks before the body is sent, so a published slice cannot notify or link to anything unintended.
-2. As `code-post`, I create the tickets and ADR hand-offs before submitting the review, so the body carries real handles from the start (a failed ticket drops its reference and is reported, the review still goes out), and I wrap any `@word` or `#digits` outside code in the ticket text in backticks.
+2. As `code-post`, I create the tickets and ADR hand-offs before submitting the review, so the body carries real handles from the start (a failed ticket drops its reference and is reported, the review still goes out).
 3. As an installed user, I get the fix as `solve` 0.26.2, with the manifests in sync and the change recorded in `CHANGELOG.md`.
 
 ## Decisions
