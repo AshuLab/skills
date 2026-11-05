@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.27.0
+
+- `ship`: **the integration PR carries before/after screenshots when the epic changes what a user sees.** New [VISUAL-EVIDENCE.md](solve/skills/ship/VISUAL-EVIDENCE.md), read at the end of a drain. A repo with no UI skips it; a repo with a UI the epic doesn't touch gets one `n/a` line. Otherwise a subagent exports the epic's starting commit and its tip, runs each, captures every affected view and state, and the images go into the PR body through `gh pr create --attach` (GitHub hosts them). The starting commit is derived from git, not recorded. Anything not captured is named in the PR and ship doesn't call the epic ready past it.
+- `ship`: the close-out report gains an optional `uiImpact` list (views the slice visibly changes), a hint for the epic's evidence. Existing reports without it stay valid.
+
 ## solve 0.26.2
 
 - `to-tickets`: **a published slice can no longer notify or link to anything unintended.** A draft index appears only in `Blocked by`, as bare digits; prose describes other slices by behavior. Publish rewrites only that line to `#<issue>` and wraps any other `@word` or `#digits` outside code in backticks. Closes a case where an invented `@`-shaped placeholder tagged a real GitHub user.

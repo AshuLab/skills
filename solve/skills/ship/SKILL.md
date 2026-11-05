@@ -59,7 +59,8 @@ A slice that is ready to merge:
   "definitionOfDone": {
     "Export button downloads the current view as CSV": true,
     "Empty views download a header-only file": true
-  }
+  },
+  "uiImpact": ["Reports > Export button"]
 }
 ```
 
@@ -79,7 +80,7 @@ A slice that stopped, with the `reason`:
 }
 ```
 
-The report is a single JSON object and nothing else. `reason` appears only when `outcome` is `"stopped"` - what would close it; `note` appears whenever there is something to surface, whatever the outcome - e.g. *Close the loop*'s "the repo arrived broken, not your slice's fault" case, which still needs to reach a human between drains.
+The report is a single JSON object and nothing else. `reason` appears only when `outcome` is `"stopped"` - what would close it; `note` appears whenever there is something to surface, whatever the outcome - e.g. *Close the loop*'s "the repo arrived broken, not your slice's fault" case, which still needs to reach a human between drains. `uiImpact` is optional: the views the slice visibly changes, shared styles, components or assets included - omit it when the slice changes nothing a user sees. It is a hint for the epic's visual evidence (*Draining an epic*), not the evidence itself.
 
 `outcome: "stopped"` is the subagent's report of *Close the loop*'s stop condition - the draining agent doesn't re-verify the definition of done itself, it halts on the report and reads `reason` for what would close it.
 `note`, when present, always reaches a human - surface it verbatim in this slice's own report, or, inside a batch, appended to the consolidated line (*Draining an epic*), regardless of `outcome`. Nothing else in *Close the loop* or *Draining an epic* relays it.
@@ -214,7 +215,7 @@ It ends one of these ways, and none is "keep going anyway":
   Empty output from *find the next startable slice* does **not** distinguish this from a finished drain. Ask the other question separately: `gh issue view <epic> --json subIssues --jq '[.subIssues[] | select(.state == "OPEN")]'`. Empty there too, and only then, is the drain done.
 - **A slice can't be completed.** Same rule as *Close the loop*. The drain halts with it - don't cherry-pick another slice to keep moving. Resume once it's resolved.
 - **A merge conflict on integration.** `git status` to identify the conflicts, then **stop and report** - don't auto-resolve: resolving them wrong silently corrupts the epic branch.
-- **Every slice closed.** The drain is done. If the repo keeps a changelog or release notes (`CHANGELOG.md`, `.changeset/`, or whatever `CONTRIBUTING` names), add the **feature's** entry in that format - one per feature, not per slice. Then open the **integration PR** - the epic branch into its destination (`docs/agents/solve.md` -> **Branching**), as a **draft** with `Closes #<epic>` for a human to review; ship never merges it.
+- **Every slice closed.** The drain is done. If the repo keeps a changelog or release notes (`CHANGELOG.md`, `.changeset/`, or whatever `CONTRIBUTING` names), add the **feature's** entry in that format - one per feature, not per slice. If the epic changes what a user sees, prepare its before/after screenshots first: [VISUAL-EVIDENCE.md](./VISUAL-EVIDENCE.md) says when it applies, what to capture and how it goes in the PR. Then open the **integration PR** - the epic branch into its destination (`docs/agents/solve.md` -> **Branching**), as a **draft** with `Closes #<epic>` for a human to review; ship never merges it. Where evidence applies, read the PR back against its gate before reporting it ready.
   **ship never closes the epic** - "every slice is closed" is checkable, "the feature is delivered" is a judgement. Report the state and leave it open. (On merge GitHub closes it anyway if the destination is the default branch; into a non-default like `develop` it stays open - the human's call.)
   **If the epic ran in a worktree, name it in that PR body** - the path, the machine, and the `git worktree remove <path>` for after the merge, one line per path: the epic worktree, plus any lane still standing from the last round the drain dispatched. ship never removes any of them: [WORKTREES.md](./WORKTREES.md) -> *Cleanup*.
   Point them at **`land`** for what comes next: it merges the PR and closes out the epic branch, the worktree, the epic issue and any slice branch still around.
