@@ -20,22 +20,18 @@ Capture **states**, not just pages: each scenario's visible outcome, plus the em
 
 Neither shot touches a tree you're working in. Both are exports of an exact commit, the same move as *Close the loop*'s "did I break it" check.
 
-- **Baseline** - where the epic started, derived from git, not remembered:
+`git fetch origin <epic> <destination>` first: `gh pr merge` merges server-side, so a local `origin/<epic>` can miss the last slice.
 
-  ```
-  git rev-parse $(git rev-list --reverse --first-parent origin/<epic> ^origin/<destination> | head -1)^
-  ```
-
-  The oldest commit that is on the epic and not yet in its destination, then its parent. Unlike `git merge-base`, it doesn't move if the base was merged into the epic mid-drain. The epic's first commit is the design artifacts (docs only), so the parent is the code the epic started from.
+- **Baseline** - `git merge-base origin/<epic> origin/<destination>`, derived from git, not remembered. It is the "before" the integration PR's own diff is measured from: if the base was merged into the epic mid-drain it moves with it, so the base's UI changes aren't credited to this epic.
 - **After** - `origin/<epic>` as it stands.
 
-For each: `git archive <sha> | tar -x -C <scratch dir>`, link the gitignored config the app boots on (`.env*`, never copy - [WORKTREES.md](./WORKTREES.md) -> *Making it runnable*), install, start the app, capture. Put the PNGs in a scratch dir **outside** any repo, named `<view>-before.png` / `<view>-after.png`. Delete the exports when you're done.
+For each: `git archive <sha> | tar -x -C <scratch dir>`, link the gitignored config the app boots on from the epic's tree (`.env*`, never copy - [WORKTREES.md](./WORKTREES.md) -> *Making it runnable*), install, start the app, capture. Put the PNGs in a scratch dir **outside** any repo, named `<view>-before.png` / `<view>-after.png`. Delete the exports when you're done.
 
 Do it in a subagent: screenshots and server logs are exactly the bulk the draining agent's context shouldn't carry. It returns the list of view, state and file paths, and anything it couldn't capture.
 
 **Bounded.** The app doesn't come up after a couple of honest attempts, or the baseline can't run against what exists today (a migration the old code can't read), or a view needs access the run doesn't have -> stop trying and record the gap. A missing shot is reported as missing; never substitute a mock, a hand-edited screenshot or the wrong build.
 
-**Data.** Seed or fake data only. Look at every image before it ships: a token, an email, a customer name or a real record in a screenshot is published to everyone who can read the PR.
+**Data.** Seed or fake data only. The linked config may point at a developer's real database or services, and both builds boot against it: override those URLs in the process environment (never by editing the linked file) to a throwaway seeded instance, and if there is none, record the gap instead of capturing. Look at every image before it ships: a token, an email, a customer name or a real record in a screenshot is published to everyone who can read the PR.
 
 ## Publish
 
@@ -60,10 +56,10 @@ One short line under the table for anything the reviewer should know that a pict
 
 ## The gate
 
-ship doesn't report the epic ready until, reading the PR back (`gh pr view <pr> --json body`):
+Applies when the epic changes what a user sees. A repo with no UI has nothing to check, and a UI the epic doesn't touch passes with its `Visual evidence: n/a - <why>` line. Otherwise ship doesn't report the epic ready until, reading the PR back (`gh pr view <pr> --json body`):
 
 - a `## Visual evidence` section is there, with every row either two images, or one image and "new"/"removed", and
-- every image URL is a GitHub-hosted one (no `./file.png` left unrewritten), and
+- every image is an uploaded URL - no `./file.png` reference left unrewritten, and
 - anything not captured is named under *Not captured*, with the reason.
 
 Not met -> the report opens with the concrete gap ("billing view: baseline wouldn't boot, needs migration 0042") and doesn't call the PR ready for review. A gap isn't a failed drain - the code is delivered, the evidence isn't - but it is never glossed over.
