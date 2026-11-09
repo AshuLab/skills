@@ -32,11 +32,11 @@ Every choice below: the harness's choice UI when available, prose otherwise.
 Idempotent - re-run safe with `--force`:
 
 ```
-gh label create solve:epic    --color 8957e5 --description "PRD / feature epic" --force
+gh label create solve:epic    --color 8957e5 --description "Feature epic: PRD split into tickets" --force
 gh label create solve:ticket  --color 0969da --description "A vertical slice of an epic" --force
-gh label create solve:refined --color 1a7f37 --description "Slice fully defined, agent-ready" --force
-gh label create solve:raw     --color d4c5f9 --description "Found along the way, not yet sharpened" --force
-gh label create solve:epic:ready --color 0e8a16 --description "Epic ready to run: tickets defined, artifacts pushed" --force
+gh label create solve:refined --color 1a7f37 --description "Slice fully defined; dependencies set separately" --force
+gh label create solve:raw     --color fbca04 --description "Found along the way, not yet sharpened" --force
+gh label create solve:epic:ready --color 0b7285 --description "Epic ready to run: tickets defined, artifacts pushed" --force
 ```
 
 ## 4. Worktrees

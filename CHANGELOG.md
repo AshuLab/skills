@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.27.1
+
+- `setup`: **the solve labels read clearer and stop sharing colors.** `solve:epic` says it is a feature epic split into tickets; `solve:refined` says dependencies are set separately, not that it is blocked; `solve:raw` is yellow and `solve:epic:ready` teal, so the two greens no longer look alike. The `solve:raw` fallback reuses the step 3 line instead of repeating it. Labels already on a repo keep their old colors until `setup` re-runs.
+
 ## solve 0.27.0
 
 - `ship`: **the integration PR carries before/after screenshots when the epic changes what a user sees.** New [VISUAL-EVIDENCE.md](solve/skills/ship/VISUAL-EVIDENCE.md), read at the end of a drain. A repo with no UI skips it; a repo with a UI the epic doesn't touch gets one `n/a` line. Otherwise a subagent exports the epic's starting commit and its tip, runs each, captures every affected view and state, and the images go into the PR body through `gh pr create --attach` (GitHub hosts them). The starting commit is derived from git, not recorded. Anything not captured is named in the PR and ship doesn't call the epic ready past it.

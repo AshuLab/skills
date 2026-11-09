@@ -26,7 +26,7 @@ The step is idempotent. Branch absent: create it. Branch present with the artifa
 `setup` creates one new label, idempotent with `--force` like the others:
 
 ```
-gh label create solve:epic:ready --color 0e8a16 --description "Epic ready to run: tickets defined, artifacts pushed" --force
+gh label create solve:epic:ready --color 0b7285 --description "Epic ready to run: tickets defined, artifacts pushed" --force
 ```
 
 The other three epic state labels (`solve:epic:running`, `solve:epic:needs-human`, `solve:epic:ready-for-test`) belong to the external orchestrator that reads `ready` and runs the epic. It already creates them if missing, and Solve never sets them, so `setup` does not create them. The `solve` README documents all four as part of the flow's vocabulary: names, and who sets each. Its current line saying that skipping `setup` makes the labels get created lazily needs to say `ready` is the exception.
@@ -47,7 +47,7 @@ The other three epic state labels (`solve:epic:running`, `solve:epic:needs-human
 ## Decisions
 
 - The hand-off lives inside `to-tickets` rather than in a new skill. A separate skill would be one more step people forget, and the failure is the same as today's. No new skill means nothing to add to the plugin manifests' `skills` arrays or to the README skill table.
-- Only `solve:epic:ready` is created by `setup`; the three orchestrator labels stay the orchestrator's. Colour `0e8a16` and the description above are the issue's proposal, accepted.
+- Only `solve:epic:ready` is created by `setup`; the three orchestrator labels stay the orchestrator's. Colour `0b7285` (changed from the issue's `0e8a16` in solve 0.27.1, to set it apart from the green `solve:refined`) and the description above are the issue's proposal, accepted.
 - Missing label is a reported condition, not a lazy create. This departs from the README's general "labels get created lazily" line on purpose: the maintainer re-runs `setup` on every repo he uses.
 - Artifact classification and branch operations are referenced from `ship` and `docs/agents/solve.md`, never restated, so the three places cannot drift.
 - Plugin metadata: bump the `solve` version in `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json` to the same number in the same commit, and add a `CHANGELOG.md` entry, per the repo's `CLAUDE.md`.
