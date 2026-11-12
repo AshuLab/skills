@@ -50,7 +50,7 @@ Baseline `<short sha>` -> epic tip `<short sha>`.
 Not captured: <view> - <why>.
 ```
 
-`gh pr create --draft --body-file <dir>/body.md --attach <dir>/billing-before.png ...`, one `--attach` per image. Adding a state after the PR exists: `gh pr edit <pr> --attach ...`.
+`gh pr create --draft --label solve:epic --body-file <dir>/body.md --attach <dir>/billing-before.png ...`, one `--attach` per image. Adding a state after the PR exists: `gh pr edit <pr> --attach ...`.
 
 One short line under the table for anything the reviewer should know that a picture can't show (a hover state, an animation). No narration of what the pictures already show.
 
