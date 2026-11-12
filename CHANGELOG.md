@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.27.2
+
+- `ship`: **the integration PR is labelled `solve:epic`.** When all slices are closed and `ship` opens the draft integration PR into the destination branch, it tags it with `--label solve:epic` so the epic's primary PR stands out and is easy to filter among slice PRs in GitHub.
+
 ## solve 0.27.1
 
 - `setup`: **the solve labels read clearer and stop sharing colors.** `solve:epic` says it is a feature epic split into tickets; `solve:refined` says dependencies are set separately, not that it is blocked; `solve:raw` is yellow and `solve:epic:ready` teal, so the two greens no longer look alike. The `solve:raw` fallback reuses the step 3 line instead of repeating it. Labels already on a repo keep their old colors until `setup` re-runs.
