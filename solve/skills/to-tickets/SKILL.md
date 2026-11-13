@@ -69,6 +69,7 @@ It's what a from-scratch, unattended agent leans on hardest - but if the spec al
 ## Before publishing
 
 Draft the slice list and show it - granularity and blocking edges laid out - then adjust from the reply; never publish off a first guess.
+Check for **shared-point contention** across slices that have no blocker between them: if several slices in the draft will add entries to the same shared list, registry, enum, or switch, weigh whether a small enabling chore upfront (introducing the extensible seam or per-item files) or an explicit `Blocked by` edge to serialize them beats putting them in parallel to collide on the same lines.
 Only use a closed-choice UI when you're genuinely torn between two concrete cuts (e.g. 3 slices vs 5), each a real option; otherwise show the draft in prose and wait.
 
 ## Publish the slices
