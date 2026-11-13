@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## solve 0.28.0
 
-- `ship`: **slice PRs skip shared changelogs, and additive slice-merge conflicts get one verified resolution pass on the slice branch.** Under *Close the loop* -> *Commit*, slice PRs targeting an epic branch no longer edit shared changelog files (`CHANGELOG.md`, `RELEASE_NOTES.md`, etc.) even when repo rules ask for an entry per PR - the epic's single feature-level entry still lands at the end of the drain (per-file `.changeset/` notes stay per-commit). Under *Draining an epic*, when `gh pr merge` rejects a slice PR with a merge conflict, `ship` attempts at most one merge of `origin/<base>` into the slice branch itself (never onto the epic branch), aborts and stops immediately if the overlap is semantic or incompatible, and for additive/mechanical overlaps delegates resolution and re-runs the full Definition of Done checks before pushing and retrying the merge. Unresolved or failing conflicts still halt the queue and leave the lane unparked as before.
-- `to-tickets`: **check for shared-point contention before publishing parallel slices.** *Before publishing* now asks whether slices with no blocking edges extend the same shared list, registry, enum, or switch, and whether an enabling chore or explicit `Blocked by` edge beats colliding on the same lines.
-- `setup`: updates the `solve-flow.md` template's *Where a person is needed* entry for `ship` to reflect unresolved merge conflicts.
+- `ship`: **slice PRs skip shared changelogs; a slice-merge conflict gets one verified resolution attempt on the slice branch.** Slice PRs no longer edit `CHANGELOG.md`/`RELEASE_NOTES.md` (the epic's single entry lands at the end of the drain; `.changeset/` files stay per-commit). When `gh pr merge` rejects a slice PR for a conflict, `ship` merges the base into the slice branch once: semantic overlap aborts and halts; additive overlap is resolved, re-verified with the full gate, pushed, and the merge retried after the PR's checks pass. Anything else still halts the queue as before.
+- `to-tickets`: *Before publishing* checks whether unblocked slices extend the same list, registry, enum or switch, and whether an enabling chore or `Blocked by` edge beats colliding.
+- `setup`: the `solve-flow.md` template's `ship` line reflects unresolved merge conflicts.
 
 ## solve 0.27.2
 
