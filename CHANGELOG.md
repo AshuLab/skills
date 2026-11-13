@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.28.0
+
+- `ship`: **slice PRs skip shared changelogs; a slice-merge conflict gets one verified resolution attempt on the slice branch.** Slices of a drain no longer edit `CHANGELOG.md`/`RELEASE_NOTES.md` (the epic's single entry lands at the end of the drain; `.changeset/` files stay per-slice; a slice shipped outside a drain still writes its own entry). When `gh pr merge` rejects a slice PR for a conflict - in a drain or a single-ticket run (*Close the loop* step 4) - `ship` merges the base into the slice branch once and hands the conflict to a subagent that reports back like a build: semantic overlap aborts the merge and stops; additive overlap is resolved, re-verified against the definition of done, pushed, and the merge retried after the PR's required checks pass (a repo with no checks counts as green; the wait is bounded at 2 hours). Any failure aborts the merge, so the tree stays clean, and is an unresolved conflict: the queue halts as before.
+- `to-tickets`: *Before publishing* checks whether unblocked slices extend the same list, registry, enum or switch, and whether an enabling chore or `Blocked by` edge beats colliding.
+- `setup`: the `solve-flow.md` template's `ship` line reflects unresolved merge conflicts.
+
 ## solve 0.27.2
 
 - `ship`: **the integration PR is labelled `solve:epic`.** When all slices are closed and `ship` opens the draft integration PR into the destination branch, it tags it with `--label solve:epic` so the epic's primary PR stands out and is easy to filter among slice PRs in GitHub.

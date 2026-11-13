@@ -23,7 +23,7 @@ Full reasoning and the alternatives weighed are in [0001-parallel-slice-draining
 1. Delegated build - a slice's build (claim through Close the loop steps 1-3) runs inside a subagent with fresh context, for every drain, sequential or parallel, github or local.
 2. Parallel batch dispatch - each round of a github-mode drain takes up to 3 of the currently-startable hub slices as concurrent delegated builds instead of draining one at a time; even a lone startable slice goes through this path.
 3. Lane worktree isolation - every github-mode drain uses up to 3 lane worktrees, slots created once and reused round after round (parked, not removed, when their occupant merges) rather than a fresh worktree per slice; local mode keeps the existing one-worktree-per-epic model.
-4. Serialized merge - the draining agent merges each parallel batch member's finished build into the epic branch one at a time, in the order builds finish, preserving the existing "stop and report, never auto-resolve" conflict policy.
+4. Serialized merge - the draining agent merges each parallel batch member's finished build into the epic branch one at a time, in the order builds finish, with a conflict policy of stop and report (amended in solve 0.28.0: one verified resolution attempt on the slice branch for additive overlaps, see ADR 0001).
 5. Partial-failure handling - when one member of a parallel batch fails, the members that finished cleanly still merge; the drain then halts to surface the failed one, without rolling back the merged siblings.
 
 ## Decisions
@@ -41,7 +41,7 @@ Stories 2-5 only run in github tracker mode, which this repo doesn't - it ships 
 
 Parallel dispatch in local mode - local epics get delegated build (the context fix) but keep today's sequential wall-clock cost.
 Concurrency above 3 simultaneous slices in a batch - capped so a wide fan-out doesn't turn into an unreviewable pile of subagents running at once.
-Any change to how merge conflicts at integration are handled - the existing "stop and report, never auto-resolve" policy carries over unchanged; it will simply fire more often, since a parallel batch's slices aren't sequenced against each other's changes during build.
+Any change to how merge conflicts at integration are handled - the "stop and report, never auto-resolve" policy carried over unchanged (later amended in solve 0.28.0, see ADR 0001); it will fire more often, since a parallel batch's slices aren't sequenced against each other's changes during build.
 Per-slice human review - a parallel batch still merges each finished slice on its own, same trust level `ship` already has today; only the final integration PR is a human review surface.
 Fixing the `<feature>` path-collision assumption across epics with similarly-slugified titles - lanes share the same assumption the epic worktree's own path already carries, just across up to 3 paths instead of 1, held open for the whole drain.
 
