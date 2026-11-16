@@ -15,7 +15,7 @@ Rules that bind every comment:
 
 1. Track authorship. A PR can have comments from more than one reviewer - keep verdicts grouped by reviewer and thread, don't merge distinct voices into one.
 2. Replies are short and direct: state the fact or the decision, nothing else. No "thanks for the comment", no "great catch", no restating what the reviewer already said. If the code changed, say what changed and the commit. If it didn't, say why in one line.
-3. Certainty and verdict are separate. `verified`: you read the current code, or ran something, and confirmed it. `probable`: state the assumption and what would confirm it. A reply never states a `probable` as fact.
+3. Certainty and verdict are separate. `verified`: you read the current code, or ran something, and confirmed it. `probable`: state the assumption and what would confirm it. A reply never states a `probable` as fact. A `probable` can't back *Not applicable* or *Already resolved*: it becomes an *Open question*.
 4. Judge against the **current** code, not the diff snapshot the reviewer saw. A comment can be stale in either direction - already fixed, or newly wrong again after a later commit.
 5. If evidence is unavailable, do not fabricate a reply or a fix. The thread is not touched; the gap goes in the PR summary and the report (outcome *Unsettled*).
 6. On a re-run against the same PR, don't redo work already delivered. Every reply and the summary comment end with the hidden marker `<!-- code-resolve -->`; a reply by this run's identity that carries it was written by this flow. If a thread already carries such a reply and is marked resolved, just confirm the current code still matches what that reply claimed - no new fix or reply unless the code drifted since. If it is still open, awaiting its reviewer (rule 8), leave it alone.
@@ -76,7 +76,7 @@ A debatable point answered with false confidence costs more than a question. Whe
 
 ## 4 - Verify and prepare the fix
 
-Read the current state of the referenced code - not the diff at comment time. Reach for the same evidence a careful engineer would: read the surrounding function, grep for other call sites, check whether a test covers the claim, run the test if the environment allows it.
+Read the current state of the referenced code - not the diff at comment time. Reach for the same evidence a careful engineer would: read the surrounding function, grep for other call sites, check whether a test covers the claim, run the test if the environment allows it. When the comment claims wrong behavior, try to reproduce it (a minimal test or run) before judging; a claim you can't reproduce is *Not applicable* only if the reply says what you tried.
 
 For comments that hold up, first decide whether the fix belongs in this PR (*Deferred*, step 3). Then draft the concrete code fix (*Fixed*) or confirm the commit that already addresses it (*Already resolved*).
 
@@ -92,6 +92,7 @@ Once every comment has a draft outcome, look at them together - the same way a h
 
 - **Overlapping edits.** Two comments touching the same lines can produce fixes that conflict or duplicate each other. Merge them into one fix, or sequence them, rather than applying both independently.
 - **Contradictory reviewers.** Two reviewers wanting opposite things on the same code is not a coin flip for you to call - both threads become *Open question*, each reply naming the other's position.
+- **Dismissals.** Hand every *Not applicable* and *Already resolved* verdict to a subagent that sees only the comment and the current code, not your reasoning, and asks "is the reviewer right?". If it disagrees, the comment becomes an *Open question*. Skip when there are none.
 - **Combined correctness.** Validate the fixes together (build/test the working tree with all fixes applied), not just each in isolation - one fix can pass alone and break once a sibling fix lands next to it. A fix that fails only in combination becomes *Unsettled*; drop it and re-validate the rest.
 
 ## 6 - Apply, or stop and show

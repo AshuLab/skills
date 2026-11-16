@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.29.0
+
+- `code-resolve`: **dismissals need evidence and a second look.** A `probable` can't back *Not applicable* or *Already resolved* (it becomes an *Open question*); a comment claiming wrong behavior is reproduced before it is judged; and every dismissal is re-checked by a subagent that sees only the comment and the current code, so the author's own reasoning can't anchor the verdict.
+
 ## solve 0.28.0
 
 - `ship`: **slice PRs skip shared changelogs; a slice-merge conflict gets one verified resolution attempt on the slice branch.** Slices of a drain no longer edit `CHANGELOG.md`/`RELEASE_NOTES.md` (the epic's single entry lands at the end of the drain; `.changeset/` files stay per-slice; a slice shipped outside a drain still writes its own entry). When `gh pr merge` rejects a slice PR for a conflict - in a drain or a single-ticket run (*Close the loop* step 4) - `ship` merges the base into the slice branch once and hands the conflict to a subagent that reports back like a build: semantic overlap aborts the merge and stops; additive overlap is resolved, re-verified against the definition of done, pushed, and the merge retried after the PR's required checks pass (a repo with no checks counts as green; the wait is bounded at 2 hours). Any failure aborts the merge, so the tree stays clean, and is an unresolved conflict: the queue halts as before.
