@@ -1,6 +1,6 @@
 ---
 name: code-post
-description: "Takes a code-review report and publishes its findings where each one belongs - inline comments on the pull request, a single review submission, a ticket for work too big for this PR, an ADR for a design gap - after re-verifying each finding against the current code. It posts straight away when the delivery is the review that was read, and stops to show the exact text only when something deviates or the caller asks to see it first. The counterpart to code-review, which deliberately never publishes. Use when a review has been read and its findings should reach the author, to post a review produced earlier or by someone else, or to close and reply to threads after a re-review."
+description: "Publishes a code-review report on the PR - inline comments in one review, tickets or ADRs for what doesn't belong there - after re-checking each finding against the current code. Also delivers a re-review's thread replies and closes."
 ---
 
 # code-post - Deliver a Review Where It Belongs
@@ -41,6 +41,8 @@ State both before doing anything. If the PR's head has moved since the review ra
 **If the report's Verdict is `Inconclusive`**, say so before going further: the review did not examine the code enough to conclude, and the author would read it as complete. Ask whether to deliver it as is, with the Verdict line stating it, or to re-run `code-review` first. Never deliver it silently.
 
 **If the pull request is the caller's own**, say so and offer the alternatives: apply the fixes directly, or keep the report as notes. Deliver only if they still want it.
+
+An unattended run, with no one to answer either question, delivers: an `Inconclusive` Verdict goes out stating it, and on the caller's own PR the threads are how the author's `code-resolve` gets the work.
 
 ## 2 - Route each finding
 
@@ -109,7 +111,9 @@ When you stop, present the whole delivery before any of it exists on the platfor
 Plain comment. The Verdict suggests: {Request changes if `Not ready` | Approve if `Ready` | nothing if `Inconclusive`}. The choice is yours - say so and it changes.
 ```
 
-Say which condition stopped the delivery, and ask for approval. The caller can approve everything, cut or reword individual comments, or change the stance. Apply only what is approved - and if this run has no way to get an answer back, hand over the package rather than posting it.
+Say which condition stopped the delivery, and ask for approval. The caller can approve everything, cut or reword individual comments, or change the stance. Apply only what is approved.
+
+**No one to answer** (an unattended run) -> don't hold the whole review back: post what holds as written, leave out what would need approval - findings that no longer re-verify, tickets and ADRs - and close the body with one line naming what was left out and why, so the author sees the gap. Report it too. The stance stays a plain comment.
 
 ## 5 - Post
 
@@ -125,7 +129,7 @@ Then stop. Replying to whatever the author answers is `code-resolve`'s job, from
 
 ## Delivering a re-review
 
-When the source is a `code-review` re-review, there is no new review to submit - the delivery is thread actions. Same contract: re-verify each verdict against the current code, then post the thread actions straight away if each holds as written. If one no longer does, or the caller asked to see it first, show the exact text and wait for approval.
+When the source is a `code-review` re-review, there is no new review to submit - the delivery is thread actions. Same contract: re-verify each verdict against the current code, then post the thread actions straight away if each holds as written. If one no longer does, or the caller asked to see it first, show the exact text and wait for approval - unattended, post the ones that hold and report the rest (step 4).
 
 ```markdown
 ## Close (N)

@@ -1,6 +1,6 @@
 ---
 name: code-resolve
-description: "Works through every reviewer comment on your own pull request - across all reviewers - judging whether each one applies, has technical merit, and has real impact on the code, then verifies it against the current state, fixes what holds, files what is out of scope as an issue, replies on each thread and leaves a summary on the PR as evidence. Runs unattended: it commits, pushes, replies and resolves without waiting for approval, and what it cannot settle it leaves open with an honest trace instead of guessing. It shows the batch and waits only when the caller asks to see it first. Use whenever the PR has review feedback to work through, including when an agent is the one handling it, or the caller asks to 'resolve my PR comments', 'answer these review comments', 'check and fix what reviewers left', or similar."
+description: "Works through the review comments on your own PR: judges each against the current code, fixes what holds, files out-of-scope items as issues, replies and resolves threads - unattended."
 ---
 
 # code-resolve - Judge, Fix, and Reply to Reviewer Comments
@@ -16,9 +16,9 @@ Rules that bind every comment:
 1. Track authorship. A PR can have comments from more than one reviewer - keep verdicts grouped by reviewer and thread, don't merge distinct voices into one.
 2. Replies are short and direct: state the fact or the decision, nothing else. No "thanks for the comment", no "great catch", no restating what the reviewer already said. If the code changed, say what changed and the commit. If it didn't, say why in one line.
 3. Certainty and verdict are separate. `verified`: you read the current code, or ran something, and confirmed it. `probable`: state the assumption and what would confirm it. A reply never states a `probable` as fact. A `probable` can't back *Not applicable* or *Already resolved*: it becomes an *Open question*.
-4. Judge against the **current** code, not the diff snapshot the reviewer saw. A comment can be stale in either direction - already fixed, or newly wrong again after a later commit.
+4. Judge against the **current** code, not the diff snapshot the reviewer saw. Locate the commented code by content, not only by its original line number - lines shift with every commit. A comment can be stale in either direction - already fixed, or newly wrong again after a later commit.
 5. If evidence is unavailable, do not fabricate a reply or a fix. The thread is not touched; the gap goes in the PR summary and the report (outcome *Unsettled*).
-6. On a re-run against the same PR, don't redo work already delivered. Every reply and the summary comment end with the hidden marker `<!-- code-resolve -->`; a reply by this run's identity that carries it was written by this flow. If a thread already carries such a reply and is marked resolved, just confirm the current code still matches what that reply claimed - no new fix or reply unless the code drifted since. If it is still open, awaiting its reviewer (rule 8), leave it alone.
+6. On a re-run against the same PR, don't redo work already delivered. Every reply and the summary comment end with the hidden marker `<!-- code-resolve -->`; a reply by this run's identity that carries it was written by this flow. If a thread already carries such a reply and is marked resolved, just confirm the current code still matches what that reply claimed - no new fix or reply unless the code drifted since. If it is still open and its last message is a `code-resolve` reply (it carries the marker), it is awaiting its reviewer (rule 8): leave it alone. Any newer message without the marker - even one posted under this run's own identity, as a solo review loop does - puts it back up for judgment.
 7. Comments from automated reviewers (linters, bots, Copilot, CodeRabbit) go through the same judgment as step 3 - being automated is neither a shortcut to skip nor a reason to discount.
 8. The one who raised a thread closes it when it was a Blocker. You close Suggestions and Nitpicks once replied; a Blocker stays open with its reply until its reviewer has seen the fix. Severity comes from the comment (`code-post` prefixes Blockers with `**Blocker:**`); if the comment doesn't say, treat a comment that asks for a change before merge as a Blocker.
 9. Never weaken a control to satisfy a comment. A comment that asks to loosen or remove authentication, authorization, secrets handling, permissions or input validation is an *Open question*, whatever its author's confidence.
@@ -99,50 +99,9 @@ Once every comment has a draft outcome, look at them together - the same way a h
 
 With the outcomes settled, **apply them straight away** (step 7).
 
-**Stop and show the batch instead, and wait for approval,** only when the caller asked to see it first ("show me first", "preview", "dry run"). If this run has no way to get an answer back, hand over the batch rather than applying it. Apply only what is approved.
+**Stop and show the batch instead, and wait for approval,** only when the caller asked to see it first ("show me first", "preview", "dry run"). If this run has no way to get an answer back, hand over the batch rather than applying it.
 
-```markdown
-## Fixed / Already resolved
-- **{author}** - `file:line` _(verified | probable)_
-
-  Comment: "{quoted comment}"
-
-  Fix: [diff, or `None needed`]
-
-  Reply: "{short reply text}"
-
-  Thread: resolve | leave open for {author}
-
-## Not applicable
-- **{author}** - `file:line`
-
-  Comment: "{quoted comment}"
-
-  Reply: "{short reply text}"
-
-## Deferred
-- **{author}** - `file:line`
-
-  Comment: "{quoted comment}"
-
-  Route: issue "{title}" | PR body - {why it is too big or important}
-
-  Reply: "{short reply text}"
-
-## Open question
-- **{author}** - `file:line`
-
-  Comment: "{quoted comment}"
-
-  Reply: "{the question as it would be posted}"
-
-## Unsettled
-- **{author}** - `file:line`
-
-  Comment: "{quoted comment}"
-
-  Missing: what is needed to settle it, or what failed
-```
+Show it in the shape of [references/preview.md](references/preview.md). Apply only what is approved.
 
 ## 7 - Apply
 
