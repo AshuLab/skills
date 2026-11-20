@@ -1,6 +1,6 @@
 ---
 name: land
-description: Merge a finished epic once a human has reviewed it - its integration PR - then close what the drain left open: epic branch, worktree, epic issue, slice branches. Counterpart to ship - ship carries work to one reviewable thing, land puts it in. Invoked by a person who has read and accepts the feature; never decides that itself.
+description: Merges a finished epic's integration PR once a person has reviewed it, then cleans up what the drain left - worktrees, epic and slice branches, the epic issue. Never decides acceptance itself.
 ---
 
 # land - put the epic in
@@ -17,7 +17,7 @@ description: Merge a finished epic once a human has reviewed it - its integratio
   Check first    1  still applies to destination   git merge-tree  (exit 0/1)
                  2  merge commits allowed           gh repo view  (stop if not - no squash)
                  3  it IS the integration PR        head=epic, base=destination
-                 4  every slice closed              sub-issues empty / DoD boxes + suite
+                 4  every slice closed              sub-issues empty + suite green
                  5  mergeable                       runs in Merge it - PR must be un-drafted first
      |
   -> show the plan, wait for a yes ->
@@ -44,7 +44,7 @@ An epic as a number, a branch, a PR URL, or just a feature name. Resolve it to t
 
 ## Check first
 
-Each blocks the merge: report the failure and stop, never work around one. **Run 1-4 in order** - cheapest first, each can moot the rest: 1-3 are a `merge-tree` and two `gh` calls; gate 4 reads every ticket and runs the suite twice. Gate 5 runs later - it explains why.
+Each blocks the merge: report the failure and stop, never work around one. **Run 1-4 in order** - cheapest first, each can moot the rest: 1-3 are a `merge-tree` and two `gh` calls; gate 4 queries the sub-issues and runs the suite - twice if it fails. Gate 5 runs later - it explains why.
 
 1. **Still applies to the destination.** Epics share a base and never rebase, so a sibling that landed first can collide here - undetected by either drain, both reporting success. `git fetch`, then `git merge-tree --name-only origin/<destination> origin/<epic-branch>`: **exit 0 clean, exit 1 conflict**; printed names are the files - don't read stdout for the verdict, it prints a tree OID either way.
    **exit 1, empty stdout, `not something we can merge` on stderr is neither** - a ref failed to resolve (wrong `<destination>`/`<epic-branch>`, or a name `git fetch` never created): re-check the names, don't call it a conflict.
@@ -60,7 +60,7 @@ Each blocks the merge: report the failure and stop, never work around one. **Run
 5. **Mergeable.** Doesn't run here - it needs a non-draft PR, and `ship` leaves one drafted; checking a draft always reports `mergeStateStatus: BLOCKED`, failing every healthy epic. Runs inside *Merge it*, right after `gh pr ready`.
    `gh pr view <pr> --json state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,reviewDecision`. Require: `state` `OPEN`, `mergeable` `MERGEABLE`, `mergeStateStatus` `CLEAN`, `reviewDecision` not `CHANGES_REQUESTED`, every `statusCheckRollup` conclusion `SUCCESS`/`NEUTRAL`/`SKIPPED`. Red check stops, doesn't just warn.
 
-Then **show the plan and wait for a yes**: the PR, the merge method, and every branch/worktree *Close it out* will delete - the merge is irreversible and public, and invoking `land` isn't consent for the specifics. No way to get an answer -> stop and hand over the plan; never take silence as approval.
+Then **show the plan and wait for a yes**: the PR, the merge method, and every branch/worktree *Close it out* will delete - the merge is irreversible and public, and invoking `land` isn't consent for the specifics. Add what the review left open on the PR: unresolved review threads, and the body's **Unresolved slice checks** and `code-resolve` deferred sections - listed, not gated; whether they block is the human's call. No way to get an answer -> stop and hand over the plan; never take silence as approval.
 
 ## Merge it
 

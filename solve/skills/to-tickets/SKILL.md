@@ -25,6 +25,16 @@ Wide refactors are the exception: sequence them expand-contract - add the new pa
 Spikes and enabling chores are the other exception - a spike answers an open question, a chore unblocks later slices; neither demos on its own, and that's fine.
 Give each a verifiable done (findings recorded, the enablement in place) and keep them rare.
 
+## Check each slice's blast radius
+
+Cutting the spec gives each slice its scope; the code decides what that scope drags along. A spec describes the feature, not everything in the repo coupled to it - so after the cut and before you show the draft, check every slice against the code it will touch, so it never lands half-done.
+Two directions, whichever the slice involves:
+- **It adds one more of something the repo already has** - find the closest existing instance and follow it out: every place it is registered, listed, configured, wired or tested is a place the new one has to reach too.
+- **It changes something that exists** - follow what depends on it: callers, consumers, contracts, persisted data, anything that reads what this slice will change.
+Whatever has to move for the change to be complete belongs in this slice, as observable boxes in its definition of done - named by the behavior they produce, not the files they touch. Split it out only if it stands on its own as a slice; never leave it implicit for the agent to stumble on.
+Nothing to follow - the slice introduces the first of its kind - say so in the draft: that's usually the hidden-infrastructure trap above, and an enabling chore.
+A touchpoint that needs a product call isn't yours to settle - it goes back to the spec, like any box smuggling a decision.
+
 ## Ticket format (fixed)
 
 ```markdown
@@ -68,7 +78,8 @@ It's what a from-scratch, unattended agent leans on hardest - but if the spec al
 
 ## Before publishing
 
-Draft the slice list and show it - granularity and blocking edges laid out - then adjust from the reply; never publish off a first guess.
+Before showing the draft, check coverage both ways: every user story in the spec's Scope lands in at least one slice, and every slice traces to a story or is a named spike/chore. A story with no slice is a gap; a slice with no story is scope the spec never asked for.
+Draft the slice list and show it - granularity, blocking edges, the story -> slices mapping, and what each slice's blast radius added beyond the spec - then adjust from the reply; never publish off a first guess. A re-cut re-runs the blast-radius check on the slices it changed.
 Check for **shared-point contention** across slices that have no blocker between them: if several slices in the draft will add entries to the same shared list, registry, enum, or switch, weigh whether a small enabling chore upfront (introducing the extensible seam or per-item files) or an explicit `Blocked by` edge to serialize them beats putting them in parallel to collide on the same lines.
 Only use a closed-choice UI when you're genuinely torn between two concrete cuts (e.g. 3 slices vs 5), each a real option; otherwise show the draft in prose and wait.
 

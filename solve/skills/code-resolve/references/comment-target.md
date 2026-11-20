@@ -13,14 +13,6 @@ Collect before verifying comments:
 - The current head commit - verify against this, not the commit the comment was originally left on.
 - The identity this run posts as, to compare with the PR's author. Replies, commits and pushes all go out as that identity.
 
-## Interpretation
-
-**Current code, not the comment's snapshot.** A comment references a diff hunk at the time it was written; the file may have moved since. Locate the equivalent code today by content, not only by the original line number - line numbers shift with every commit.
-
-**Resolved is a claim, not a fact.** A thread marked resolved with no corresponding code change is a comment that was dismissed, not addressed. Flag it like any other comment.
-
-**Stale in either direction.** A commit after the comment can fix it, or can reintroduce the same issue elsewhere. Check both.
-
 ## CLI fallback
 
 Use these only when `gh` is available; an integration or API returning equivalent fields is equally valid.

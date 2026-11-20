@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Adversarially reviews a pull request, local branch, supplied diff, file, or directory against three independent axes: intent, repository standards, and risk - plus a fourth, user experience and accessibility, when the change touches user-facing UI. Works on code, schemas, config, migrations, docs, specs, and prompts. Returns evidence-backed findings with severity and certainty; it never publishes them. Run again on a PR with open threads and new commits, it re-reviews instead - verifying each thread against the fixes. Use for PR review, branch review, pre-PR checks, re-review after fixes, or when given a GitHub pull-request URL."
+description: "Adversarially reviews a PR, branch, diff or path on intent, repo standards and risk - plus UX/accessibility when the diff has UI - and returns evidence-backed findings without publishing them. On a PR with open threads, re-reviews them against the fixes."
 ---
 
 # code-review - Adversarial Change Review
@@ -52,7 +52,7 @@ The guides describe required information. Their commands are examples, not part 
 
 ## Re-review
 
-A pull request that already carries open threads from an earlier pass - yours or anyone's - and has new commits since is a re-review, not a fresh review. Say so, and run this instead of steps 2-5:
+A pull request that already carries open threads from an earlier pass - yours or anyone's - and has new commits or replies since is a re-review, not a fresh review. Say so, and run this instead of steps 2-5:
 
 - For each open thread, read the author's reply and the commits since, against the **current** code. Verdict: **Fixed** (verified) | **Not fixed** | **Reply accepted** (the author's reasoning holds) | **Reply rejected** (one line why).
 - Fixed or Reply accepted -> propose closing the thread. Not fixed or Reply rejected -> propose a reply, and keep it open.
