@@ -99,7 +99,7 @@ Once every comment has a draft outcome, look at them together - the same way a h
 
 With the outcomes settled, **apply them straight away** (step 7).
 
-**Stop and show the batch instead, and wait for approval,** only when the caller asked to see it first ("show me first", "preview", "dry run"). If this run has no way to get an answer back, hand over the batch rather than applying it. Show it in the step 7 summary shape, with each reply's text and the fix diff. Apply only what is approved.
+**Stop and show the batch instead, and wait for approval,** only when the caller asked to see it first ("show me first", "preview", "dry run"). If this run has no way to get an answer back, hand over the batch rather than applying it.
 
 Show it in the shape of [references/preview.md](references/preview.md). Apply only what is approved.
 
