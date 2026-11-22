@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.31.0
+
+- `vocab`: **the glossary and the ADRs are sorted by topic, so no single file grows without bound.** The model picks the topic - a short name for an area of the domain, reusing a folder that already fits and creating one only when none does - and files both artifacts under it: `docs/glossary/<topic>.md` and `docs/adr/<topic>/NNNN-title.md`, one taxonomy for both. `docs/glossary.md` and the new `docs/adr/README.md` become indexes (a line per topic, a line per ADR) that `vocab` keeps in step and readers open first. ADR numbers stay global. New: look the term up before adding it, prune a term whose concept is gone, merge thin topics, and supersede an ADR instead of deleting it. A repo that predates topics keeps its ADRs where they are (indexed under their topic); its inline glossary is sorted into topic files the first time `vocab` touches it.
+- `ship`: the pre-flight accepts new *or modified* files under `docs/adr/` and `docs/glossary/` as solve's own output - an index or a superseded ADR is a modified tracked file, which used to read as unaccounted-for dirt and stop the drain.
+- `sharpen`: reads `vocab`'s indexes and opens only the topic or ADR that bears on the idea, and files its trail under topics. `setup`'s `solve-flow.md` template names the new artifact layout; a repo set up before keeps working and picks it up on the next `setup`.
+- This repo's own two ADRs and ten glossary terms are sorted into topics (`ship`, `tracker`, `tickets`), with their references updated.
+
 ## solve 0.30.0
 
 - `to-tickets`: **each slice is checked against the code it touches before the draft is shown.** A new *Check each slice's blast radius* step follows the closest existing instance of what a slice adds, and whatever depends on what it changes, and folds what has to move into the slice's definition of done as observable boxes - so a slice doesn't land half-done because the spec never named a registry, listing or consumer. *Before publishing* also checks coverage both ways (every Scope story lands in a slice; every slice traces to a story or a named spike/chore), and the draft shows the story -> slices mapping and what the blast radius added.

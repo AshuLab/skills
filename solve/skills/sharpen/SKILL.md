@@ -25,7 +25,7 @@ Those questions are branches; ask whether the root holds before you close any of
 A 30-second gate, not an analysis: does this already exist?
 Two searches, one answer -
 - **the code** - a grep / search: is the feature already built, whole or in part?
-- **the docs** - specs, ADRs, notes (including this flow's own `docs/specs/` and `docs/adr/`): is the idea already written down, decided, or specced?
+- **the docs** - specs, ADRs, notes (including this flow's own `docs/specs/`, `docs/adr/` and `docs/glossary.md`): is the idea already written down, decided, or specced? Read `vocab`'s indexes first and open only the topic or ADR that bears on it.
 
 Already there -> stop.
 Don't sharpen a solved problem; the real issue is discoverability, or a gap in the existing thing (sharpen *that*).
@@ -47,9 +47,9 @@ However the idea arrived - an issue, a doc, a line of text - the root is what ac
 The Direction you write is whatever the pruning left: the smallest change that resolves that problem.
 
 **The trail is part of the job, not a bonus.**
-As the thinking settles: every clarified term -> the **glossary** at `docs/glossary.md`, every decision that meets `vocab`'s three-part test (hard to reverse, surprising, a real trade-off) -> an **ADR** at `docs/adr/NNNN-title.md`.
+As the thinking settles: every clarified term -> the **glossary**, every decision that meets `vocab`'s three-part test (hard to reverse, surprising, a real trade-off) -> an **ADR**, both filed under a topic and indexed as `vocab` lays out (`docs/glossary/<topic>.md`, `docs/adr/<topic>/NNNN-title.md`).
 Don't ADR every call - most aren't.
-Both formats are `vocab`'s, not this skill's - the entry shape, the `_Avoid_` line, the ADR's four sections - so open it rather than improvising them; a trail written to invented paths in an invented shape is one nobody finds later.
+Both formats are `vocab`'s, not this skill's - the topic choice, the indexes, the entry shape, the `_Avoid_` line, the ADR's four sections - so open it rather than improvising them; a trail written to invented paths in an invented shape is one nobody finds later.
 The brief is a summary; the glossary and the ADRs are the record, so letting this slide loses the part that outlives the session.
 
 ## When you stop

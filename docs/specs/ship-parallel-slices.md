@@ -2,7 +2,7 @@
 
 Status: spec
 
-Local mode, described throughout below as a live alternative, was removed by [ADR 0002](../adr/0002-github-becomes-solves-only-tracker-mode.md) - this spec is a historical record of what PR #4 shipped, not current behavior for that axis.
+Local mode, described throughout below as a live alternative, was removed by [ADR 0002](../adr/tracker/0002-github-becomes-solves-only-tracker-mode.md) - this spec is a historical record of what PR #4 shipped, not current behavior for that axis.
 
 ## Problem
 
@@ -16,7 +16,7 @@ Separately, when an epic's dependency graph is wide - several hub slices startab
 On top of that, `ship` gains parallel batch dispatch: each round of a github-mode drain takes up to 3 of the currently-startable hub slices at once as concurrent delegated builds - even a single one, so a freed lane can be reused instead of always building fresh. Local mode is excluded - claiming a ticket there is just opening its file, not atomic, so two concurrent claims on the same local epic aren't safe; local epics still get delegated build (the context fix), just not concurrent dispatch. The draining agent still serializes the actual merge of each finished slice into the epic branch one at a time, never in parallel - a parallel batch changes when slices *build*, not the order they *land*.
 Worktree isolation follows the same split: today's one-worktree-per-epic model holds for local mode; every github-mode drain, batch of one or more, keeps that epic worktree and adds up to 3 lane worktrees alongside it - slots, not per-slice throwaways, that persist across the whole drain instead of being torn down per occupant. Mechanics are in [WORKTREES.md](../../solve/skills/ship/WORKTREES.md) -> *Lane worktrees, for a parallel batch*.
 A partial failure inside a parallel batch doesn't discard sibling work: slices that finished cleanly still merge into the epic branch, and the drain halts to surface the one that failed - same as today's single-failure-halts-the-drain rule, but the successful siblings' work stands rather than being rolled back.
-Full reasoning and the alternatives weighed are in [0001-parallel-slice-draining-in-ship.md](../adr/0001-parallel-slice-draining-in-ship.md).
+Full reasoning and the alternatives weighed are in [0001-parallel-slice-draining-in-ship.md](../adr/ship/0001-parallel-slice-draining-in-ship.md).
 
 ## Scope
 
@@ -28,7 +28,7 @@ Full reasoning and the alternatives weighed are in [0001-parallel-slice-draining
 
 ## Decisions
 
-Design and alternatives: [0001-parallel-slice-draining-in-ship.md](../adr/0001-parallel-slice-draining-in-ship.md).
+Design and alternatives: [0001-parallel-slice-draining-in-ship.md](../adr/ship/0001-parallel-slice-draining-in-ship.md).
 
 **Claim ordering in a batch** - each dispatched subagent claims its own slice as the first step of its delegated lifecycle (the existing "Claim it" step, unmodified), rather than the draining agent claiming all batch members upfront before dispatch. Reusing the existing per-slice lifecycle as-is, inside the subagent, is the smaller and more consistent change than adding a new batch-claim step to the draining agent.
 

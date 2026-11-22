@@ -6,7 +6,7 @@ When one member of a parallel batch fails or is blocked, the batch members that 
 
 ## Context
 
-docs/specs/ship-parallel-slices.md#solution (Scope story 5), docs/adr/0001-parallel-slice-draining-in-ship.md. Replaces 002's conservative halt-before-merging-any behavior.
+docs/specs/ship-parallel-slices.md#solution (Scope story 5), docs/adr/ship/0001-parallel-slice-draining-in-ship.md. Replaces 002's conservative halt-before-merging-any behavior.
 
 ## Definition of done
 
