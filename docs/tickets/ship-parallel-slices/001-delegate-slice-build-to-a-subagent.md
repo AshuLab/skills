@@ -6,7 +6,7 @@ Ship's per-slice build (claim through Close the loop's steps 1-3: commit, push, 
 
 ## Context
 
-docs/specs/ship-parallel-slices.md#solution (Scope story 1), docs/glossary.md - delegated build, docs/adr/0001-parallel-slice-draining-in-ship.md.
+docs/specs/ship-parallel-slices.md#solution (Scope story 1), docs/glossary.md - delegated build, docs/adr/ship/0001-parallel-slice-draining-in-ship.md.
 
 ## Definition of done
 

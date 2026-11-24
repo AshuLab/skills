@@ -15,7 +15,7 @@ This is not "github becomes mandatory config": absent `docs/agents/solve.md`, sk
 `/solve:setup` stays a real, optional skill. It loses its "pick a tracker" question (today's step 2), but keeps everything else: git/gh version gates, upfront label creation, and its still-genuine value - writing `docs/agents/solve.md`'s Branching/Worktrees sections with the repo's actual values instead of every skill re-inferring defaults fresh on every run.
 GitHub UI scope stays what github mode already used: issues, PRs, labels, milestones - explicitly not Projects v2, already ruled out and marked moot in this repo's own CHANGELOG under solve 0.11.2, not reopened here.
 The worktree on/off axis is orthogonal to tracker mode and is untouched by this change.
-Full reasoning and the alternatives weighed are in [0002-github-becomes-solves-only-tracker-mode.md](../adr/0002-github-becomes-solves-only-tracker-mode.md).
+Full reasoning and the alternatives weighed are in [0002-github-becomes-solves-only-tracker-mode.md](../adr/tracker/0002-github-becomes-solves-only-tracker-mode.md).
 
 ## Scope
 
@@ -28,7 +28,7 @@ Full reasoning and the alternatives weighed are in [0002-github-becomes-solves-o
 
 ## Decisions
 
-Design and alternatives: [0002-github-becomes-solves-only-tracker-mode.md](../adr/0002-github-becomes-solves-only-tracker-mode.md).
+Design and alternatives: [0002-github-becomes-solves-only-tracker-mode.md](../adr/tracker/0002-github-becomes-solves-only-tracker-mode.md).
 
 **Versioning** - ship as a minor version bump with an explicit "Breaking:" tag in the CHANGELOG entry, not a jump to 1.0 - matches this repo's own precedent (CHANGELOG 0.12.0 shipped two Breaking-tagged changes inside a 0.x minor bump).
 

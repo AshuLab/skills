@@ -88,7 +88,7 @@ When nobody can answer: `code-post`, `file-issue`, `land` and `diagnose` stop an
 
 ## Where things live
 - PRDs / specs -> `docs/specs/`
-- Glossary + ADRs -> `docs/glossary.md`, `docs/adr/` (always files)
+- Glossary -> `docs/glossary.md` (index) and `docs/glossary/<topic>.md`; ADRs -> `docs/adr/README.md` (index) and `docs/adr/<topic>/` - topics are chosen by `vocab`, always files
 - Tickets -> GitHub Issues
 
 What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-spec` the PRD, published as the epic issue -> `to-tickets` one sub-issue per slice -> `ship` a PR per slice, then one draft integration PR -> `land` the merge.

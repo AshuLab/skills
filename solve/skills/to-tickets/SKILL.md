@@ -44,7 +44,7 @@ A touchpoint that needs a product call isn't yours to settle - it goes back to t
 One sentence: what this slice delivers.
 
 ## Context
-Links to the spec section + relevant ADRs / glossary terms - reference, don't restate.
+Links to the spec section + relevant ADRs / glossary terms (the ADR file, or the term's topic file - found through `vocab`'s indexes) - reference, don't restate.
 
 ## Definition of done
 - [ ] <observable outcome the slice must show>
@@ -99,7 +99,7 @@ Every slice gets `solve:ticket` + `solve:refined` at publish - **blocked or not*
 
 ## Hand off the epic
 
-The last step, run in this same tree and session: the design artifacts (spec, ADRs, glossary edits) are untracked files that exist only where `sharpen`, `to-spec` and `vocab` wrote them, and the remote is the only place an orchestrator on another clone can read them. The happy path has no confirmation gate - those files were already approved at `to-spec` and above; only a deviation (below) stops and waits.
+The last step, run in this same tree and session: the design artifacts (spec, ADRs, glossary edits, their indexes) are uncommitted files that exist only where `sharpen`, `to-spec` and `vocab` wrote them, and the remote is the only place an orchestrator on another clone can read them. The happy path has no confirmation gate - those files were already approved at `to-spec` and above; only a deviation (below) stops and waits.
 
 1. **Find the artifacts** with the classification in `ship`'s *Clean the tree, cut the epic branch* - its *epic-level design artifacts* case (spec, ADRs, glossary edits); reference it, don't restate it or invent another. The repo's own config (`AGENTS.md` / `CLAUDE.md`, `docs/agents/solve.md`, `docs/agents/solve-flow.md`) is that section's other case: not an artifact here, it stays loose. Note the branch you are on.
 2. **Resolve `<feature>` once**: slugify this epic issue's title exactly as `ship`'s *Build it* does. `<epic-branch>` is then the exact name `docs/agents/solve.md` -> **Branching** gives for that `<feature>`, never a pattern match over the remote's branches: another epic's branch must not read as this one's. Never re-slugify.

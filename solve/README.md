@@ -130,8 +130,10 @@ The skills describe capabilities instead of provider tool names, so each harness
 docs/
   agents/solve.md      <- setup: tracker, branching, worktrees for THIS repo (CLAUDE.md/AGENTS.md points here)
   agents/solve-flow.md <- setup: the flow, who does what, when to use each skill (CLAUDE.md/AGENTS.md points here)
-  glossary.md          <- vocab
-  adr/NNNN-title.md    <- vocab
+  glossary.md          <- vocab: index, one line per topic
+  glossary/<topic>.md  <- vocab: the terms of one topic
+  adr/README.md        <- vocab: index of ADRs, grouped by topic
+  adr/<topic>/NNNN-title.md <- vocab: one ADR, numbered globally
   specs/<feature>.md   <- sharpen (brief) -> to-spec (PRD, also published as the epic issue)
   research/<topic>.md  <- research: findings, every claim cited
 ```
@@ -144,7 +146,7 @@ Epics and tickets are GitHub Issues, not files:
 - `to-tickets` ends with the **hand-off**: it cuts the epic branch, commits the design artifacts (spec, ADRs, glossary edits) as its first commit, pushes it, switches back to the branch you were on, and labels the epic `solve:epic:ready`. Something that runs the epic from another clone finds the artifacts on the remote.
 - Four labels track an epic's state, and each has one owner. Solve sets `solve:epic:ready` (end of `to-tickets`; `setup` creates it). The external orchestrator that reads `ready` and runs the epic sets, and creates if missing, the other three: `solve:epic:running`, `solve:epic:needs-human` and `solve:epic:ready-for-test`.
 - `file-issue` publishes a raw issue (`solve:raw`) - a finding parked for later, not a ticket; `sharpen` picks it up.
-- `vocab` (glossary, ADRs) always stays as files - they're docs, not work items.
+- `vocab` (glossary, ADRs) always stays as files - they're docs, not work items. It sorts both by topic, picked from the folders already there, and keeps an index per artifact so a reader opens only the part that matters; the files stay small as the project grows.
 
 A **GitHub remote is required**: branches get pushed, bases resolve from `origin/`, issues and PRs live in that repo, and no branch is ever deleted without checking the merge against its remote ref first.
 
