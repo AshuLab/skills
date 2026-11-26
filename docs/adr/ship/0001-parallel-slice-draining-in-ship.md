@@ -2,6 +2,7 @@
 
 - Status: accepted
 - Date: 2026-09-14
+- Amended by [0004](0004-epics-drain-in-the-shared-tree-worktrees-are-lanes-only.md): the per-epic worktree in *Worktree isolation* is gone; lane worktrees stand.
 
 ## Context
 

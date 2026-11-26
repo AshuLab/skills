@@ -106,7 +106,7 @@ The last step, run in this same tree and session: the design artifacts (spec, AD
 3. **Cut the branch** with the **start the epic branch** operation from `docs/agents/solve.md` -> **Branching** (**no such file** -> `setup/REFERENCE.md`'s **Branching operations**, same one-line note as for tracker operations), not a `git switch -c` of your own. The artifacts ride across the switch.
 4. **Commit by path**: `git add -- <artifact paths>`, then `git commit -m "<feature>: design artifacts" -- <artifact paths>` - nothing else loose comes along, and this is the branch's first commit. Then `git push`.
 5. **Verify the push**: `git ls-remote origin <epic-branch>` returns the commit you just made (`git rev-parse HEAD`). Until it does, nothing below happens.
-6. **Switch back** to the branch you started on. The epic branch is never left checked out (`ship` may need it for the epic's worktree, and git refuses a second checkout), and the artifacts are no longer loose in the tree.
+6. **Switch back** to the branch you started on. The epic branch is never left checked out: the tree goes back to the branch you picked, not one the hand-off chose for you (`ship` checks the epic branch out itself when it drains), and the artifacts are no longer loose in the tree.
 7. **Mark it ready**: if the epic issue is still open, `gh issue edit <epic> --add-label solve:epic:ready` (harmless to repeat). A missing label is reported with a pointer to `/solve:setup` - never created here; the branch is already pushed.
 
 Re-running is safe, and each case is decided before touching anything:

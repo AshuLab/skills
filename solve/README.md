@@ -33,12 +33,12 @@ The examples below use Claude Code's `/solve:<name>` syntax. The native Codex pl
 
 Restart the session so the skills load, then:
 
-1. **`/solve:setup`** - optional: creates the `solve:*` labels up front and lets you turn on worktree isolation so concurrent epics don't collide in one working tree. Skip it and the labels get created lazily on first use, in a single working tree, no config to maintain - except `solve:epic:ready`, which is never created lazily: `to-tickets` reports it missing and points you back at `/solve:setup`. Run it and it also writes `docs/agents/solve.md` (tracker, branching, worktrees) and `docs/agents/solve-flow.md` (the flow). Either way the repo needs a GitHub remote.
+1. **`/solve:setup`** - optional: creates the `solve:*` labels up front and lets you choose how slices are delivered (a PR each, or a local merge) and where a parallel batch's lane worktrees go and how they boot. Skip it and the labels get created lazily on first use, with default lane settings, no config to maintain - except `solve:epic:ready`, which is never created lazily: `to-tickets` reports it missing and points you back at `/solve:setup`. Run it and it also writes `docs/agents/solve.md` (tracker, branching, lane worktrees) and `docs/agents/solve-flow.md` (the flow). Either way the repo needs a GitHub remote.
 2. **`/solve:sharpen <your idea>`** - it checks the thing isn't already built, captures the thinking as it settles, and leaves a brief at `docs/specs/<feature>.md`. A raw idea gets grilled first - `sharpen` invokes `/follow:pushback` for that (install `follow`, or it walks the questions itself).
 3. **`/solve:to-spec`** - turns that brief into a PRD, deciding where each story gets tested, and publishes it as the epic issue.
 4. **`/solve:to-tickets`** - cuts the PRD into vertical slices, each with a definition of done and its blocking edges. Its last step is the **hand-off**: it puts the epic branch on the remote with the design artifacts as its first commit, switches the tree back to where it was, and marks the epic `solve:epic:ready`.
 5. **`/solve:ship <ticket>`** - claims it, builds it, closes the loop. Hand it the **epic** instead and it drains every slice in dependency order, unattended.
-6. **`/solve:land <epic>`** - after *you* read the integration PR and accept it: merges it and closes out everything the drain left open (epic branch, worktree, epic issue). `ship` deliberately stops short of this; `land` is where a person says go.
+6. **`/solve:land <epic>`** - after *you* read the integration PR and accept it: merges it and closes out everything the drain left open (lane worktrees, epic branch, epic issue). `ship` deliberately stops short of this; `land` is where a person says go.
 
 Not sure which step you're on?
 **`/solve:guide`**.
@@ -51,7 +51,7 @@ Just want to be grilled about something, with nothing written down afterwards?
 guide | router - tells you which skill to reach for
 
 Setup (once per repo, optional; safe to run again)
-  | setup - create the solve labels, turn on worktree isolation if you want it, and write
+  | setup - create the solve labels, set the lane-worktree path and bootstrap, and write
       docs/agents/solve.md + solve-flow.md
 
 Main flow | idea -> shipped
@@ -64,7 +64,7 @@ Main flow | idea -> shipped
       hand-off: epic branch on the remote with the design artifacts, epic marked ready
     | ship - carry a ticket to done (claim, build, close the loop), or drain a whole epic
     | land - you've read the integration PR and accept it: merge it and close out the
-      epic branch, its worktree, the epic issue. The one step a human starts.
+      lane worktrees, the epic branch, the epic issue. The one step a human starts.
   -> build the middle freely, or hand it to a specialized skill; reach for
     tdd / code-review / code-resolve when they earn it
 
@@ -128,7 +128,7 @@ The skills describe capabilities instead of provider tool names, so each harness
 
 ```
 docs/
-  agents/solve.md      <- setup: tracker, branching, worktrees for THIS repo (CLAUDE.md/AGENTS.md points here)
+  agents/solve.md      <- setup: tracker, branching, lane worktrees for THIS repo (CLAUDE.md/AGENTS.md points here)
   agents/solve-flow.md <- setup: the flow, who does what, when to use each skill (CLAUDE.md/AGENTS.md points here)
   glossary.md          <- vocab: index, one line per topic
   glossary/<topic>.md  <- vocab: the terms of one topic
@@ -151,7 +151,8 @@ Epics and tickets are GitHub Issues, not files:
 A **GitHub remote is required**: branches get pushed, bases resolve from `origin/`, issues and PRs live in that repo, and no branch is ever deleted without checking the merge against its remote ref first.
 
 Also:
-- **Worktree isolation is on-demand.** By default `ship` works in the shared tree, but any epic can be isolated in its own git worktree (`~/.solve/worktrees/<repo>/<feature>/` by default) on request - and `ship`'s start-of-run pre-flight offers exactly that when it finds a dirty shared tree. Flip `setup` to `on` and every epic gets one automatically, so two can drain at once without colliding. The location is declared once in `docs/agents/solve.md`, never decided per run - `ship` derives the path from it and reuses the worktree if it's already there. It never removes one: it doesn't merge the integration PR, so it can't know when the branch is safe to drop - instead it names the path and the `git worktree remove` in that PR's body, for `land`, which removes it after the merge.
+- **Slice delivery is a mode: `github` or `local`.** Default `github`: each slice is its own PR, merged server-side. `local` skips the slice PRs - `ship` merges each slice into its base with a merge commit and pushes only the epic branch - for repos where a CI run per slice is the cost. Issues, the epic branch and the integration PR stay on GitHub in both. Each mode is one whole file of `ship` (`SLICES-GITHUB.md`, `SLICES-LOCAL.md`), read instead of the other.
+- **Epics drain in the shared tree; only a parallel batch uses worktrees.** `ship` builds up to 3 slices at once, each in its own **lane** worktree (`~/.solve/worktrees/<repo>/<feature>--lane-<N>/` by default), parked between slices and reused round after round. The location and the bootstrap command are declared once in `docs/agents/solve.md`, never decided per run. Two epics don't drain in one clone - the pre-flight stops on a dirty shared tree, so use another clone for the second. `ship` never removes a lane: it doesn't merge the integration PR, so it can't know when one is safe to drop - instead it names each lane's path and `git worktree remove` in that PR's body, for `land`, which removes them after the merge.
 - `code-review` and `diagnose` don't persist a file - their output is thinking or feedback, not an artifact. `code-resolve` writes to the PR itself: replies, a summary comment, a section of the description, and an issue when a comment is out of scope. `code-post` is what turns a review's findings into PR comments, a ticket or an ADR when they deserve one. A diagnosis that surfaces a design gap becomes an ADR or a ticket via `vocab`.
 - **Agent scratch** - repro scripts, intermediate output, HTML reports, throwaway drafts - goes to `$TMPDIR`, never the repo. A repro script worth keeping becomes a regression test, not a loose file.
 

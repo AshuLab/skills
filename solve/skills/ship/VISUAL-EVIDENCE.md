@@ -25,7 +25,7 @@ Neither shot touches a tree you're working in. Both are exports of an exact comm
 - **Baseline** - `git merge-base origin/<epic> origin/<destination>`, derived from git, not remembered. It is the "before" the integration PR's own diff is measured from: if the base was merged into the epic mid-drain it moves with it, so the base's UI changes aren't credited to this epic.
 - **After** - `origin/<epic>` as it stands.
 
-For each: `git archive <sha> | tar -x -C <scratch dir>`, link the gitignored config the app boots on from the epic's tree (`.env*`, never copy - [WORKTREES.md](./WORKTREES.md) -> *Making it runnable*), install, start the app, capture. Put the PNGs in a scratch dir **outside** any repo, named `<view>-before.png` / `<view>-after.png`. Delete the exports when you're done.
+For each: `git archive <sha> | tar -x -C <scratch dir>`, link the gitignored config the app boots on from the shared tree (`.env*`, never copy - [WORKTREES.md](./WORKTREES.md) -> *Making it runnable*), install, start the app, capture. Put the PNGs in a scratch dir **outside** any repo, named `<view>-before.png` / `<view>-after.png`. Delete the exports when you're done.
 
 Do it in a subagent: screenshots and server logs are exactly the bulk the draining agent's context shouldn't carry. It returns the list of view, state and file paths, and anything it couldn't capture.
 

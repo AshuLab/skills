@@ -1,78 +1,18 @@
-# Creating a worktree
+# Lane worktrees
 
-How to stand one up - whether you need one at all is the call of *Pick the tree* in `SKILL.md`.
+How a parallel batch stands up its worktrees. An epic never gets one of its own - it drains in the shared tree (*Pick the tree* in `SKILL.md`); the only worktrees `ship` creates are the lanes below.
 
 ## The path
 
-From **Worktrees** in `docs/agents/solve.md` - default `~/.solve/worktrees/<repo>/<feature>/`, `<repo>` being the repository directory's name. Both segments earn their place: `<feature>` keeps two epics in one repo apart, `<repo>` keeps the same feature name in two repos apart. A configured path dropping `<repo>` collides across repos, and the collision looks exactly like another agent holding your epic.
+From **Worktrees** in `docs/agents/solve.md` - default `~/.solve/worktrees/<repo>/<feature>/`, `<repo>` being the repository directory's name. A lane is that path with `<feature>` replaced by `<feature>--lane-<N>`. Both segments earn their place: `<feature>` keeps two epics in one repo apart, `<repo>` keeps the same feature name in two repos apart. A configured path dropping `<repo>` collides across repos, and the collision looks exactly like another agent holding your lane.
 
-`<feature>` is the epic's token, fixed once for the whole epic (*Build it*) - never re-slugify it here.
-
-## Carrying loose work across
-
-Only for work **you** left in the shared tree this run - *Pick the tree* in `SKILL.md` has the rule. Someone else's uncommitted work isn't yours to move, and `git stash` is one stack shared by every worktree, so two runs stashing at once pop each other's entries.
-
-A worktree is cut from *committed* state, so loose work stays behind - and `git stash` only sees the tree you're standing in. Run this order from the shared tree:
-
-1. **Sort what's dirty** into the four cases *Clean the tree, cut the epic branch* defines in `SKILL.md`: epic-level design artifacts, work belonging to the slice you're about to build, the repo's own config, unrelated strays.
-2. **Stash the first two by path** - `git stash push -u -- <paths>` - commit the config on the base branch, leave the strays. Bare `git stash -u` sweeps the strays in too - they end up committed on the epic branch, in the base of every PR. Miss a path and that work is silently abandoned in the shared tree.
-3. **Create the worktree** (below), then **pop there** - the stash is shared across worktrees.
-
-## Reuse before you create
-
-`git worktree list` first, compare against the derived path.
-**If it's already there, it's yours** - from an earlier slice or a halted drain. Use it; skip to *Making it runnable* only if the install is missing. `git worktree add` reports an already-checked-out branch identically whether it's another agent's or your own, so skipping this check reads your own worktree as a collision and halts a resumable drain.
-
-## Creating it
-
-Only once the path isn't in `git worktree list`. Run **exactly one** of A or B - they're alternatives, not a sequence.
-
-**A - the epic branch already exists:**
-
-```
-git fetch
-git worktree add <path> <epic-branch>
-git -C <path> pull
-```
-
-`git worktree add` resolves the **local** epic ref, which is stale after every server-side merge - hence the fetch and the pull.
-
-**B - it doesn't exist yet** (the epic's first slice):
-
-```
-git fetch
-git worktree add -b <epic-branch> <path> origin/<base>
-git -C <path> push -u origin <epic-branch>
-```
-
-Don't shorten B. The fetch, naming the base, and pushing are the same three rules as *Clean the tree, cut the epic branch* in `SKILL.md`, and `-b` bites harder here: you often arrive standing on **another epic's branch**, so an unnamed base rides its commits into every slice PR. Until you push, `git worktree add -b ... origin/<base>` leaves the branch *tracking `origin/<base>`* - a later `git pull` on the epic branch silently merges the base into it, exit 0.
-
-Failing here because the branch is checked out at a path you *didn't* derive is the real collision signal - another agent holds this epic. Stop and report it; never `--force`, never pick a different path to route around it.
-
-**From here, every command runs inside `<path>`** - pass the path per command (`git -C <path> ...`, the install's own prefix flag) or chain it in the same invocation (`cd <path> && ...`). Never assume a bare `cd` survives to the next command - many runtimes reset the working directory between them, landing the install in the shared tree while every slice in the epic fails its done.
-Git only blocks the shared tree while the worktree holds that exact branch - for most of a drain the worktree sits on a slice branch, so the shared tree silently takes the epic branch.
-
-Once it's up, **record it on the epic issue** with *The record comment* below (the epic variant). (*find a slice's epic* in `docs/agents/solve.md` -> **Tracker operations**.)
-It's the only record spanning the worktree's whole life - a halted drain never opens the integration PR - and the only cross-machine one: a failing `git worktree add` sees only *this* machine.
+`<feature>` is the epic's token, fixed once for the whole epic (*Build it*) - never re-slugify it here. An older `solve.md` may still carry a `**off**` / `**on**` line under **Worktrees**: ignore it, only the path, bootstrap and linked config are read.
 
 ## The record comment
 
-One comment on the epic issue per worktree path, so a halted drain still leaves a trace of where each worktree lives - and on which machine, which a failing `git worktree add` can't see. Write the text into the run's scratch dir (`mktemp -d`) with a file-write tool, never through the shell, and post it with `gh issue comment <epic> --body-file "<dir>/body"` - `gh` without `--body` or `--body-file` opens an interactive prompt that hangs a drain with no output.
+One comment on the epic issue per lane path, so a halted drain still leaves a trace of where each lane lives - and on which machine, which a failing `git worktree add` can't see. Write the text into the run's scratch dir (`mktemp -d`) with a file-write tool, never through the shell, and post it with `gh issue comment <epic> --body-file "<dir>/body"` - `gh` without `--body` or `--body-file` opens an interactive prompt that hangs a drain with no output.
 
-Fill every `<token>` with its real value. The footer stays informational - no cleanup steps: who removes the worktree is `land`'s business and can change, while a posted comment can't. `<user>` is `whoami`, `<host>` is `hostname`, `<os> <arch>` is `uname -sm` - a bare hostname repeats across people and machines.
-
-Epic worktree:
-
-```markdown
-**Epic worktree**
-
-- **Machine:** `<user>@<host>` (<os> <arch>)
-- **Path:** `<path>`
-- **Branch:** `<epic-branch>`
-- **Base:** `<base>`
-
-Created by [`solve:ship`](https://github.com/AshuLab/skills/blob/main/solve/skills/ship/WORKTREES.md) for this epic.
-```
+Fill every `<token>` with its real value. The footer stays informational - no cleanup steps: who removes a lane is `land`'s business and can change, while a posted comment can't. `<user>` is `whoami`, `<host>` is `hostname`, `<os> <arch>` is `uname -sm` - a bare hostname repeats across people and machines.
 
 Lane worktree (the first time the lane path is created; a reused lane needs no second comment):
 
@@ -89,22 +29,21 @@ Created by [`solve:ship`](https://github.com/AshuLab/skills/blob/main/solve/skil
 
 ## Lane worktrees, for a parallel batch
 
-Up to 3 lane worktrees - the same concurrency cap *Draining an epic* in `SKILL.md` dispatches - alongside the epic worktree above. *Pick the tree* in `SKILL.md` calls this the one exception to "one per epic, never per slice": a lane is a **slot**, not a per-slice thing - it outlives any one occupant, reused round after round as long as the drain keeps dispatching.
+Up to 3 lane worktrees - the same concurrency cap *Draining an epic* in `SKILL.md` dispatches - alongside the shared tree, where the epic itself drains. A lane is a **slot**, not a per-slice thing - it outlives any one occupant, reused round after round as long as the drain keeps dispatching.
 
-**The path**: a sibling of the epic's own worktree path, never a child of it - `~/.solve/worktrees/<repo>/<feature>--lane-<N>/` (or the configured path's parent with the same substitution), `N` from 1 to the concurrency cap - `lane-<N>` is fixed, not slugified, so only `<feature>` itself could collide with another epic's, the same assumption the epic worktree's path already carries. Nesting it under the epic path instead (`<epic-path>/lane-<N>/`) would sit the lane's checkout inside the epic worktree's tracked tree - `git status` there would see it as untracked content, tripping the dirty-tree checks *Pick the tree* runs on the epic worktree (the pre-flight gate, the "something else in flight" test) against the batch's own in-flight work. A sibling avoids that.
-A batch needs these worktrees regardless of whether **Worktrees** in `docs/agents/solve.md` is *On* or *Off* - concurrent subagents can't share one working tree either way, so a batch uses lanes even when a sequential single-slice drain in this repo would use the shared tree.
+**The path**: `~/.solve/worktrees/<repo>/<feature>--lane-<N>/` (or the configured path with the same `<feature>` substitution), `N` from 1 to the concurrency cap. `lane-<N>` is fixed, not slugified, so only `<feature>` itself could collide with another epic's. A configured path inside the repo (`.worktrees/`) nests the lane's checkout in the shared tree - `git status` there sees it as untracked content, tripping the dirty-tree checks *Pick the tree* runs against the batch's own in-flight work - so it needs a `.gitignore` entry, and the default avoids it.
+A batch needs these worktrees every time - concurrent subagents can't share one working tree - and nothing turns them off. A single-slice run never creates one.
 
 **Sizing the round**: before assigning anything, count free lanes - detached HEAD (per *Freeing a lane* below) means free; a named slice branch checked out means occupied, whether by an in-flight build or an unresolved stopped member from an earlier round (*Freeing a lane* never runs for a stopped member, so its lane stays occupied until it resolves). A lane not yet created - true for every lane on a drain's first round - counts as free too: capacity is the concurrency cap minus what's occupied, not a count of worktree paths already on disk. The round's batch is capped at whichever is smaller - 3 currently-startable hub slices, or lanes currently free. A startable slice that doesn't fit waits for the next round, same as any overflow past 3.
 
 **Assigning a lane**: one member at a time, in the round's dispatch order - claim each member's lane before moving to the next, so two members never resolve to the same free lane. For each member, first check whether any lane - free or occupied - already has `<member-slice-branch>` checked out. If so, that's the member's lane, unconditionally - this only fires for a member stopped in an earlier round whose lane was never freed, so it stays occupied on its own branch until resolved. Skip the scan below for it.
 No match -> the first free lane, claimed immediately - moved off detached HEAD onto the member's branch - before assigning the next member's lane. Reused if a free one exists from an earlier round in this drain, created if none does. Without the own-branch check first, this scan would hand a resuming stopped member a *different* lane than the one still holding its branch, and creating or switching to that branch there fails - it's already checked out at the member's original lane.
 
-**Creating a lane** (no worktree at that path yet): a batch only dispatches mid-drain, so the epic branch already exists (*Clean the tree, cut the epic branch* in `SKILL.md` already ran) - but unlike case **A** above, a lane can't check out `<epic-branch>` itself: that branch is already checked out elsewhere (the epic worktree, or the shared tree), and git refuses a second checkout of the same branch. Cut the member's own slice branch off `<epic-branch>` instead - the same branch *Build it* in `SKILL.md` says a hub slice gets anyway, just cut here rather than after. Base it on `origin/<epic-branch>`, not the local ref: the local ref goes stale the moment an earlier round's member merges server-side (nothing else in this lifecycle updates it), so a lane created mid-drain off the local branch can miss prior rounds' merges - fetch first, same as *Reusing a lane* below:
+**Creating a lane** (no worktree at that path yet): a batch only dispatches mid-drain, so the epic branch already exists (*Clean the tree, cut the epic branch* in `SKILL.md` already ran) - but a lane can't check out `<epic-branch>` itself: the shared tree already has it checked out, and git refuses a second checkout of the same branch. Cut the member's own slice branch off `<epic-branch>` instead - the same branch *Build it* in `SKILL.md` says a hub slice gets anyway, just cut here rather than after. Base it on `origin/<epic-branch>`, not the local ref: the local ref goes stale the moment an earlier round's member merges server-side (nothing else in this lifecycle updates it), so a lane created mid-drain off the local branch can miss prior rounds' merges - fetch first, same as *Reusing a lane* below:
 
 ```
 git fetch
 git worktree add -b <member-slice-branch> <lane-path> origin/<epic-branch>
-git -C <lane-path> push -u origin <member-slice-branch>
 ```
 
 Once it's up, record it with *The record comment* above (the lane variant) - once per lane path, the first time it's created. Without this, a batch that halts leaves lane worktrees with no trace beyond `git worktree list` on the machine that created them - exactly the cross-machine gap *Cleanup*'s two-places claim below depends on not existing.
@@ -114,18 +53,17 @@ Once it's up, record it with *The record comment* above (the lane variant) - onc
 ```
 git -C <lane-path> fetch
 git -C <lane-path> switch -c <member-slice-branch> origin/<epic-branch>
-git -C <lane-path> push -u origin <member-slice-branch>
 ```
 
-Either way, the subagent handed that path builds directly on its own slice branch, already checked out - the draining agent resolves the tree and cuts the branch before dispatch, the subagent doesn't cut it itself (*Delegate the build*).
-*Making it runnable*, below, applies the same way as the epic worktree the first time a lane is created. A reused lane already has its symlinks and install from the last occupant - skip both **unless** the new branch's lockfile differs (diff it before skipping): a changed lockfile means step 2's install runs again, same as a first-time lane.
+Either way, publish the branch the way the delivery mode says (*Lane branches* in `SLICES-GITHUB.md` pushes it right here; `SLICES-LOCAL.md` publishes nothing). The subagent handed that path builds directly on its own slice branch, already checked out - the draining agent resolves the tree and cuts the branch before dispatch, the subagent doesn't cut it itself (*Delegate the build*).
+*Making it runnable*, below, applies the first time a lane is created. A reused lane already has its symlinks and install from the last occupant - skip both **unless** the new branch's lockfile differs (diff it before skipping): a changed lockfile means step 2's install runs again, same as a first-time lane.
 
-**Freeing a lane**: once that member's merge lands (*Close the loop* step 4 in `SKILL.md`), get off its branch so *Close the loop* step 6 can delete it. Not `git switch <epic-branch>` - that branch is already checked out elsewhere (the epic worktree, or the shared tree), the same exclusivity *Creating a lane* runs into. Detach instead: `git fetch && git -C <lane-path> switch --detach origin/<epic-branch>` - leave the worktree parked there, at the epic branch's current tip with nothing named checked out. This replaces removing it: a lane is never torn down mid-drain, only parked, ready for the next round's *Assigning a lane* - detached HEAD is free, a named slice branch is occupied.
+**Freeing a lane**: once that member's merge lands (*Close the loop* step 4 in `SKILL.md`), get off its branch so *Close the loop* step 6 can delete it. Not `git switch <epic-branch>` - the shared tree already has it checked out, the same exclusivity *Creating a lane* runs into. Detach instead: `git fetch && git -C <lane-path> switch --detach origin/<epic-branch>` - leave the worktree parked there, at the epic branch's current tip with nothing named checked out. This replaces removing it: a lane is never torn down mid-drain, only parked, ready for the next round's *Assigning a lane* - detached HEAD is free, a named slice branch is occupied.
 A batch that halts on a stopped member (*Draining an epic* in `SKILL.md`) still frees every lane whose member reported `ready-to-merge` - each merges and its lane parks, same as any round. Only the stopped member's lane stays as it was, unparked, for whoever resolves the stop to inspect - don't assign it to a later round until that happens.
-A merge that stays unresolved after the slice-branch attempt ([CONFLICTS.md](./CONFLICTS.md)) leaves its member's lane the same way - unparked, still on that member's branch, the attempt's merge aborted so the tree is clean - since this section only runs once a merge actually lands, and an unmerged one never does. Same for any ready-to-merge sibling the conflict's queue-halt skipped before its merge was attempted: no merge landed for it either, so its lane stays unparked too, ready for the next round's retry (*Draining an epic*).
-Resuming that same stopped member later reuses this same lane - *Assigning a lane*'s own-branch check above finds it directly, since the lane was never freed and lane paths aren't derived per slice the way the epic worktree's is.
+A merge that stays unresolved after the slice-branch attempt (*Resolving a slice-merge conflict* in the delivery mode's `SLICES-*.md`) leaves its member's lane the same way - unparked, still on that member's branch, the attempt's merge aborted so the tree is clean - since this section only runs once a merge actually lands, and an unmerged one never does. Same for any ready-to-merge sibling the conflict's queue-halt skipped before its merge was attempted: no merge landed for it either, so its lane stays unparked too, ready for the next round's retry (*Draining an epic*).
+Resuming that same stopped member later reuses this same lane - *Assigning a lane*'s own-branch check above finds it directly, since the lane was never freed and lane paths aren't derived per slice.
 
-**Removing a lane**: only when the drain has no more work for it - the epic's last round, or a halt with nothing left to retry. Same deferral as the epic worktree, below: `ship` doesn't remove it, `land` does, named in the integration PR body alongside the epic worktree.
+**Removing a lane**: only when the drain has no more work for it - the epic's last round, or a halt with nothing left to retry. `ship` doesn't remove it, `land` does, named in the integration PR body (*Cleanup*, below).
 
 ## Making it runnable
 
@@ -143,6 +81,6 @@ In this order. Config first, because a missing registry credential fails the ins
 
 ## Cleanup
 
-`ship` never removes the epic worktree or a lane worktree - it doesn't merge the integration PR, so it never learns when either is safe to drop. It leaves the paths in two places instead: the epic-issue comment (survives a halted drain) and the `git worktree remove <path>` calls in the integration PR body, one per lane still standing plus the epic worktree. `land` actually removes them.
+`ship` never removes a lane worktree - it doesn't merge the integration PR, so it never learns when a lane is safe to drop. It leaves the paths in two places instead: the epic-issue comment (survives a halted drain) and the `git worktree remove <path>` calls in the integration PR body, one per lane still standing. `land` actually removes them.
 
 Cleaning up by hand: `git worktree remove` refuses on a dirty tree, so it can't take unmerged work with it, and `git worktree list` is the source of truth (`git worktree prune` clears records of any deleted outside git).

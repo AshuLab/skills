@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## solve 0.32.0
+
+- **Breaking: the per-epic worktree is gone - an epic always drains in the shared tree.** `ship` no longer has a Worktrees `off`/`on` mode, a "worktree this epic" request, a `worktree` exit on the pre-flight halt, or the stash carry-over; `setup` stops asking the mode, and `land` removes only lane worktrees. **Lane worktrees are unchanged** - a parallel batch still builds in up to 3, always. The **Worktrees** section of `solve.md` keeps its path, bootstrap and linked config, and a leftover `off`/`on` line is ignored. Two epics can no longer drain in one clone: *Pick the tree* stops and says so, and the second epic uses another clone. ADR 0004.
+- `ship`, `setup`: **slice delivery is a mode - `github` (default) or `local`.** `setup` asks once and records it in `solve.md` under **Slice delivery**. `local` skips the slice PRs and the pushed slice branches: `ship` merges each slice into its base with a merge commit in the shared tree and pushes only the epic branch after every merge, so a CI run per slice stops being the drain's cost. Issues, the epic branch and the integration PR stay on GitHub in both modes, and `land` is unchanged. ADR 0003, which amends 0002 without bringing the local tracker back.
+- `ship`: **one whole file per delivery mode.** *Close the loop* steps 2-6 move out of `SKILL.md` into `SLICES-GITHUB.md` and `SLICES-LOCAL.md`, read one at a time, instead of `if local` branches inside one file; `SKILL.md` keeps what is common plus the output contract both files meet. `CONFLICTS.md` is absorbed into the two. The `github` file is today's behavior, moved.
+- `setup`: the `REFERENCE.md` template has the `local` variant of **Branching operations**; `setup` writes one list into `solve.md`, never both.
+
 ## solve 0.31.0
 
 - `vocab`: **the glossary and the ADRs are sorted by topic, so no single file grows without bound.** The model picks the topic - a short name for an area of the domain, reusing a folder that already fits and creating one only when none does - and files both artifacts under it: `docs/glossary/<topic>.md` and `docs/adr/<topic>/NNNN-title.md`, one taxonomy for both. `docs/glossary.md` and the new `docs/adr/README.md` become indexes (a line per topic, a line per ADR) that `vocab` keeps in step and readers open first. ADR numbers stay global. New: look the term up before adding it, prune a term whose concept is gone, merge thin topics, and supersede an ADR instead of deleting it. A repo that predates topics keeps its ADRs where they are (indexed under their topic); its inline glossary is sorted into topic files the first time `vocab` touches it.

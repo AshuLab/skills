@@ -17,7 +17,7 @@ Claude Code invokes skills as `/solve:<name>` or `/follow:<name>`. The native Co
 
 Add it to whichever exists, resolving symlinks first (`setup` step 5 has the rule).
 Keep it **minimal** - it auto-loads every session: a few short labelled lines (what it is, the tracker, one pointer per file), one line per paragraph so it matches the prose around it.
-Detail lives in `solve-flow.md` (the flow) and `solve.md` (tracker, branching, worktrees), not here.
+Detail lives in `solve-flow.md` (the flow) and `solve.md` (tracker, branching, lane worktrees), not here.
 
 ```markdown
 ## solve skills
@@ -28,7 +28,7 @@ This repo uses the **solve** skill set - ideas ship through `sharpen -> to-spec 
 
 **The flow** - how work moves, who does what, when to use each skill: `docs/agents/solve-flow.md`.
 
-**Operations** - tracker, branching and worktree commands: `docs/agents/solve.md`.
+**Operations** - tracker, branching and lane-worktree commands: `docs/agents/solve.md`.
 ```
 
 ## docs/agents/solve-flow.md
@@ -39,14 +39,14 @@ Written from this template, adapted only to what the user said is particular abo
 ````markdown
 # solve skills - the flow
 
-This repo uses the **solve** skill set to take an idea from raw to shipped. Each step is a skill - invoke it however this agent invokes skills. The commands each step runs (tracker, branching, worktrees) are in `solve.md`.
+This repo uses the **solve** skill set to take an idea from raw to shipped. Each step is a skill - invoke it however this agent invokes skills. The commands each step runs (tracker, branching, lane worktrees) are in `solve.md`.
 
 ## Where to enter
 The entry point is what you already know, not whether it's a feature or a bug:
 - the problem isn't clear (can't yet say what hurts, for whom, how you'd know it's fixed) -> `sharpen`; a fuzzy bug enters here too
 - the problem is clear, the cause isn't (it misbehaves and you don't know why) -> `diagnose`
 - both are clear, it's just work to cut -> `to-tickets`, or straight to `ship` if it's already one startable slice; if it came from outside (someone else's issue, a handed-down ticket) run `pre-check` first
-- first time in this repo and you want worktree isolation -> `setup` (optional: without it github is inferred and there's one working tree; the repo needs a GitHub remote either way)
+- first time in this repo and you want the labels up front, or a custom lane-worktree path or bootstrap -> `setup` (optional: without it github is inferred and the lane defaults apply; the repo needs a GitHub remote either way)
 
 ## The flow
 Each step consumes what the previous one left, so they run in order.
@@ -54,8 +54,8 @@ Each step consumes what the previous one left, so they run in order.
 - `sharpen` - take a raw idea, doc or issue to a brief: reality-check + capture the thinking (grill it first with the follow skill `pushback` if it's raw)
 - `to-spec` - turn the brief into a PRD, deciding where each story gets tested
 - `to-tickets` - break the PRD into vertical, agent-ready slices
-- `ship` - take a startable ticket to done: claim, build, close the loop (a PR). Handed the epic instead, it drains every slice in dependency order. It works in the shared tree by default; with worktree isolation (`solve.md` -> Worktrees) each epic drains in its own git worktree, so concurrent epics don't collide, and `land` removes it
-- `land` - once you've read the integration PR and accept it: merge it, then close out the epic branch, its worktree and the epic issue. The step a human starts
+- `ship` - take a startable ticket to done: claim, build, close the loop (a PR per slice, or a local merge commit when `solve.md` -> Slice delivery says `local`). Handed the epic instead, it drains every slice in dependency order. It works in the shared tree; a parallel batch builds its slices in up to 3 lane worktrees (`solve.md` -> Worktrees) that `ship` leaves standing and `land` removes. Two epics don't drain in one clone - use another clone for the second
+- `land` - once you've read the integration PR and accept it: merge it, then close out the lane worktrees, the epic branch and the epic issue. The step a human starts
 
 ## Reviewing
 `ship` ends at a draft integration PR; a review pass sits between it and `land`. Nothing starts the review of the integration PR automatically: whoever is driving, a person or an agent, runs `code-review` on that PR.
@@ -98,13 +98,13 @@ What each step leaves for the next: `sharpen` a brief in `docs/specs/` -> `to-sp
 ## docs/agents/solve.md
 
 The operations the skills resolve their verbs against, filled with the repo's real values, in flowing prose (one line per paragraph, not hard-wrapped).
-How to fill it: replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<bootstrap>` (the Worktrees bootstrap, in both variants) - with real values, and the placeholder `owner/name` (the tracker repo; if the user says the tracker follows `origin`, say that instead of naming a repo), never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<NNN>`, `<slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, `<dir>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Bootstrap and linked config follow `setup` step 4: drop the bootstrap bullet when there is none to write, and replace `none` with the files it names.
-The section names below (**Tracker**, **Tracker operations**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Keep these names as they are.
+How to fill it: replace the tokens `setup` resolves - `<base>`, `<destination>`, `<branch-type>`, `<epic-branch>` (`<branch-type>/<feature>/epic`), `<slice-branch>` (`<branch-type>/<feature>/<NNN-slug>`) and `<bootstrap>` (the Worktrees bootstrap) - with real values, and the placeholder `owner/name` (the tracker repo; if the user says the tracker follows `origin`, say that instead of naming a repo), never emitting them literally. Every other angle-bracket token stays exactly as written (`<feature>`, `<repo>`, `<NNN-slug>`, `<NNN>`, `<slug>`, `<n>`, `<pr>`, `<epic>`, `<path>`, `<blocker-branch>`, `<dir>`, ...): the skills fill them at run time (`<repo>` is the repository directory's name, so the Worktrees path survives a merge into another repo). Bootstrap and linked config follow `setup` step 4: drop the bootstrap bullet when there is none to write, and replace `none` with the files it names.
+The section names below (**Tracker**, **Tracker operations**, **Slice delivery**, **Branching**, **Worktrees**) are load-bearing: skills cite them by name (`solve.md` -> **Branching**). Keep these names as they are.
 
 ````markdown
 # solve skills - operations
 
-The commands the solve skills run in this repo: tracker, branching, worktrees.
+The commands the solve skills run in this repo: tracker, branching, lane worktrees.
 The flow and who does what are in `solve-flow.md`.
 
 ## Tracker
@@ -132,8 +132,11 @@ Epics and tickets are GitHub Issues in `owner/name`, via the `gh` CLI. Labels: `
   ```
   Scoping to the epic isn't optional: unscoped, this spans every epic in the repo and a drain starts shipping another epic's slices into this one's branch. `--limit` matters for the same reason - the label query is server-side and defaults to 30, the epic filter runs after it.
 
+## Slice delivery
+**github** - each slice travels as its own PR into its base, merged server-side with `gh pr merge`; every slice's PR stays in history.
+
 ## Branching
-Merge-only - never squash or rebase; every slice's commits and PR stay in history.
+Merge-only - never squash or rebase; every slice's commits stay in history.
 The branch type is `<branch-type>`. Each feature gets its own namespace under it: the epic and its slices are siblings inside `<branch-type>/<feature>/`, so no branch is one the others nest under (git forbids a branch `x` and one under `x/`).
 - **base branch** (`<base>`) - the epic branch is cut from here
 - **epic branch** (`<epic-branch>`) - one per feature; every slice integrates here
@@ -149,23 +152,34 @@ The branch type is `<branch-type>`. Each feature gets its own namespace under it
 - retarget on a blocker's close -> list them with `gh pr list --base <blocker-branch> --json number --jq '.[].number'`, then for each: `gh pr edit <pr> --base <epic-branch>`
 - delete a merged slice branch (**after** the retarget, never with `gh pr merge --delete-branch` - that fires on merge, before the retarget runs) -> confirm the merge landed first, remote ref against remote ref: `git fetch && git merge-base --is-ancestor origin/<slice-branch> origin/<the base it was merged into>` must succeed. That base is the epic branch for a hub slice, the blocker's branch for a stacked one - and both sides remote, because `gh pr merge` merges server-side and your local copy of the base doesn't have it yet. Then `git branch -d <slice-branch>` + `git push origin --delete <slice-branch>`. Don't rely on `-d` alone as the check: once the branch has an upstream, `-d` compares against that upstream rather than the base and will delete a branch whose merge never landed, warning but exiting 0
 - integration PR (all slices closed) -> `gh pr create --base <destination> --head <epic-branch> --draft --label solve:epic` with `Closes #<epic>` in the body - for a human; ship never merges it (the human's merge closes the epic only if `<destination>` is the default branch)
-- land the epic (a human accepted the integration PR) -> `gh pr ready <pr>`, then `gh pr merge <pr> --merge`, then clean up in this order: `git worktree remove <path>` (it holds the epic branch, so it goes first), delete `<epic-branch>`, delete any leftover slice branch under `<branch-type>/<feature>/*`, close `#<epic>` if the merge didn't. Every delete after `git fetch origin` + `git merge-base --is-ancestor origin/<branch> origin/<destination>` - run the `land` skill rather than these by hand
+- land the epic (a human accepted the integration PR) -> `gh pr ready <pr>`, then `gh pr merge <pr> --merge`, then clean up in this order: `git worktree remove <path>` for each lane still standing, `git switch <destination> && git pull` (the drain may have left the epic branch checked out in the shared tree), delete `<epic-branch>`, delete any leftover slice branch under `<branch-type>/<feature>/*`, close `#<epic>` if the merge didn't. Every delete after `git fetch origin` + `git merge-base --is-ancestor origin/<branch> origin/<destination>` - run the `land` skill rather than these by hand
 
 ## Worktrees
-**off** - `ship` works in the shared working tree by default. An explicit per-run request ("worktree this epic"), or the pre-flight halt's `worktree` exit, still isolates a single epic at the path below.
+An epic drains in the shared working tree. A parallel batch builds its slices in up to 3 **lane** worktrees, each at the path below with `<feature>` replaced by `<feature>--lane-<N>`.
 - **path** - `~/.solve/worktrees/<repo>/<feature>/`
 - **bootstrap** - `<bootstrap>`
 - **linked config** - none
-- **cleanup** - `ship` names the path and the `git worktree remove` in the integration PR body; `land` removes it when it merges that PR
+- **cleanup** - `ship` names each lane still standing, with its `git worktree remove`, in the integration PR body; `land` removes them when it merges that PR
 ````
 
-The **Worktrees** section **always carries a path** - `ship` needs a known home whether it makes the worktree automatically (*on*) or only when a run asks (*off*). The *on* variant is identical bar the first line:
+The **Slice delivery** section carries one of two values, and **Branching operations** and the close-the-loop line in **Tracker operations** go with it. When the user chose `local`, the section reads:
 
 ```markdown
-## Worktrees
-**on** - each epic is drained in its own git worktree, so concurrent epics can't collide in one tree. `ship` derives the path (never remembers it) and reuses the worktree if it's already there.
-- **path** - `~/.solve/worktrees/<repo>/<feature>/`
-- **bootstrap** - `<bootstrap>`
-- **linked config** - none
-- **cleanup** - `ship` names the path and the `git worktree remove` in the integration PR body; `land` removes it when it merges that PR
+## Slice delivery
+**local** - no slice PR exists and a slice branch is never pushed: each slice is merged into its base with a merge commit in the shared tree, and the epic branch is pushed after every merge. Issues, the epic branch and the integration PR stay on GitHub.
 ```
+
+and **Branching operations** become the list below (**Tracker operations** swaps its close-the-loop line for: close the loop -> the slice's merge commit, then `gh issue close <issue>`; there is no slice PR):
+
+```markdown
+### Branching operations
+- start the epic branch (lazy, first slice of the epic only) -> `git fetch && git switch -c <epic-branch> origin/<base> && git push -u origin <epic-branch>`
+- branch a slice, **hub** (no open blocker, or several) -> `git switch <epic-branch> && git pull --ff-only && git switch -c <slice-branch>` - no push, the slice branch stays local; the `pull` keeps the epic branch current with what other clones pushed
+- branch a slice, **stack** (exactly one open blocker) -> `git switch <blocker-branch> && git switch -c <slice-branch>` - the blocker's branch was never published, so there is nothing to pull
+- merge a slice -> in the shared tree, clean: `git switch <base>` (for the epic branch also `git fetch && git pull --ff-only`), then `git merge --no-ff <slice-branch> -F <msg-file>` (never squash or rebase) - the message carries `Closes #<n>`, what shipped and verified; then `git push origin <epic-branch>` when `<base>` is the epic branch (refused as non-fast-forward -> stop, never force), then `gh issue close <issue>`
+- delete a merged slice branch -> confirm the merge landed first: `git fetch && git merge-base --is-ancestor <slice-branch> origin/<epic-branch>` (the blocker's branch itself for a stacked slice merged into it), then `git branch -d <slice-branch>` - never `-D`, and there is no remote branch to delete
+- integration PR (all slices closed) -> the same `gh pr create` as above
+- land the epic -> the same as above
+```
+
+
