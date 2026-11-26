@@ -1,6 +1,6 @@
 ---
 name: land
-description: Merges a finished epic's integration PR once a person has reviewed it, then cleans up what the drain left - worktrees, epic and slice branches, the epic issue. Never decides acceptance itself.
+description: Merges a finished epic's integration PR once a person has reviewed it, then cleans up what the drain left - lane worktrees, epic and slice branches, the epic issue. Never decides acceptance itself.
 ---
 
 # land - put the epic in
@@ -24,11 +24,11 @@ description: Merges a finished epic's integration PR once a person has reviewed 
      |
   Merge it       git switch+pull  ->  gh pr ready  ->  gate 5  ->  gh pr merge --merge
      |
-  Close it out   worktree  ->  epic branch  ->  slice branches  ->  epic issue
+  Close it out   lane worktrees  ->  epic branch  ->  slice branches  ->  epic issue
                  prove each merged (origin vs origin) before removing it; no --force
 ```
 
-**Run every command from the repo's main working tree, never the epic's worktree** - it holds the epic branch, so switching to the destination or deleting that branch fails from inside it. Can't leave it -> stop and say so. Exception: gate 4's suite run needs the epic branch, read-only there or via scratch export - gate 4 explains how.
+**Run every command from the repo's main working tree** - a drain leaves it on the epic branch, and git refuses to delete a branch you're standing on, so *Merge it* switches to the destination before anything is deleted. The switch refused (uncommitted work) -> stop and say so; never force it. Gate 4's suite run reads the epic branch through a scratch export, never by switching.
 
 Read branch names from `docs/agents/solve.md` -> **Branching**. No such file: default branch as destination, branches `feature/<feature>/epic` + `feature/<feature>/<NNN-slug>` - *Close it out*'s slice sweep needs that pattern.
 
@@ -53,14 +53,14 @@ Each blocks the merge: report the failure and stop, never work around one. **Run
 2. **Merge commits allowed.** `gh repo view --json mergeCommitAllowed`. Allowed -> proceed. Disallowed -> **stop**: this model keeps every slice's commits and merge history, which squash/rebase discards. A repo-config conflict for a human to fix, never squashed around. (`ship` gates on the same thing.)
 3. **It's the integration PR** - head is the epic branch, base the destination in **Branching**. A slice PR here would merge a fragment into the destination.
 4. **Every slice is closed.** `gh issue view <epic> --json subIssues --jq '[.subIssues[] | select(.state == "OPEN")]'` must come back empty. Not `ship`'s `solve-next-startable`, which returns the next *startable* slice and prints nothing when the rest are blocked or assigned - exactly the halted drain this catches.
-   That check is the drain's own claim, not proof the suite is green; so **run the repo's test command against the epic branch yourself** - read-only in the epic's drain worktree (no switch, no writes), which already has drain's deps installed. No worktree -> `git archive origin/<epic-branch> | tar -x` into a scratch dir, deleted after, but **install deps first** or the run becomes a *Never ran* below that tells you nothing. Three outcomes:
+   That check is the drain's own claim, not proof the suite is green; so **run the repo's test command against the epic branch yourself**, in a scratch export: `git archive origin/<epic-branch> | tar -x` into a scratch dir, deleted after. **Install deps there first** - the drain built in lane worktrees, so the main working tree's deps may predate the epic - or the run becomes a *Never ran* below that tells you nothing. Three outcomes:
    - **Green** -> proceed.
    - **Ran and failed** -> the boxes lied: stop. Unless the destination fails the same tests - then it predates the epic, and belongs to the base's owner.
    - **Never ran** (broken script, missing runner, `MODULE_NOT_FOUND`) isn't failure, even if identical on both sides: it leaves no signal, worse than red. Invoke the suite directly, say which invocation you used, report the broken script.
 5. **Mergeable.** Doesn't run here - it needs a non-draft PR, and `ship` leaves one drafted; checking a draft always reports `mergeStateStatus: BLOCKED`, failing every healthy epic. Runs inside *Merge it*, right after `gh pr ready`.
    `gh pr view <pr> --json state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,reviewDecision`. Require: `state` `OPEN`, `mergeable` `MERGEABLE`, `mergeStateStatus` `CLEAN`, `reviewDecision` not `CHANGES_REQUESTED`, every `statusCheckRollup` conclusion `SUCCESS`/`NEUTRAL`/`SKIPPED`. Red check stops, doesn't just warn.
 
-Then **show the plan and wait for a yes**: the PR, the merge method, and every branch/worktree *Close it out* will delete - the merge is irreversible and public, and invoking `land` isn't consent for the specifics. Add what the review left open on the PR: unresolved review threads, and the body's **Unresolved slice checks** and `code-resolve` deferred sections - listed, not gated; whether they block is the human's call. No way to get an answer -> stop and hand over the plan; never take silence as approval.
+Then **show the plan and wait for a yes**: the PR, the merge method, and every branch and lane worktree *Close it out* will delete - the merge is irreversible and public, and invoking `land` isn't consent for the specifics. Add what the review left open on the PR: unresolved review threads, and the body's **Unresolved slice checks** and `code-resolve` deferred sections - listed, not gated; whether they block is the human's call. No way to get an answer -> stop and hand over the plan; never take silence as approval.
 
 ## Merge it
 
@@ -77,13 +77,13 @@ Into the repo's default branch, GitHub closes the epic issue on merge (`Closes #
 
 The drain's leftovers, **in this order** - each step unblocks the next. Three rules over all of it:
 
-- **Prove it landed before removing anything.** `git fetch origin`, then `git merge-base --is-ancestor origin/<branch> origin/<destination>` - remote against remote, since either side can lag and it's the remote copy being deleted. Once for the epic branch before step 1, again per branch in steps 2 and 3. Everything here is irreversible, and the resume path walks straight in without merging anything itself.
+- **Prove it landed before removing anything.** `git fetch origin`, then `git merge-base --is-ancestor origin/<branch> origin/<destination>` - remote against remote, since either side can lag and it's the remote copy being deleted. A branch that was never pushed - a slice branch from a `local` drain - has no `origin/<branch>`: prove it from the local ref instead, `git merge-base --is-ancestor <branch> origin/<destination>`, and delete it locally only. Once for the epic branch before step 1, again per branch in steps 2 and 3. Everything here is irreversible, and the resume path walks straight in without merging anything itself.
 - **Never a flag that skips a refusal** - not `git branch -D`, not `git worktree remove --force`. Those refusals are the last thing between you and deleting work that never landed. `git worktree remove` only refuses on a *dirty* tree - a clean worktree holding unmerged work goes without a murmur, which is why the check above comes first.
 - **`<type>/<feature>/`** is the branch namespace from **Branching** (`feature/<feature>/` when there's no config).
 
-**1. The worktree(s)**, if the epic used one - the epic worktree plus any lane worktrees a parallel batch left standing ([WORKTREES.md](../ship/WORKTREES.md) -> *Lane worktrees, for a parallel batch*). Epic worktree first - it holds the epic branch checked out, and deleting that branch under it fails.
+**1. The lane worktrees**, if a parallel batch left any standing ([WORKTREES.md](../ship/WORKTREES.md) -> *Lane worktrees, for a parallel batch*). A lane is parked on a detached HEAD or still on an unmerged member's slice branch, so remove them before the slice-branch sweep - a slice branch checked out in a lane can't be deleted.
 Act only on `git worktree list` - the sole authority for what exists on *this* machine. A path in the PR body or epic issue that it doesn't list is on another machine - report it, don't remove it.
-`git worktree remove <path>`, once per listed path. Refused for a dirty tree -> **leave it** and report what's uncommitted: something there never reached the epic branch. A dirty lane doesn't block removing the others.
+`git worktree remove <path>`, once per path the PR body or epic issue names for this epic that `git worktree list` also shows. Refused for a dirty tree -> **leave it** and report what's uncommitted: something there never reached the epic branch. A dirty lane doesn't block removing the others (and its slice branch, still checked out there, stays for step 3 to report).
 
 **2. The epic branch.**
 On the resume path you may not be on the destination yet - `git switch <destination> && git pull` if not. Then `git branch -d <epic-branch>` + `git push origin --delete <epic-branch>`. A remote branch already gone (auto-delete-on-merge repos) counts as success.
@@ -91,13 +91,13 @@ Don't trust `-d` as the check: with an upstream set it validates against that, n
 
 **3. Slice branches still around.** A halted drain, or a slice merged before `ship`'s *Close the loop* step 6 ran, leaves these.
 **Scope to this epic's namespace, excluding the epic branch** - `git branch --merged <destination> --list '<type>/<feature>/*'` matches `<type>/<feature>/epic` too, which on a resumed run is still there to sweep as a slice. Unscoped is worse: bare `git branch --merged <destination>` lists other epics' branches and **the destination itself**, which git lets you delete locally (the remote refuses, local doesn't).
-Same ancestor check per branch, then delete local and remote. Anything not provably merged stays, reported.
+Same ancestor check per branch, then delete it locally and, when `git ls-remote --exit-code --heads origin <branch>` finds it, on the remote too - a `local` drain's slice branches were never pushed. Anything not provably merged stays, reported.
 
 **4. The epic issue**, if the merge didn't already close it - the non-default-destination case.
 Close it now, referencing the merged PR - the human invoking `land` plus the merge going through *is* the acceptance signal.
 
 ## Report
 
-What was merged, what was deleted, and - separately - **what you found and left alone**: worktrees on other machines or other epics, branches not provably merged, slices someone reopened.
-**If gate 1 stopped you, this epic is what you left mid-air** - say so plainly: worktree and both branches still stand, nothing deleted, and it lands unchanged once the destination is merged in or the overlap resolved. Name the conflicting files - nothing on disk records the attempt.
-Never clean up outside this epic - another epic's worktree looks abandoned but is someone's drain in progress.
+What was merged, what was deleted, and - separately - **what you found and left alone**: lane worktrees on other machines or other epics, branches not provably merged, slices someone reopened.
+**If gate 1 stopped you, this epic is what you left mid-air** - say so plainly: any lane worktrees and both branches still stand, nothing deleted, and it lands unchanged once the destination is merged in or the overlap resolved. Name the conflicting files - nothing on disk records the attempt.
+Never clean up outside this epic - another epic's lane worktree looks abandoned but is someone's drain in progress.
