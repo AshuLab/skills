@@ -28,7 +28,7 @@ description: Merges a finished epic's integration PR once a person has reviewed 
                  prove each merged (origin vs origin) before removing it; no --force
 ```
 
-**Run every command from the repo's main working tree** - a drain leaves it on the epic branch, and git refuses to delete a branch you're standing on, so *Merge it* switches to the destination before anything is deleted. The switch refused (uncommitted work) -> stop and say so; never force it. Exception: gate 4's suite run needs the epic branch, read-only in place or via scratch export - gate 4 explains how.
+**Run every command from the repo's main working tree** - a drain leaves it on the epic branch, and git refuses to delete a branch you're standing on, so *Merge it* switches to the destination before anything is deleted. The switch refused (uncommitted work) -> stop and say so; never force it. Gate 4's suite run reads the epic branch through a scratch export, never by switching.
 
 Read branch names from `docs/agents/solve.md` -> **Branching**. No such file: default branch as destination, branches `feature/<feature>/epic` + `feature/<feature>/<NNN-slug>` - *Close it out*'s slice sweep needs that pattern.
 
@@ -53,7 +53,7 @@ Each blocks the merge: report the failure and stop, never work around one. **Run
 2. **Merge commits allowed.** `gh repo view --json mergeCommitAllowed`. Allowed -> proceed. Disallowed -> **stop**: this model keeps every slice's commits and merge history, which squash/rebase discards. A repo-config conflict for a human to fix, never squashed around. (`ship` gates on the same thing.)
 3. **It's the integration PR** - head is the epic branch, base the destination in **Branching**. A slice PR here would merge a fragment into the destination.
 4. **Every slice is closed.** `gh issue view <epic> --json subIssues --jq '[.subIssues[] | select(.state == "OPEN")]'` must come back empty. Not `ship`'s `solve-next-startable`, which returns the next *startable* slice and prints nothing when the rest are blocked or assigned - exactly the halted drain this catches.
-   That check is the drain's own claim, not proof the suite is green; so **run the repo's test command against the epic branch yourself** - read-only in the main working tree when it's on the epic branch at `origin/<epic-branch>`'s tip (`git rev-parse HEAD` equals `git rev-parse origin/<epic-branch>`, tree clean - no switch, no writes), which already has drain's deps installed. Anywhere else -> `git archive origin/<epic-branch> | tar -x` into a scratch dir, deleted after, but **install deps first** or the run becomes a *Never ran* below that tells you nothing. Three outcomes:
+   That check is the drain's own claim, not proof the suite is green; so **run the repo's test command against the epic branch yourself**, in a scratch export: `git archive origin/<epic-branch> | tar -x` into a scratch dir, deleted after. **Install deps there first** - the drain built in lane worktrees, so the main working tree's deps may predate the epic - or the run becomes a *Never ran* below that tells you nothing. Three outcomes:
    - **Green** -> proceed.
    - **Ran and failed** -> the boxes lied: stop. Unless the destination fails the same tests - then it predates the epic, and belongs to the base's owner.
    - **Never ran** (broken script, missing runner, `MODULE_NOT_FOUND`) isn't failure, even if identical on both sides: it leaves no signal, worse than red. Invoke the suite directly, say which invocation you used, report the broken script.

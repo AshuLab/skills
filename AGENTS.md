@@ -26,4 +26,4 @@ to the same number in the same commit - it carries a `version` too and drifts ot
 
 `solve/skills/ship/SLICES-GITHUB.md` and `SLICES-LOCAL.md` are two complete files for one contract (*Slice
 delivery* in `ship/SKILL.md`). A change to either is read against the other and against that contract before
-it lands - the steps share numbers, and the contract is the one place a behavior change is written down.
+it lands - the steps share numbers. Policy that is the same in both modes goes in `SKILL.md`, never copied into the two files.

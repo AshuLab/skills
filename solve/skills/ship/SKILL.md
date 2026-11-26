@@ -97,7 +97,7 @@ A slice that is ready to merge in `local` mode - no PR, and the two lines the me
 }
 ```
 
-The report is a single JSON object and nothing else. A `local` report missing `shipped` or `verified` isn't well-formed (*Draining an epic*). `pr` is the PR URL in `github` mode and `null` in `local`, where the report also carries `shipped` and `verified` - the two lines the merge commit message uses (*Slice delivery*). `reason` appears only when `outcome` is `"stopped"` - what would close it; `note` appears whenever there is something to surface, whatever the outcome - e.g. *Close the loop*'s "the repo arrived broken, not your slice's fault" case, which still needs to reach a human between drains. `uiImpact` is optional: the views the slice visibly changes, shared styles, components or assets included - omit it when the slice changes nothing a user sees. It is a hint for the epic's visual evidence (*Draining an epic*), not the evidence itself.
+The report is a single JSON object and nothing else. A build's `ready-to-merge` report in `local` without `shipped` or `verified` isn't well-formed (*Draining an epic*); a `stopped` report, or one from a conflict resolution, doesn't need them. `pr` is the PR URL in `github` mode and `null` in `local`, where the report also carries `shipped` and `verified` - the two lines the merge commit message uses (*Slice delivery*). `reason` appears only when `outcome` is `"stopped"` - what would close it; `note` appears whenever there is something to surface, whatever the outcome - e.g. *Close the loop*'s "the repo arrived broken, not your slice's fault" case, which still needs to reach a human between drains. `uiImpact` is optional: the views the slice visibly changes, shared styles, components or assets included - omit it when the slice changes nothing a user sees. It is a hint for the epic's visual evidence (*Draining an epic*), not the evidence itself.
 
 `outcome: "stopped"` is the subagent's report of *Close the loop*'s stop condition - the draining agent doesn't re-verify the definition of done itself, it halts on the report and reads `reason` for what would close it.
 `note`, when present, always reaches a human - surface it verbatim in this slice's own report, or, inside a batch, appended to the consolidated line (*Draining an epic*), regardless of `outcome`. Nothing else in *Close the loop* or *Draining an epic* relays it.
@@ -110,7 +110,7 @@ Read the ticket + its linked spec section before touching code.
 
 ## Pick the tree
 
-**An epic always drains in the shared tree** - there is no per-epic worktree, and no setting that makes one. The only worktrees `ship` creates are the **lane worktrees** of a parallel batch (*Draining an epic*), and those are [WORKTREES.md](./WORKTREES.md)'s.
+**An epic always drains in the shared tree** - there is no per-epic worktree, and no setting that makes one (an older `solve.md` may still carry a Worktrees `off`/`on` line: ignore it). The only worktrees `ship` creates are the **lane worktrees** of a parallel batch (*Draining an epic*), and those are [WORKTREES.md](./WORKTREES.md)'s.
 **Resolve what's in that tree before you touch a branch** - building wherever you're standing is the mistake when another epic is already in flight there.
 
 **Pre-flight:** `git status --porcelain` before touching anything. Usually no design artifacts are loose: `to-tickets`' hand-off already committed them to the epic branch on the remote. If they are loose (no hand-off), one thing is expected and passes: solve's own output - new **untracked** files in `docs/specs/` or `docs/agents/`, new *or modified* files under `docs/adr/` and `docs/glossary/` (their indexes, a topic file, a superseded ADR's status), and a created-or-modified `docs/glossary.md` - that's `sharpen`/`to-spec`/`vocab` (and `setup`, for `docs/agents/`) leaving output for you, and *Clean the tree* sorts it: the design artifacts go to the epic branch as the fallback, the repo config to the base. **Anything else** - a modified tracked file, an untracked file outside those paths - is working state you can't account for: your own from an earlier run, or another drain in that tree right now. **Stop and surface it:** list the paths and offer the exits - commit it or stash it. Don't sort it into "mine" and route around it - you can't tell from git whose it is, and *Clean the tree* downstream folds whatever's loose onto your epic branch. An AFK drain with no one to answer just stops. This is a start-of-run gate - a drain's own later slices leave the tree dirty by design, and that's fine.
@@ -122,8 +122,8 @@ Read the ticket + its linked spec section before touching code.
 
 Doesn't matter whether that's your own earlier state or another run happening right now - either way the shared tree isn't yours alone.
 **Treat all three as a floor, never as proof of the opposite.** They're a snapshot, and another run can start between the check and your next command, so a clean read doesn't mean nothing is in flight - it means nothing was, a moment ago. Anything you find that isn't yours, leave alone: don't switch to its branch, don't remove its lanes, don't stash its work.
-Another epic holding this clone **stops the whole run**, not just this step: two epics can't drain in one clone, so the drain resumes in another clone, or once that epic is done. Nothing on disk records the stop, so your report is the only trace: say what's in flight or dirty, that it isn't yours, and that the drain resumes once whoever owns it commits or drops it.
-While draining, never ask: decide from those checks and stop or go.
+**Any one of the three stops the whole run**, not just this step: two epics can't drain in one clone. Nothing on disk records the stop, so your report is the only trace: say what you found and that it isn't yours. Then say what clears it: a dirty tree, once whoever owns it commits or drops it; another epic's lanes or branch, once that epic is landed - its lanes stay until `land` removes them - or drain this one in another clone; a leftover worktree holding this epic's branch, once someone removes it.
+While draining, never ask: all three clear -> go, any one -> stop.
 
 **A parallel batch (*Draining an epic*) is the one place `ship` uses worktrees**: up to 3 lane worktrees alongside the shared tree. A lane isn't tied to one slice - it's a slot, created once and reused round after round as long as the drain keeps dispatching, parked (not removed) between occupants. A single-slice run never creates one. [WORKTREES.md](./WORKTREES.md) has the path and the mechanics.
 
@@ -152,7 +152,7 @@ Bases and names all resolve from `docs/agents/solve.md` -> **Branching**, never 
 Handed a slice and you need its epic - the number for `Closes`, the title for the token - the *find a slice's epic* operation is in `docs/agents/solve.md` -> **Tracker operations**.
 
 *How* you code is the middle, and not ship's: by default just build it; if there's a specialized skill for this work - one you pass in, one the repo standardizes, or `tdd` at the seam the spec named for testing this story - invoke it here. Either way the ticket's **definition of done** is the contract: every box green before you close, and don't gold-plate - reuse before building, write the least code that meets the done, nothing speculative.
-Something the change needs to be complete that the ticket missed - a place the slice's blast radius reaches that the definition of done doesn't name - is in scope, not gold-plating: do it, and name it in the PR and the report's `note`, so the gap in the ticket is visible. It stays in scope only while it serves this slice and needs no product call; past that it's a stop like any design gap.
+Something the change needs to be complete that the ticket missed - a place the slice's blast radius reaches that the definition of done doesn't name - is in scope, not gold-plating: do it, and name it in the slice record (the PR, or `shipped` in `local`) and the report's `note`, so the gap in the ticket is visible. It stays in scope only while it serves this slice and needs no product call; past that it's a stop like any design gap.
 
 ## Close the loop
 
@@ -180,7 +180,7 @@ Steps 2-6 of the lifecycle - how a finished slice gets from its branch into its 
 
 Hand the subagent the path of the file with the ticket handle and the `<feature>` token - steps 2-3 are its, and it never picks the mode itself.
 
-**The output contract** - what any mode must leave true, and the only thing the rest of `ship`, `land` and the integration PR rely on:
+**The output contract** - what any mode must leave true:
 - the slice is merged into **its base** with a merge commit - never squash, never rebase;
 - the slice's issue is closed, explicitly;
 - the slice branch is deleted, only after the merge is proven to have landed, with `-d` and never `-D`;
@@ -188,7 +188,34 @@ Hand the subagent the path of the file with the ticket handle and the `<feature>
 - the close-out report has its fields (*Delegate the build*), `pr` being the PR URL in `github` and `null` in `local`;
 - a slice whose check still had findings reaches the integration PR as **Unresolved slice checks**.
 
-**Step numbers are shared**: both files carry steps 2 (publish the slice), 3 (record it), the check before merging, 4 (merge), 5 (close the issue) and 6 (delete the branch), so a cross-reference to *Close the loop* step 4 means the same moment in either. A change to one of these files is read against the other and against this contract before it lands.
+Each mode file also has the sections the rest of `ship` points into: *Lane branches* (how a lane's slice branch is published), *A stopped member's activity* (where to look for work after the timeout) and *Unresolved slice checks* (where the findings are kept).
+
+**Step numbers are shared**: both files carry steps 2 (publish the slice), 3 (record it), the check before merging, 4 (merge), 5 (close the issue) and 6 (delete the branch), so a cross-reference to *Close the loop* step 4 means the same moment in either.
+
+#### Check before merging
+
+Before step 4 the draining agent runs two checks. The mode file gives the commands.
+
+1. **The report holds up** - not a re-run of steps 1-3's own checks: the slice branch exists where the mode file says, and the ticket's Definition of done boxes read `[x]` in the issue body (`gh issue view <n> --json body --jq .body`, grepped for `- [ ]`). It doesn't hold -> treat it as `outcome: "stopped"`, name the mismatch and halt; don't merge on faith.
+2. **The slice check** - not by you: dispatch a fresh subagent with only the ticket and the slice's diff, so it sees neither how the slice was built nor your drain's context. It answers two things - does everything in the diff serve this slice (no debug output, stray files, unrelated edits), and does every definition-of-done box point at a change it can name in the diff - and returns what's missing, nothing else.
+   - Clean -> step 4.
+   - Findings -> dispatch the slice once more through *Delegate the build*, on the same branch, with those findings, then check again. One round, no more.
+   - Still findings -> merge anyway: record them where the mode file's *Unresolved slice checks* reads them, and carry them as the slice's `note`, so they reach the integration PR's review instead of halting an unattended drain.
+
+   The check never stops the drain: it reads only a diff and can be wrong, and the stop conditions stay the build's own. It is not a `code-review` pass - the adversarial review is the integration PR's.
+
+#### Resolving a slice-merge conflict
+
+Read only when step 4's merge stops on a conflict. One resolution attempt, on the **slice branch** in the tree it was built in (its lane, or the shared tree) - never on its base:
+
+1. Merge the base into the slice branch - a merge commit, never `rebase`. The mode file has the commands.
+2. Hand the conflict to a subagent - the slice's ticket, its spec section, the conflicting files. It returns *Delegate the build*'s close-out report:
+   - **Semantic overlap** (both sides changed the same logic, signature or contract, or resolving would alter behaviour beyond the slice's spec): `git -C <tree> merge --abort`, `outcome: "stopped"`, `reason` naming the files.
+   - **Additive or mechanical overlap** (independent entries in a shared list, enum, switch, registry, test file or imports): resolve it, then verify the definition of done as *Close the loop* describes. Red: `git -C <tree> merge --abort`, `stopped` with what failed. Green: commit the merge (and publish it as the mode file says), `ready-to-merge`.
+
+   A missing or malformed report counts as `stopped` - run the `merge --abort` yourself if the merge is still in progress. Either way the tree is left clean on the slice branch.
+3. `ready-to-merge` -> run step 4 again, as the mode file says.
+4. Merged -> step 5. Anything else - `stopped`, or a second conflict - is an **unresolved conflict**: stop and report the files.
 
 ## Draining an epic
 
@@ -203,7 +230,7 @@ Wait for every member's close-out report, then merge every member that reported 
 **Never wait on a report that isn't coming.** A member whose subagent errors out, gets killed, or returns anything short of a well-formed close-out report (*Delegate the build*'s shape) is treated as `outcome: "stopped"`, `reason: "subagent did not return a report"` - same halt-after-merging-clean-siblings path as any other stopped member. This holds even if every other member already reported `ready-to-merge`: don't hold their merges hostage to one that will never resolve on its own.
 That also covers a subagent that's still running but has gone silent: **2 hours with no report, counted from that member's own dispatch** (not from the round's start, so a slow earlier member doesn't shorten a later one's wait), gets the same `outcome: "stopped"`, `reason: "subagent exceeded the wait bound with no report"` - don't wait past it on the chance it's still working.
 Before resolving that stop - retrying the slice, reassigning its lane - check the member's slice branch for activity after the timeout mark (the delivery mode file says where): the subagent may have kept working past the bound and committed anyway, and redispatching over live work loses it.
-An unresolved conflict on one member's merge (*Close the loop* step 4's attempt didn't land it) halts the rest of the queue immediately - any `ready-to-merge` members not yet merged wait for the next round, same as a stopped member: ticket claimed, slice delivered, lane occupied on its own branch and unparked (*Freeing a lane* in [WORKTREES.md](./WORKTREES.md) never runs for a merge that never landed). The next round retries them first, in the order skipped, before dispatching new members - they're already claimed and built, so re-querying startable slices wouldn't find them.
+An unresolved conflict on one member's merge (*Close the loop* step 4's attempt didn't land it) halts the rest of the queue immediately - any `ready-to-merge` members not yet merged wait for the next round, same as a stopped member: ticket claimed, slice built, lane occupied on its own branch and unparked (*Freeing a lane* in [WORKTREES.md](./WORKTREES.md) never runs for a merge that never landed). The next round retries them first, in the order skipped, before dispatching new members - they're already claimed and built, so re-querying startable slices wouldn't find them.
 Report the batch's outcome as one consolidated line, not a running per-subagent stream - e.g. "batch of 3: 004 merged, 005 merged, 006 stopped - `<reason>`". A member whose report carried a `note` (*Delegate the build*'s contract) appends it to that member's own clause in the same line, regardless of `outcome` - e.g. "batch of 3: 004 merged - `<note>`, 005 merged, 006 stopped - `<reason>`" - never dropped just because it arrived inside a batch.
 
 Run the lifecycle - on the slice, or on each batch member - then look again. Each slice's build still goes through *Delegate the build*, whether that's the one subagent of a sequential drain or the concurrent subagents of a batch (above).
