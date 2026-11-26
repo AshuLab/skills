@@ -46,7 +46,7 @@ The entry point is what you already know, not whether it's a feature or a bug:
 - the problem isn't clear (can't yet say what hurts, for whom, how you'd know it's fixed) -> `sharpen`; a fuzzy bug enters here too
 - the problem is clear, the cause isn't (it misbehaves and you don't know why) -> `diagnose`
 - both are clear, it's just work to cut -> `to-tickets`, or straight to `ship` if it's already one startable slice; if it came from outside (someone else's issue, a handed-down ticket) run `pre-check` first
-- first time in this repo and you want the labels up front, or a custom lane-worktree path or bootstrap -> `setup` (optional: without it github is inferred and the lane defaults apply; the repo needs a GitHub remote either way)
+- first time in this repo and you want the labels up front, to choose how slices are delivered (a PR each, or a local merge), or a custom lane-worktree path or bootstrap -> `setup` (optional: without it github is inferred and the lane defaults apply; the repo needs a GitHub remote either way)
 
 ## The flow
 Each step consumes what the previous one left, so they run in order.
@@ -178,8 +178,8 @@ and **Branching operations** become the list below (**Tracker operations** swaps
 - branch a slice, **stack** (exactly one open blocker) -> `git switch <blocker-branch> && git switch -c <slice-branch>` - the blocker's branch was never published, so there is nothing to pull
 - merge a slice -> in the shared tree, clean: `git switch <base>` (for the epic branch also `git fetch && git pull --ff-only`), then `git merge --no-ff <slice-branch> -F <msg-file>` (never squash or rebase) - the message carries `Closes #<n>`, what shipped and verified; then `git push origin <epic-branch>` when `<base>` is the epic branch (refused as non-fast-forward -> stop, never force), then `gh issue close <issue>`
 - delete a merged slice branch -> confirm the merge landed first: `git fetch && git merge-base --is-ancestor <slice-branch> origin/<epic-branch>` (the blocker's branch itself for a stacked slice merged into it), then `git branch -d <slice-branch>` - never `-D`, and there is no remote branch to delete
-- integration PR (all slices closed) -> the same `gh pr create` as above
-- land the epic -> the same as above
+- integration PR (all slices closed) -> `gh pr create --base <destination> --head <epic-branch> --draft --label solve:epic` with `Closes #<epic>` in the body - for a human; ship never merges it (the human's merge closes the epic only if `<destination>` is the default branch)
+- land the epic (a human accepted the integration PR) -> `gh pr ready <pr>`, then `gh pr merge <pr> --merge`, then clean up in this order: `git worktree remove <path>` for each lane still standing, `git switch <destination> && git pull` (the drain may have left the epic branch checked out in the shared tree), delete `<epic-branch>`, delete any leftover slice branch under `<branch-type>/<feature>/*`, close `#<epic>` if the merge didn't. Every delete after `git fetch origin` + `git merge-base --is-ancestor origin/<branch> origin/<destination>` - run the `land` skill rather than these by hand
 ```
 
 

@@ -16,7 +16,7 @@ ADR 0002 removed local mode from the whole solve skill set because two parallel 
 - **github** - unchanged: slice branch pushed, one PR per slice, `gh pr merge --merge`, retarget for stacked slices.
 - **local** - the slice branch is never pushed and no slice PR exists. The PR's record (`Closes #n`, what shipped, verified) goes in the merge commit message. The draining agent merges with `git merge --no-ff <slice-branch>` in the tree that has the epic branch checked out, then pushes the **epic branch** after every merge, so `origin/<epic-branch>` stays the source of truth for lanes, resume, other clones and `land`.
 
-What stays on GitHub in both modes: issues (claim, close, epic, sub-issues, dependency edges), the epic branch itself, and the **integration PR** - the one a human reviews and `land` merges. `land` is mode-independent.
+What stays on GitHub in both modes: issues (claim, close, epic, sub-issues, dependency edges), the epic branch itself, and the **integration PR** - the one a human reviews and `land` merges. `land` needs no mode-specific path - the one thing it learns is that a never-pushed slice branch is proved from the local ref and deleted locally only.
 
 **One complete file per mode, never inline branching.** `ship/SKILL.md` keeps what is identical in both modes (the branch model, delegation and the close-out report, draining, stop conditions, the hard rules) plus an **output contract** both modes must meet: slice merged into the epic branch with a merge commit, issue closed, slice branch deleted, epic branch pushed, report fields. The transport steps - push and record, the diff the check reads, merge, issue close, retarget, merge proof and branch delete, conflict resolution, how unresolved slice checks reach the integration PR - live in `ship/SLICES-GITHUB.md` and `ship/SLICES-LOCAL.md`. `ship` reads the mode once, then reads exactly one of the two files, whole; the subagent is handed the same path. An absent `solve.md` means `github`; an unrecognised value stops the run rather than guessing.
 
@@ -29,10 +29,12 @@ What stays on GitHub in both modes: issues (claim, close, epic, sub-issues, depe
 
 ## Consequences
 
-Two transport files that must stay in step. Their duplicated invariants (merge commit only, remote-ref ancestor check before any delete, never `-D`) are accepted as duplication - each file reads end to end without jumping - and the **output contract** in `SKILL.md` is the single place a behavior change is written; a change to one mode file requires reading the other against it.
+Two transport files that must stay in step. Their duplicated invariants (merge commit only, an ancestor check before any delete, never `-D`) are accepted as duplication - each file reads end to end without jumping - and the **output contract** in `SKILL.md` is the single place a behavior change is written; a change to one mode file requires reading the other against it.
 
-In `local` mode the slice-level safety net is the suite each subagent already runs and the integration PR's CI; there is no CI on an individual slice and no PR thread for a reviewer to attach to it. `ship`'s per-slice subagent check still runs, reading `git diff origin/<epic-branch>...<slice-branch>` instead of `gh pr diff`.
+In `local` mode the slice-level safety net is the suite each subagent already runs and the integration PR's CI; there is no CI on an individual slice and no PR thread for a reviewer to attach to it. `ship`'s per-slice subagent check still runs, reading `git diff <base>...<slice-branch>` instead of `gh pr diff`.
 
 The merge needs a clean tree with the epic branch checked out - always the shared tree, since [0004](0004-epics-drain-in-the-shared-tree-worktrees-are-lanes-only.md) removed the per-epic worktree - so the dirty-tree rules of *Pick the tree* apply to it.
+
+The epic branch is pushed after every merge, so a CI workflow triggered `on: push` to branches still runs once per slice; only `pull_request`-triggered CI is skipped, unless the repo excludes `<branch-type>/*/epic` from the push trigger. `setup` says so when it asks. A stacked slice (handed to `ship` directly while its blocker is open) has only local copies in this mode, so stacks are single-clone.
 
 This amends 0002, it does not reverse it: GitHub remains the only tracker, and no local tickets, specs-as-final or claim operations come back.

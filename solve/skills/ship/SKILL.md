@@ -80,7 +80,24 @@ A slice that stopped, with the `reason`:
 }
 ```
 
-The report is a single JSON object and nothing else. `pr` is the PR URL in `github` mode and `null` in `local`, where the report also carries `shipped` and `verified` - the two lines the merge commit message uses (*Slice delivery*). `reason` appears only when `outcome` is `"stopped"` - what would close it; `note` appears whenever there is something to surface, whatever the outcome - e.g. *Close the loop*'s "the repo arrived broken, not your slice's fault" case, which still needs to reach a human between drains. `uiImpact` is optional: the views the slice visibly changes, shared styles, components or assets included - omit it when the slice changes nothing a user sees. It is a hint for the epic's visual evidence (*Draining an epic*), not the evidence itself.
+A slice that is ready to merge in `local` mode - no PR, and the two lines the merge commit carries:
+
+```
+{
+  "slice": "#351",
+  "outcome": "ready-to-merge",
+  "branch": "feature/export-csv/351-export-button",
+  "pr": null,
+  "shipped": "Reports gets an Export button that downloads the current view as CSV; empty views get a header-only file.",
+  "verified": "Suite and typecheck green; export tested at the controller seam the spec named.",
+  "definitionOfDone": {
+    "Export button downloads the current view as CSV": true,
+    "Empty views download a header-only file": true
+  }
+}
+```
+
+The report is a single JSON object and nothing else. A `local` report missing `shipped` or `verified` isn't well-formed (*Draining an epic*). `pr` is the PR URL in `github` mode and `null` in `local`, where the report also carries `shipped` and `verified` - the two lines the merge commit message uses (*Slice delivery*). `reason` appears only when `outcome` is `"stopped"` - what would close it; `note` appears whenever there is something to surface, whatever the outcome - e.g. *Close the loop*'s "the repo arrived broken, not your slice's fault" case, which still needs to reach a human between drains. `uiImpact` is optional: the views the slice visibly changes, shared styles, components or assets included - omit it when the slice changes nothing a user sees. It is a hint for the epic's visual evidence (*Draining an epic*), not the evidence itself.
 
 `outcome: "stopped"` is the subagent's report of *Close the loop*'s stop condition - the draining agent doesn't re-verify the definition of done itself, it halts on the report and reads `reason` for what would close it.
 `note`, when present, always reaches a human - surface it verbatim in this slice's own report, or, inside a batch, appended to the consolidated line (*Draining an epic*), regardless of `outcome`. Nothing else in *Close the loop* or *Draining an epic* relays it.
@@ -98,7 +115,7 @@ Read the ticket + its linked spec section before touching code.
 
 **Pre-flight:** `git status --porcelain` before touching anything. Usually no design artifacts are loose: `to-tickets`' hand-off already committed them to the epic branch on the remote. If they are loose (no hand-off), one thing is expected and passes: solve's own output - new **untracked** files in `docs/specs/` or `docs/agents/`, new *or modified* files under `docs/adr/` and `docs/glossary/` (their indexes, a topic file, a superseded ADR's status), and a created-or-modified `docs/glossary.md` - that's `sharpen`/`to-spec`/`vocab` (and `setup`, for `docs/agents/`) leaving output for you, and *Clean the tree* sorts it: the design artifacts go to the epic branch as the fallback, the repo config to the base. **Anything else** - a modified tracked file, an untracked file outside those paths - is working state you can't account for: your own from an earlier run, or another drain in that tree right now. **Stop and surface it:** list the paths and offer the exits - commit it or stash it. Don't sort it into "mine" and route around it - you can't tell from git whose it is, and *Clean the tree* downstream folds whatever's loose onto your epic branch. An AFK drain with no one to answer just stops. This is a start-of-run gate - a drain's own later slices leave the tree dirty by design, and that's fine.
 
-*Something else in flight* is three checks, any one enough: `git worktree list` shows another epic's lane worktrees (`<feature>--lane-<N>` for a `<feature>` that isn't yours), the current branch carries another epic's `<feature>`, or `git status` is dirty (the pre-flight already stops on a dirty tree - this is the backstop for a run that reaches here regardless). Doesn't matter whether that's your own earlier state or another run happening right now - either way the shared tree isn't yours alone.
+*Something else in flight* is three checks, any one enough: `git worktree list` shows a worktree that is neither the shared tree nor one of this epic's lanes (`<feature>--lane-<N>`) - another epic's lanes, another run's, or an epic worktree an older `ship` left holding the epic branch, which would refuse the switch to it, the current branch carries another epic's `<feature>`, or `git status` is dirty (the pre-flight already stops on a dirty tree - this is the backstop for a run that reaches here regardless). Doesn't matter whether that's your own earlier state or another run happening right now - either way the shared tree isn't yours alone.
 **Treat all three as a floor, never as proof of the opposite.** They're a snapshot, and another run can start between the check and your next command, so a clean read doesn't mean nothing is in flight - it means nothing was, a moment ago. Anything you find that isn't yours, leave alone: don't switch to its branch, don't remove its lanes, don't stash its work.
 Another epic holding this clone **stops the whole run**, not just this step: two epics can't drain in one clone, so the drain resumes in another clone, or once that epic is done. Nothing on disk records the stop, so your report is the only trace: say what's in flight or dirty, that it isn't yours, and that the drain resumes once whoever owns it commits or drops it.
 While draining, never ask: decide from those checks and stop or go.
@@ -148,7 +165,7 @@ Match the repo's style - infer it from recent `git log` (plus `commitlint.config
 
 **Steps 2-6** - publish, record, check, merge, close the issue, delete the branch - are *Slice delivery*, next.
 
-## Slice delivery
+### Slice delivery (steps 2-6)
 
 Steps 2-6 of the lifecycle - how a finished slice gets from its branch into its base - depend on how this repo delivers slices, and **each mode has its own file, read whole**.
 

@@ -2,6 +2,7 @@
 
 - Status: accepted
 - Date: 2026-09-14
+- Amended by [0003](../ship/0003-slice-delivery-mode-github-or-local.md): the tracker stays GitHub-only; only a slice's transport becomes a mode.
 
 ## Context
 

@@ -15,7 +15,7 @@ The entry point is set by what you already know, not by whether it's a feature o
 - **The problem isn't clear** - you can't yet name what hurts, for whom, or how you'd know it's fixed -> `sharpen`. It grills the raw idea into a brief; a fuzzy bug ("it feels slow", no definition yet) enters here too.
 - **The problem is clear, the cause isn't** - it misbehaves and you don't know why -> `diagnose`. It builds a reliable repro before theorizing.
 - **Both are clear** - it's no longer an idea or a mystery, just work to cut -> `to-tickets` to split it, or straight to `ship` if it's already one startable slice. Came from outside (someone else's issue, a handed-down ticket)? `pre-check` first.
-- **First time in this repo and you want the labels up front, or a custom lane-worktree path or bootstrap** -> `setup`. No config file = github tracker inferred, lane defaults, zero setup - either way the repo needs a GitHub remote.
+- **First time in this repo and you want the labels up front, to choose how slices are delivered (a PR each, or a local merge), or a custom lane-worktree path or bootstrap** -> `setup`. No config file = github tracker inferred, lane defaults, zero setup - either way the repo needs a GitHub remote.
 
 ## Moving it forward
 
@@ -50,6 +50,6 @@ support   tdd, code-review, code-post, code-resolve  (on the code, when they ear
 gate      pre-check  (revalidate a stale or handed-down artifact before ship)
 on-ramp   diagnose  (enter from a bug, not an idea)
 parking   file-issue  (a finding that isn't this task's job; it waits as an issue)
-setup     once per repo (safe to run again), for the solve labels and lane-worktree settings (optional)
+setup     once per repo (safe to run again), for the solve labels, slice delivery and lane-worktree settings (optional)
 base      vocab  (glossary + ADRs, drawn on throughout)
 ```

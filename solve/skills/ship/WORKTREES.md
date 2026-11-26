@@ -6,7 +6,7 @@ How a parallel batch stands up its worktrees. An epic never gets one of its own 
 
 From **Worktrees** in `docs/agents/solve.md` - default `~/.solve/worktrees/<repo>/<feature>/`, `<repo>` being the repository directory's name. A lane is that path with `<feature>` replaced by `<feature>--lane-<N>`. Both segments earn their place: `<feature>` keeps two epics in one repo apart, `<repo>` keeps the same feature name in two repos apart. A configured path dropping `<repo>` collides across repos, and the collision looks exactly like another agent holding your lane.
 
-`<feature>` is the epic's token, fixed once for the whole epic (*Build it*) - never re-slugify it here. An older `solve.md` may still carry a `**off**` / `**on**` line under **Worktrees**: ignore it, only the path, bootstrap and linked config are read.
+`<feature>` is the epic's token, fixed once for the whole epic (*Build it*) - never re-slugify it here.
 
 ## The record comment
 
@@ -43,7 +43,7 @@ No match -> the first free lane, claimed immediately - moved off detached HEAD o
 
 ```
 git fetch
-git worktree add -b <member-slice-branch> <lane-path> origin/<epic-branch>
+git worktree add --no-track -b <member-slice-branch> <lane-path> origin/<epic-branch>
 ```
 
 Once it's up, record it with *The record comment* above (the lane variant) - once per lane path, the first time it's created. Without this, a batch that halts leaves lane worktrees with no trace beyond `git worktree list` on the machine that created them - exactly the cross-machine gap *Cleanup*'s two-places claim below depends on not existing.
@@ -52,7 +52,7 @@ Once it's up, record it with *The record comment* above (the lane variant) - onc
 
 ```
 git -C <lane-path> fetch
-git -C <lane-path> switch -c <member-slice-branch> origin/<epic-branch>
+git -C <lane-path> switch --no-track -c <member-slice-branch> origin/<epic-branch>
 ```
 
 Either way, publish the branch the way the delivery mode says (*Lane branches* in `SLICES-GITHUB.md` pushes it right here; `SLICES-LOCAL.md` publishes nothing). The subagent handed that path builds directly on its own slice branch, already checked out - the draining agent resolves the tree and cuts the branch before dispatch, the subagent doesn't cut it itself (*Delegate the build*).

@@ -77,7 +77,7 @@ Into the repo's default branch, GitHub closes the epic issue on merge (`Closes #
 
 The drain's leftovers, **in this order** - each step unblocks the next. Three rules over all of it:
 
-- **Prove it landed before removing anything.** `git fetch origin`, then `git merge-base --is-ancestor origin/<branch> origin/<destination>` - remote against remote, since either side can lag and it's the remote copy being deleted. Once for the epic branch before step 1, again per branch in steps 2 and 3. Everything here is irreversible, and the resume path walks straight in without merging anything itself.
+- **Prove it landed before removing anything.** `git fetch origin`, then `git merge-base --is-ancestor origin/<branch> origin/<destination>` - remote against remote, since either side can lag and it's the remote copy being deleted. A branch that was never pushed - a slice branch from a `local` drain - has no `origin/<branch>`: prove it from the local ref instead, `git merge-base --is-ancestor <branch> origin/<destination>`, and delete it locally only. Once for the epic branch before step 1, again per branch in steps 2 and 3. Everything here is irreversible, and the resume path walks straight in without merging anything itself.
 - **Never a flag that skips a refusal** - not `git branch -D`, not `git worktree remove --force`. Those refusals are the last thing between you and deleting work that never landed. `git worktree remove` only refuses on a *dirty* tree - a clean worktree holding unmerged work goes without a murmur, which is why the check above comes first.
 - **`<type>/<feature>/`** is the branch namespace from **Branching** (`feature/<feature>/` when there's no config).
 
@@ -91,7 +91,7 @@ Don't trust `-d` as the check: with an upstream set it validates against that, n
 
 **3. Slice branches still around.** A halted drain, or a slice merged before `ship`'s *Close the loop* step 6 ran, leaves these.
 **Scope to this epic's namespace, excluding the epic branch** - `git branch --merged <destination> --list '<type>/<feature>/*'` matches `<type>/<feature>/epic` too, which on a resumed run is still there to sweep as a slice. Unscoped is worse: bare `git branch --merged <destination>` lists other epics' branches and **the destination itself**, which git lets you delete locally (the remote refuses, local doesn't).
-Same ancestor check per branch, then delete local and remote. Anything not provably merged stays, reported.
+Same ancestor check per branch, then delete it locally and, when `git ls-remote --exit-code --heads origin <branch>` finds it, on the remote too - a `local` drain's slice branches were never pushed. Anything not provably merged stays, reported.
 
 **4. The epic issue**, if the merge didn't already close it - the non-default-destination case.
 Close it now, referencing the merged PR - the human invoking `land` plus the merge going through *is* the acceptance signal.

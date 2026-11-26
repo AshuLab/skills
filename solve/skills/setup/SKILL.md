@@ -5,9 +5,9 @@ description: Configure how the solve skill set works in this repo - GitHub Issue
 
 # setup - configure the repo, once
 
-Run once per repo (safe to run again) - to create the solve labels, or to say where a parallel batch's lane worktrees go and how they boot.
+Run once per repo (safe to run again) - to create the solve labels, to choose how slices are delivered (a PR each, or a local merge), or to say where a parallel batch's lane worktrees go and how they boot.
 A repo that already uses the solve skills is set up like a new one: the old files are read as context (step 1), then everything is written again from the templates.
-No config file = github tracker inferred, single working tree, zero setup.
+No config file = github tracker inferred, slices delivered by PR, the epic in the shared tree, lane defaults for a batch, zero setup.
 Either way the repo needs a **GitHub remote**: branches are pushed, bases are read from `origin/`, and every merge is verified against the remote ref before anything is deleted.
 Every choice below: the harness's choice UI when available, prose otherwise.
 
@@ -43,7 +43,7 @@ gh label create solve:epic:ready --color 0b7285 --description "Epic ready to run
 
 **Slice delivery** - how does a finished slice reach its base? Skip it when an existing `solve.md` already has a **Slice delivery** section.
 - **github** (default) - each slice travels as its own PR, merged server-side. Each PR triggers the repo's CI, and a branch-protection rule that requires checks on the epic branches makes `ship` wait for them.
-- **local** - no slice PR and no pushed slice branch: `ship` merges each slice into its base with a merge commit in the shared tree and pushes only the epic branch, after every merge. Faster where CI per slice is the bottleneck, at the cost of a PR thread and a CI run per slice - the suite each slice's subagent already runs, and the CI of the one integration PR, are the net. Issues, the epic branch and the integration PR stay on GitHub either way.
+- **local** - no slice PR and no pushed slice branch: `ship` merges each slice into its base with a merge commit in the shared tree and pushes only the epic branch, after every merge. Faster where CI per slice is the bottleneck, at the cost of a PR thread and a CI run per slice - the suite each slice's subagent already runs, and the CI of the one integration PR, are the net. One catch to say out loud: the epic branch is pushed after every merge, so a workflow triggered `on: push` to branches still runs once per slice - only `pull_request`-triggered CI is skipped, or exclude `<branch-type>/*/epic` from the push trigger. Stacked slices (a slice handed to `ship` directly while its blocker is open) stay on one clone in this mode. Issues, the epic branch and the integration PR stay on GitHub either way.
 
 Ask once, recommend `github`, and say that `local` is for repos where per-slice CI is the cost. An answer that isn't one of the two -> ask again; never write a value the skills don't read.
 

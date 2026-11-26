@@ -51,7 +51,7 @@ Just want to be grilled about something, with nothing written down afterwards?
 guide | router - tells you which skill to reach for
 
 Setup (once per repo, optional; safe to run again)
-  | setup - create the solve labels, set the lane-worktree path and bootstrap, and write
+  | setup - create the solve labels, pick slice delivery (github|local), set the lane-worktree path and bootstrap, and write
       docs/agents/solve.md + solve-flow.md
 
 Main flow | idea -> shipped

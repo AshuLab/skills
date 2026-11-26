@@ -19,7 +19,9 @@ Then have what it delivered checked before merging - not by you: dispatch a fres
 
 **4. Merge the slice into its base** - always a merge commit, never squash or rebase: the per-slice history *is* the review surface this model exists to keep.
 Its base is whatever *Build it* cut it from: the **epic branch** for a hub slice, **the blocker's branch** for a stacked one whose blocker is still open - merge a stacked slice straight into the epic branch and it drags the blocker's unreviewed commits along.
-In the **shared tree**, clean, and never anywhere else: `git switch <base>`; for the epic branch also `git fetch && git pull --ff-only` (the blocker's branch has no remote, skip it). Write the message into the run's scratch dir (`mktemp -d`) with a file-write tool, never through the shell:
+A **stacked** slice exists only when `ship` is handed a slice whose blocker is still open, and in this mode both its branch and the blocker's are local-only until merged: **stacks are single-clone**, nobody can resume one from another clone. A `git switch <blocker-branch>` refused because a lane holds that branch -> stop and say so.
+**Already merged?** If `git merge-base --is-ancestor <slice-branch> <base>` succeeds, an earlier run died after the merge, before the push or the close: skip the merge and go on from the push.
+In the **shared tree**, clean, and never anywhere else: `git switch <base>`; for the epic branch also `git fetch && git pull --ff-only` (the blocker's branch has no remote, skip it). The pull refused because the epic branch **diverged** from `origin/<epic-branch>` -> stop and report which commits are local-only (`git log origin/<epic-branch>..<epic-branch>`); never reset or force. Write the message into the run's scratch dir (`mktemp -d`) with a file-write tool, never through the shell:
 
 ```
 Merge slice #<n> into <base>: <ticket title>
@@ -31,8 +33,9 @@ verified: <the report's verified>
 ship:slice-check: <the finding>      (only a slice whose check still had findings; one line each)
 ```
 
-then `git merge --no-ff <slice-branch> -F "<dir>/msg"`. Landed on the **epic branch** -> `git push origin <epic-branch>`; refused as non-fast-forward, someone else pushed - stop and report, never force. Landed on a blocker's branch -> no push: it was never published.
+then `git merge --no-ff <slice-branch> -F "<dir>/msg"`. Landed on the **epic branch** -> `git push origin <epic-branch>`. Refused as non-fast-forward, someone else pushed: stop and report, never force - the merge stays in the local epic branch, and the next run finds the slice already merged (above) and retries only the push once a person has settled the divergence. Landed on a blocker's branch -> no push: it was never published.
 **The merge stopped on a conflict?** `git merge --abort` first, so the shared tree is clean again, then one resolution attempt on the **slice branch**, never on its base - *Resolving a slice-merge conflict*, below. Whatever it can't land is an **unresolved conflict**: stop and report the files.
+**Stopped for any other reason** - a commit-msg hook rejecting the merge message, say - `git merge --abort` if `git rev-parse -q --verify MERGE_HEAD` finds a merge in progress, then stop and report the reason. The slice stays `ready-to-merge`, unmerged, for the next round.
 
 **5. Close the issue** (`gh issue close <n>`).
 That explicit close releases the next tickets. There is nothing to retarget: no PR points at the slice branch, and a slice stacked on this one resolves its base at its own merge - the epic branch, now that this one is closed.
@@ -45,7 +48,7 @@ Read only when step 4's `git merge` stopped on a conflict.
 
 One resolution attempt, on the **slice branch** in the tree it was built in (its lane, or the shared tree) - never on its base:
 
-1. `git -C <tree> merge <base>` - a merge commit, never `rebase`. `<base>` is the local ref: this mode keeps it current.
+1. Start on the slice branch: `git -C <tree> switch <slice-branch>` - a no-op in a lane, but after step 4's abort the shared tree is still on the base, and merging the base into itself resolves nothing. Then `git -C <tree> merge <base>` - a merge commit, never `rebase`. `<base>` is the local ref: this mode keeps it current.
 2. Hand the conflict to a subagent - the slice's ticket, its spec section, the conflicting files - that returns *Delegate the build*'s close-out report:
    - **Semantic overlap** (both sides changed the same logic, signature or contract, or resolving would alter behaviour beyond the slice's spec): `git -C <tree> merge --abort`, `outcome: "stopped"`, `reason` naming the files.
    - **Additive or mechanical overlap** (independent entries in a shared list, enum, switch, registry, test file or imports): resolve it, then verify the definition of done as *Close the loop* in `SKILL.md` describes. Red: `git -C <tree> merge --abort`, `stopped` with what failed. Green: commit the merge, `ready-to-merge`.
@@ -59,7 +62,7 @@ Gathered from the commits, not from memory: `git log --merges --grep='^ship:slic
 
 ## Lane branches
 
-When *Creating a lane* or *Reusing a lane* in [WORKTREES.md](./WORKTREES.md) cuts the member's slice branch, no push. A branch cut from `origin/<epic-branch>` starts tracking it, so run `git -C <lane-path> branch --unset-upstream <member-slice-branch>` - otherwise a stray `git pull` merges the epic into the slice, and `git branch -d` at step 6 reads the epic as the upstream instead of the base.
+When *Creating a lane* or *Reusing a lane* in [WORKTREES.md](./WORKTREES.md) cuts the member's slice branch, no push. *WORKTREES.md* cuts the branch with `--no-track`, so nothing reads `origin/<epic-branch>` as its upstream: a stray `git pull` can't merge the epic into the slice, and `git branch -d` at step 6 compares against the base.
 
 ## A stopped member's activity
 
